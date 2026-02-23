@@ -13,6 +13,7 @@ export default function Home() {
         {session.data?.user ? (
           <>
             <p>Welcome, {session.data.user.name || "User"}!</p>
+            <p>Role: {session.data.user.role}</p>
             <button
               onClick={() => signOut()}
               className="bg-white text-black font-medium px-6 py-2 rounded-md hover:bg-gray-200"
