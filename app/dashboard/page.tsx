@@ -2,11 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "@/lib/auth-client";
-import { useEffect } from "react";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { data: session, isPending } = useSession();
+  const { data: session } = useSession();
 
   const { user } = session || {};
 
@@ -17,9 +16,18 @@ export default function DashboardPage() {
       <p>Email: {user?.email}</p>
       <p>Role: {user?.role}</p>
       <button
-        onClick={() => signOut()}
-        className="w-full bg-white text-black font-medium rounded-md px-4 py-2 hover:bg-gray-200">
-            Sign out
+        onClick={async () =>
+          await signOut({
+            fetchOptions: {
+              onSuccess: () => {
+                router.push("/"); // redirect to login page
+              },
+            },
+          })
+        }
+        className="w-full bg-white text-black font-medium rounded-md px-4 py-2 hover:bg-gray-200"
+      >
+        Sign out
       </button>
     </main>
   );
