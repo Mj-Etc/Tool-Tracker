@@ -55,7 +55,7 @@ export function LoginForm({
           <div><ToolCase className="w-20 h-20" /></div>
           <CardTitle className="text-xl pb-4">Tool Tracker</CardTitle>
           <CardDescription>
-            {error? (<p className="text-red-400">{error}</p>) : "Enter your email below to login to your account"}
+            Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
