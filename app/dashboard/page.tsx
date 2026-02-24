@@ -30,7 +30,7 @@ export default function DashboardPage() {
             <CardTitle>Tool Tracker Dashboard</CardTitle>
             <CardDescription>
               Welcome, {user?.name || "User"}! This is your dashboard where you
-              can manage your tools and view your activity.
+              can manage your tools and view your activity..
             </CardDescription>
             <CardDescription className="text-primary">Name: {user?.name}</CardDescription>
             <CardDescription className="text-primary">Email: {user?.email}</CardDescription>
