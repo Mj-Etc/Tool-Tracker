@@ -1,9 +1,6 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { signOut, useSession } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
@@ -12,26 +9,34 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { SignOutButton } from "@/components/ui/signout-button";
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const { data: session } = useSession();
-
+export default async function DashboardPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   const { user } = session || {};
 
   return (
-    <div className="h-full flex flex-col items-center justify-center bg-card">
+    <div className="h-full flex flex-col items-center justify-center bg-card relative">
+      <div className="absolute right-4 top-4">
+        <ModeToggle />
+      </div>
       <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-        <div className="absolute right-4 top-4">
-          <ModeToggle />
-        </div>
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle>Tool Tracker Dashboard</CardTitle>
-            <CardDescription>
-              Welcome, {user?.name || "User"}! This is your dashboard where you
-              can manage your tools and view your activity..
-            </CardDescription>
+            {user?.role === "admin" ? (
+              <CardDescription>
+                Welcome, admin {user?.name}! This is your dashboard where you
+                can manage your tools and view your activity.
+              </CardDescription>
+            ) : (
+              <CardDescription>
+                Welcome, user {user?.name}! This is your dashboard where you can
+                manage your profile and view your activity.
+              </CardDescription>
+            )}
             <CardDescription className="text-primary">
               Name: {user?.name}
             </CardDescription>
@@ -44,20 +49,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent></CardContent>
           <CardFooter className="flex-col gap-2">
-            <Button
-              onClick={async () =>
-                await signOut({
-                  fetchOptions: {
-                    onSuccess: () => {
-                      router.push("/"); // redirect to login page
-                    },
-                  },
-                })
-              }
-              className="w-full"
-            >
-              Sign Out
-            </Button>
+            <SignOutButton />
           </CardFooter>
         </Card>
       </div>
