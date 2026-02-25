@@ -12,17 +12,18 @@ import {
 import { SignOutButton } from "@/components/ui/signout-button";
 import { CreateItem } from "@/components/create-item-form";
 import { useSession } from "@/lib/auth-client";
+import { ListItem } from "@/components/list-item";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
   const { user } = session || {};
 
   return (
-    <div className="h-full bg-card relative">
+    <div className="h-screen bg-card flex items-center justify-center relative">
       <div className="absolute right-4 top-4">
         <ModeToggle />
       </div>
-      <div className="flex min-h-svh w-full items-center justify-center gap-4">
+      <div className="flex min-h-svh w-full items-center gap-4 p-4">
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle>Tool Tracker Dashboard</CardTitle>
@@ -37,6 +38,8 @@ export default function DashboardPage() {
                 manage your profile and view your activity.
               </CardDescription>
             )}
+          </CardHeader>
+          <CardContent>
             <CardDescription className="text-primary">
               Name: {user?.name}
             </CardDescription>
@@ -46,13 +49,17 @@ export default function DashboardPage() {
             <CardDescription className="text-primary">
               Role: {user?.role}
             </CardDescription>
-          </CardHeader>
-          <CardContent></CardContent>
+          </CardContent>
           <CardFooter className="flex-col gap-2">
             <SignOutButton />
           </CardFooter>
         </Card>
         <CreateItem />
+      </div>
+      <div className="h-full w-full overflow-hidden grow">
+        <div className="flex h-full flex-col gap-4 items-center p-4 overflow-y-auto grow">
+          <ListItem />
+        </div>
       </div>
     </div>
   );

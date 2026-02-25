@@ -13,10 +13,13 @@ import {
 import { FieldGroup, Field, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
+import { useSWRConfig } from "swr";
 
 export function CreateItem() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const { mutate } = useSWRConfig();
+  
 
   const submitData = async (e: React.SubmitEvent) => {
     e.preventDefault();
@@ -28,6 +31,7 @@ export function CreateItem() {
         body: JSON.stringify(data),
       });
       if(response.ok) {
+        mutate("/api/item/list-items");
         setName("");
         setDescription("");
         toast.success("Item has been created.", { position: "top-center", duration: 2000 })
