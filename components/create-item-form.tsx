@@ -12,23 +12,26 @@ import {
 } from "./ui/card";
 import { FieldGroup, Field, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function CreateItem() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const router = useRouter();
 
   const submitData = async (e: React.SubmitEvent) => {
     e.preventDefault();
     try {
-      const response = { name, description };
-      await fetch("/api/item/create-item", {
+      const data = { name, description };
+      const response = await fetch("/api/item/create-item", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(response),
+        body: JSON.stringify(data),
       });
-      router.push("/dashboard");
+      if(response.ok) {
+        setName("");
+        setDescription("");
+        toast.success("Item has been created.", { position: "top-center", duration: 2000 })
+      }
     } catch (error) {
       console.error(error);
     }

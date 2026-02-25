@@ -3,19 +3,16 @@ import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { name, description } = await request.json();
-  const item = await prisma.item.create({
-    data: {
-      name,
-      description,
-      user: { connect: { id: session?.user?.id } },
-    },
+  const items = await prisma.item.findMany({
+    include: {
+        user: true,
+    }
   });
-  return NextResponse.json(item, { status: 201 });
+  return NextResponse.json(items, { status: 200 });
 }
