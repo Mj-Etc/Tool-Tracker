@@ -24,7 +24,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role String @default("user")
+  role  String @default("user")
+  items Item[]
 
   @@unique([email])
   @@map("user")
@@ -76,4 +77,12 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Item {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  userId     String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

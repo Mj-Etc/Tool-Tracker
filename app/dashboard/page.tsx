@@ -1,5 +1,5 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+"use client";
+
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import {
   Card,
@@ -10,19 +10,19 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { SignOutButton } from "@/components/ui/signout-button";
+import { CreateItem } from "@/components/create-item-form";
+import { useSession } from "@/lib/auth-client";
 
-export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export default function DashboardPage() {
+  const { data: session } = useSession();
   const { user } = session || {};
 
   return (
-    <div className="h-full flex flex-col items-center justify-center bg-card relative">
+    <div className="h-full bg-card relative">
       <div className="absolute right-4 top-4">
         <ModeToggle />
       </div>
-      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="flex min-h-svh w-full items-center justify-center gap-4">
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle>Tool Tracker Dashboard</CardTitle>
@@ -52,6 +52,7 @@ export default async function DashboardPage() {
             <SignOutButton />
           </CardFooter>
         </Card>
+        <CreateItem />
       </div>
     </div>
   );
