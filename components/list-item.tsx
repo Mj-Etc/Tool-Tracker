@@ -60,7 +60,7 @@ export function ListItem() {
               Owner: {item.user.name}
             </CardDescription>
             <CardDescription className="text-chart-1">
-              Owner email: {item.user.email}
+              email: {item.user.email}
             </CardDescription>
           </CardContent>
         </Card>

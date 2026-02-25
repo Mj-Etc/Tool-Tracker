@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { ToolCase } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export function SignUpForm({
   className,
@@ -46,6 +47,7 @@ export function SignUpForm({
       setError(res.error.message || "Something went wrong.");
     } else {
       router.push("/");
+      toast.success("Signed-up successfully.", { position: "top-center", duration: 2000 })
     }
   }
   const [showPassword, setShowPassword] = useState(false);

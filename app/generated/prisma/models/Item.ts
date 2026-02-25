@@ -29,6 +29,8 @@ export type ItemMinAggregateOutputType = {
   name: string | null
   description: string | null
   userId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ItemMaxAggregateOutputType = {
@@ -36,6 +38,8 @@ export type ItemMaxAggregateOutputType = {
   name: string | null
   description: string | null
   userId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ItemCountAggregateOutputType = {
@@ -43,6 +47,8 @@ export type ItemCountAggregateOutputType = {
   name: number
   description: number
   userId: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -52,6 +58,8 @@ export type ItemMinAggregateInputType = {
   name?: true
   description?: true
   userId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ItemMaxAggregateInputType = {
@@ -59,6 +67,8 @@ export type ItemMaxAggregateInputType = {
   name?: true
   description?: true
   userId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ItemCountAggregateInputType = {
@@ -66,6 +76,8 @@ export type ItemCountAggregateInputType = {
   name?: true
   description?: true
   userId?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -146,6 +158,8 @@ export type ItemGroupByOutputType = {
   name: string
   description: string
   userId: string
+  createdAt: Date
+  updatedAt: Date
   _count: ItemCountAggregateOutputType | null
   _min: ItemMinAggregateOutputType | null
   _max: ItemMaxAggregateOutputType | null
@@ -174,6 +188,8 @@ export type ItemWhereInput = {
   name?: Prisma.StringFilter<"Item"> | string
   description?: Prisma.StringFilter<"Item"> | string
   userId?: Prisma.StringFilter<"Item"> | string
+  createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -182,6 +198,8 @@ export type ItemOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -193,6 +211,8 @@ export type ItemWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Item"> | string
   description?: Prisma.StringFilter<"Item"> | string
   userId?: Prisma.StringFilter<"Item"> | string
+  createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
@@ -201,6 +221,8 @@ export type ItemOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.ItemCountOrderByAggregateInput
   _max?: Prisma.ItemMaxOrderByAggregateInput
   _min?: Prisma.ItemMinOrderByAggregateInput
@@ -214,12 +236,16 @@ export type ItemScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Item"> | string
   description?: Prisma.StringWithAggregatesFilter<"Item"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Item"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Item"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Item"> | Date | string
 }
 
 export type ItemCreateInput = {
   id?: string
   name: string
   description: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutItemsInput
 }
 
@@ -228,12 +254,16 @@ export type ItemUncheckedCreateInput = {
   name: string
   description: string
   userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutItemsNestedInput
 }
 
@@ -242,6 +272,8 @@ export type ItemUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ItemCreateManyInput = {
@@ -249,12 +281,16 @@ export type ItemCreateManyInput = {
   name: string
   description: string
   userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ItemUncheckedUpdateManyInput = {
@@ -262,6 +298,8 @@ export type ItemUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ItemListRelationFilter = {
@@ -279,6 +317,8 @@ export type ItemCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ItemMaxOrderByAggregateInput = {
@@ -286,6 +326,8 @@ export type ItemMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ItemMinOrderByAggregateInput = {
@@ -293,6 +335,8 @@ export type ItemMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ItemCreateNestedManyWithoutUserInput = {
@@ -341,12 +385,16 @@ export type ItemCreateWithoutUserInput = {
   id?: string
   name: string
   description: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ItemUncheckedCreateWithoutUserInput = {
   id?: string
   name: string
   description: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ItemCreateOrConnectWithoutUserInput = {
@@ -383,30 +431,40 @@ export type ItemScalarWhereInput = {
   name?: Prisma.StringFilter<"Item"> | string
   description?: Prisma.StringFilter<"Item"> | string
   userId?: Prisma.StringFilter<"Item"> | string
+  createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
 }
 
 export type ItemCreateManyUserInput = {
   id?: string
   name: string
   description: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ItemUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ItemUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ItemUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -416,6 +474,8 @@ export type ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   description?: boolean
   userId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["item"]>
 
@@ -424,6 +484,8 @@ export type ItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   description?: boolean
   userId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["item"]>
 
@@ -432,6 +494,8 @@ export type ItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   description?: boolean
   userId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["item"]>
 
@@ -440,9 +504,11 @@ export type ItemSelectScalar = {
   name?: boolean
   description?: boolean
   userId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "userId", ExtArgs["result"]["item"]>
+export type ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["item"]>
 export type ItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -463,6 +529,8 @@ export type $ItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string
     description: string
     userId: string
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["item"]>
   composites: {}
 }
@@ -891,6 +959,8 @@ export interface ItemFieldRefs {
   readonly name: Prisma.FieldRef<"Item", 'String'>
   readonly description: Prisma.FieldRef<"Item", 'String'>
   readonly userId: Prisma.FieldRef<"Item", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Item", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Item", 'DateTime'>
 }
     
 

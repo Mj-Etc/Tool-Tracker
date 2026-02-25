@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { ToolCase } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export function SignInForm({
   className,
@@ -40,6 +41,7 @@ export function SignInForm({
       setError(res.error.message || "Something went wrong.");
     } else {
       router.push("dashboard");
+      toast.success("Signed-in successfully.", { position: "top-center", duration: 2000 })
     }
   }
   const [showPassword, setShowPassword] = useState(false);

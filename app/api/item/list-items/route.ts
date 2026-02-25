@@ -12,6 +12,9 @@ export async function GET(request: Request) {
   const items = await prisma.item.findMany({
     include: {
         user: true,
+    },
+    orderBy: {
+        createdAt: "desc",
     }
   });
   return NextResponse.json(items, { status: 200 });
