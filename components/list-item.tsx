@@ -4,23 +4,26 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
+  CardFooter,
 } from "./ui/card";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Item, ItemMedia, ItemContent, ItemTitle } from "./ui/item";
 import { Spinner } from "./ui/spinner";
+import { Button } from "./ui/button";
 
 type ItemWithUser = {
   id: string;
   name: string;
   description: string;
   user: {
+    id: string;
     name: string;
     email: string;
   };
 };
 
-export function ListItem() {
+export function ListItem({ id }: any) {
   const { data, error, isLoading } = useSWR<ItemWithUser[]>(
     `/api/item/list-items`,
     fetcher,
@@ -53,16 +56,23 @@ export function ListItem() {
             <CardTitle>{item.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <CardDescription className="text-chart-3">
+            <CardDescription>
               Description: {item.description}
             </CardDescription>
-            <CardDescription className="text-chart-5">
+            <CardDescription>
               Owner: {item.user.name}
             </CardDescription>
-            <CardDescription className="text-chart-1">
+            <CardDescription>
               email: {item.user.email}
             </CardDescription>
           </CardContent>
+          {id === item.user.id ? (
+            <CardFooter className="flex-col gap-2">
+              <Button>Delete</Button>
+            </CardFooter>
+          ) : (
+            null
+          )}
         </Card>
       ))}
     </>

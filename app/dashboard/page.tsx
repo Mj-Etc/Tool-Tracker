@@ -58,7 +58,7 @@ export default function DashboardPage() {
       </div>
       <div className="h-full w-full overflow-hidden grow">
         <div className="flex h-full flex-col gap-4 items-center p-4 overflow-y-auto grow">
-          <ListItem />
+          <ListItem id={user?.id}/>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ export default async function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-background relative">
+    <div className="flex min-h-svh w-full items-center justify-center bg-background relative">
       <div className="absolute right-4 top-4">
         <ModeToggle />
       </div>
