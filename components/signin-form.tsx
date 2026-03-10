@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm, SubmitHandler } from "react-hook-form"; //
 import { signIn } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
+import { SignInSchema } from "@/schemas/auth";
+import { zodResolver } from "@hookform/resolvers/zod"; //
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,79 +15,109 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { ToolCase } from "lucide-react";
-import { Eye, EyeOff } from "lucide-react";
+import { ToolCase, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Spinner } from "./ui/spinner";
 
-export function SignInForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+type SignInValues = z.infer<typeof SignInSchema>;
+
+export function SignInForm() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-    
-    const formData = new FormData(e.currentTarget);
-
-    const res = await signIn.email({
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-    });
-
-    if (res.error) {
-      setError(res.error.message || "Something went wrong.");
-    } else {
-      router.push("dashboard");
-      toast.success("Signed-in successfully.", { position: "top-center", duration: 2000 })
-    }
-  }
   const [showPassword, setShowPassword] = useState(false);
-  
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignInValues>({
+    resolver: zodResolver(SignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onBlur",
+  });
+
+  const onSubmit: SubmitHandler<SignInValues> = async (data) => {
+    try {
+      const result = await signIn.email({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (result.error) {
+        toast.error(result.error.message || "Something went wrong.", {
+          duration: 2000,
+        });
+      } else {
+        router.push("dashboard");
+        toast.success("Signed-in successfully.", {
+          duration: 2000,
+        });
+      }
+    } catch (err) {
+      toast.error("An unexpected error occurred.");
+    }
+  };
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="flex flex-col justify-center items-center">
           <div>
             <ToolCase className="w-20 h-20" />
           </div>
           <CardTitle className="text-xl pb-4">Tool Tracker</CardTitle>
-          {error ? (
-            <CardDescription className="text-destructive">
-              {error}
-            </CardDescription>
-          ) : (
-            <CardDescription>
-              Enter your email below to login to your account
-            </CardDescription>
-          )}
+          <CardDescription>
+            Enter your email below to login to your account
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Field data-invalid={!!errors.email}>
+                <FieldLabel htmlFor="email">
+                  {errors.email ? (
+                    <span className="text-destructive">
+                      {errors.email.message}
+                    </span>
+                  ) : (
+                    "Email"
+                  )}
+                </FieldLabel>
                 <Input
                   id="email"
                   type="email"
-                  name="email"
                   placeholder="m@example.com"
-                  required
+                  {...register("email")}
+                  aria-invalid={errors.email ? "true" : "false"}
                 />
               </Field>
-              <Field>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
+
+              <Field data-invalid={!!errors.password}>
+                <FieldLabel htmlFor="password">
+                  {errors.password ? (
+                    <span className="text-destructive">
+                      {errors.password.message}
+                    </span>
+                  ) : (
+                    "Password"
+                  )}
+                </FieldLabel>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    name="password"
-                    required
+                    {...register("password")}
+                    aria-invalid={errors.password ? "true" : "false"}
                   />
                   <Button
                     className="absolute top-0 right-0 h-full px-3 hover:bg-transparent"
@@ -101,8 +134,18 @@ export function SignInForm({
                   </Button>
                 </div>
               </Field>
+
               <Field>
-                <Button type="submit">Sign In</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Spinner />
+                      Signing in...
+                    </span>
+                  ) : (
+                    "Sign In"
+                  )}
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?
                   <Link

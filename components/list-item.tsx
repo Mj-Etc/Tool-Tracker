@@ -56,23 +56,26 @@ export function ListItem({ id }: any) {
             <CardTitle>{item.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <CardDescription>
-              Description: {item.description}
-            </CardDescription>
-            <CardDescription>
-              Owner: {item.user.name}
-            </CardDescription>
-            <CardDescription>
-              email: {item.user.email}
-            </CardDescription>
+            <CardDescription>Description: {item.description}</CardDescription>
+            <CardDescription>Owner: {item.user.name}</CardDescription>
+            <CardDescription>email: {item.user.email}</CardDescription>
+            <CardDescription>id: {item.id}</CardDescription>
           </CardContent>
           {id === item.user.id ? (
             <CardFooter className="flex-col gap-2">
-              <Button>Delete</Button>
+              <Button
+                onClick={async () =>
+                  await fetch("/api/item/delete-item", {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(item.id),
+                  })
+                }
+              >
+                Delete
+              </Button>
             </CardFooter>
-          ) : (
-            null
-          )}
+          ) : null}
         </Card>
       ))}
     </>

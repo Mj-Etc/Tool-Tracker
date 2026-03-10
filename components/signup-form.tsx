@@ -1,9 +1,10 @@
 "use client";
 
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { SignUpSchema } from "@/schemas/auth";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signUp } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,106 +13,203 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { ToolCase } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { signUp } from "@/lib/auth-client";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "./ui/field";
+import { Spinner } from "./ui/spinner";
+import Marquee from "react-fast-marquee";
 
-export function SignUpForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+type SignupValues = z.infer<typeof SignUpSchema>;
+
+export function SignUpForm() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-
-    const formData = new FormData(e.currentTarget);
-
-    const res = await signUp.email({
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-    });
-
-    if (res.error) {
-      setError(res.error.message || "Something went wrong.");
-    } else {
-      router.push("/");
-      toast.success("Signed-up successfully.", { position: "top-center", duration: 2000 })
-    }
-  }
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupValues>({
+    resolver: zodResolver(SignUpSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      name: "",
+    },
+    mode: "onBlur",
+  });
+
+  const onSubmit: SubmitHandler<SignupValues> = async (data) => {
+    try {
+      const result = await signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      });
+
+      if (result.error) {
+        toast.error(result.error.message || "Signup failed.", {
+          duration: 2000,
+        });
+      } else {
+        router.push("/");
+        toast.success("Account created!", {
+          position: "top-center",
+          duration: 2000,
+        });
+      }
+    } catch (err) {
+      toast.error("An unexpected error occurred.");
+    }
+  };
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="flex flex-col gap-6">
       <Card>
-        <CardHeader className="flex flex-col justify-center items-center">
-          <div>
-            <ToolCase className="w-20 h-20" />
-          </div>
-          <CardTitle className="text-xl pb-4">Tool Tracker</CardTitle>
-          {error ? (
-            <CardDescription className="text-destructive">
-              {error}
-            </CardDescription>
-          ) : (
-            <CardDescription>
-              Enter your details below to create an account
-            </CardDescription>
-          )}
+        <CardHeader>
+          <CardTitle>Create an Account</CardTitle>
+          <CardDescription>Enter your details to get started</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="name">Name</FieldLabel>
-                <Input id="name" type="text" name="name" required />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input id="email" type="email" name="email" required />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    required
-                    minLength={8}
-                  />
-                  <Button
-                    className="absolute top-0 right-0 h-full px-3 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                    size="icon"
-                    type="button"
-                    variant="link"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FieldGroup className="gap-6">
+              <div className="relative">
+                <Field data-invalid={!!errors.name}>
+                  <FieldLabel htmlFor="name">
+                    {errors.name ? (
+                      <span className="text-destructive">
+                        {errors.name.message}
+                      </span>
                     ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
+                      "Name"
                     )}
-                  </Button>
+                  </FieldLabel>
+                  <Input
+                    id="name"
+                    placeholder="John Doe"
+                    {...register("name")}
+                    aria-invalid={errors.name ? "true" : "false"}
+                  />
+                </Field>
+              </div>
+              <div className="relative">
+                <Field data-invalid={!!errors.email}>
+                  <FieldLabel htmlFor="email">
+                    {errors.email ? (
+                      <span className="text-destructive">
+                        {errors.email.message}
+                      </span>
+                    ) : (
+                      "Email"
+                    )}
+                  </FieldLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    {...register("email")}
+                    aria-invalid={errors.email ? "true" : "false"}
+                  />
+                </Field>
+              </div>
+              <div className="flex gap-4">
+                <div className="relative flex-1">
+                  <Field data-invalid={!!errors.password}>
+                    <FieldLabel htmlFor="password">
+                      {errors.password ? (
+                        <Marquee>
+                          <span className="text-destructive pr-4">
+                            {errors.password.message}
+                          </span>
+                        </Marquee>
+                      ) : (
+                        "Password"
+                      )}
+                    </FieldLabel>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        {...register("password")}
+                        aria-invalid={errors.password ? "true" : "false"}
+                        className="pr-9"
+                      />
+                      <Button
+                        type="button"
+                        variant="link"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-0 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </Button>
+                    </div>
+                  </Field>
                 </div>
-              </Field>
-              <Field>
-                <Button type="submit">Sign Up</Button>
-                <FieldDescription className="text-center">
-                  Already have an account?
+                <div className="relative flex-1">
+                  <Field data-invalid={!!errors.confirmPassword}>
+                    <FieldLabel htmlFor="confirmPassword">
+                      {errors.confirmPassword ? (
+                        <Marquee>
+                          <span className="text-destructive pr-4">
+                            {errors.confirmPassword.message}
+                          </span>
+                        </Marquee>
+                      ) : (
+                        "Confirm Password"
+                      )}
+                    </FieldLabel>
+                    <div className="relative">
+                      <Input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        {...register("confirmPassword")}
+                        aria-invalid={errors.confirmPassword ? "true" : "false"}
+                        className="pr-9"
+                      />
+                      <Button
+                        type="button"
+                        variant="link"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute right-0 text-muted-foreground hover:text-foreground"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </Button>
+                    </div>
+                  </Field>
+                </div>
+              </div>
+              <Field className="mt-1">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Spinner />
+                      Creating account...
+                    </span>
+                  ) : (
+                    "Sign Up"
+                  )}
+                </Button>
+                <FieldDescription className="text-center text-sm text-muted-foreground mt-4">
+                  Already have an account?{" "}
                   <Link
                     href="/"
-                    className="ml-1 underline underline-offset-auto"
+                    className="text-primary underline underline-offset-4"
                   >
                     Sign in
                   </Link>

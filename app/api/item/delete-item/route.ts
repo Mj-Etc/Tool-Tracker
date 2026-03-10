@@ -9,13 +9,11 @@ export async function DELETE(request: Request) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { name, description } = await request.json();
-  const item = await prisma.item.create({
-    data: {
-      name,
-      description,
-      user: { connect: { id: session?.user?.id } },
+  const { id } = await request.json();
+  const deleteItem = await prisma.item.delete({
+    where: {
+      id: id,
     },
   });
-  return NextResponse.json(item, { status: 201 });
+  return NextResponse.json({ msg: "Item deleted" });
 }
