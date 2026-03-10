@@ -24,7 +24,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role  String @default("user")
+  role  String @default("cashier")
   items Item[]
 
   @@unique([email])

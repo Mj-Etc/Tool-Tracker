@@ -119,7 +119,7 @@ export function SignUpForm() {
                 </Field>
               </div>
               <div className="flex gap-4">
-                <div className="relative">
+                <div className="relative shrink-0 w-1/2">
                   <Field data-invalid={!!errors.password}>
                     <FieldLabel htmlFor="password">
                       {errors.password ? (
@@ -151,7 +151,7 @@ export function SignUpForm() {
                     </div>
                   </Field>
                 </div>
-                <div className="relative">
+                <div className="relative shrink-0 w-1/2">
                   <Field data-invalid={!!errors.confirmPassword}>
                     <FieldLabel htmlFor="confirmPassword">
                       {errors.confirmPassword ? (

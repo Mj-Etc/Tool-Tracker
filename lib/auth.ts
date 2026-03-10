@@ -13,9 +13,9 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["user", "admin"],
+        type: ["cashier", "admin"],
         required: true,
-        defaultValue: "user",
+        defaultValue: "cashier",
         input: false,
       },
     },
