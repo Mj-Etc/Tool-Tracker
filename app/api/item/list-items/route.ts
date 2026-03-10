@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });

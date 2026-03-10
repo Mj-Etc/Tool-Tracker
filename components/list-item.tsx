@@ -10,7 +10,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Item, ItemMedia, ItemContent, ItemTitle } from "./ui/item";
 import { Spinner } from "./ui/spinner";
-import { Button } from "./ui/button";
+import { DeleteItemButton } from "./ui/delete-item-button";
 
 type ItemWithUser = {
   id: string;
@@ -63,17 +63,10 @@ export function ListItem({ id }: any) {
           </CardContent>
           {id === item.user.id ? (
             <CardFooter className="flex-col gap-2">
-              <Button
-                onClick={async () =>
-                  await fetch("/api/item/delete-item", {
-                    method: "DELETE",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(item.id),
-                  })
-                }
-              >
-                Delete
-              </Button>
+              <DeleteItemButton
+                itemId={item.id}
+                endpoint="/api/item/delete-item"
+              />
             </CardFooter>
           ) : null}
         </Card>

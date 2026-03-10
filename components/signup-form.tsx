@@ -47,14 +47,14 @@ export function SignUpForm() {
 
   const onSubmit: SubmitHandler<SignupValues> = async (data) => {
     try {
-      const result = await signUp.email({
+      const response = await signUp.email({
         email: data.email,
         password: data.password,
         name: data.name,
       });
 
-      if (result.error) {
-        toast.error(result.error.message || "Signup failed.", {
+      if (response.error) {
+        toast.error(response.error.message || "Signup failed.", {
           duration: 2000,
         });
       } else {
@@ -119,7 +119,7 @@ export function SignUpForm() {
                 </Field>
               </div>
               <div className="flex gap-4">
-                <div className="relative flex-1">
+                <div className="relative">
                   <Field data-invalid={!!errors.password}>
                     <FieldLabel htmlFor="password">
                       {errors.password ? (
@@ -151,7 +151,7 @@ export function SignUpForm() {
                     </div>
                   </Field>
                 </div>
-                <div className="relative flex-1">
+                <div className="relative">
                   <Field data-invalid={!!errors.confirmPassword}>
                     <FieldLabel htmlFor="confirmPassword">
                       {errors.confirmPassword ? (
@@ -197,10 +197,10 @@ export function SignUpForm() {
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
-                    <span className="flex items-center justify-center gap-2">
+                    <>
                       <Spinner />
                       Creating account...
-                    </span>
+                    </>
                   ) : (
                     "Sign Up"
                   )}

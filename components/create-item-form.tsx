@@ -14,15 +14,17 @@ import { FieldGroup, Field, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
+import { Spinner } from "./ui/spinner";
 
 export function CreateItem() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const { mutate } = useSWRConfig();
-  
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitData = async (e: React.SubmitEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const data = { name, description };
       const response = await fetch("/api/item/create-item", {
@@ -30,11 +32,15 @@ export function CreateItem() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if(response.ok) {
+      if (response.ok) {
         mutate("/api/item/list-items");
         setName("");
         setDescription("");
-        toast.success("Item has been created.", { position: "top-center", duration: 2000 })
+        setIsLoading(false);
+        toast.success("Item has been created.", {
+          position: "top-center",
+          duration: 2000,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -77,8 +83,18 @@ export function CreateItem() {
               />
             </Field>
             <Field>
-              <Button disabled={!name || !description} type="submit">
-                Submit
+              <Button
+                disabled={!name || (!description)}
+                type="submit"
+              >
+                {isLoading ? (
+                  <>
+                    <Spinner />
+                    Creating item...
+                  </>
+                ) : (
+                  "Add item"
+                )}
               </Button>
             </Field>
           </FieldGroup>

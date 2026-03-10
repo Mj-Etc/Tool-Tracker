@@ -4,16 +4,35 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function DELETE(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    
+    if (!session?.user) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-  const { id } = await request.json();
-  const deleteItem = await prisma.item.delete({
-    where: {
-      id: id,
-    },
-  });
-  return NextResponse.json({ msg: "Item deleted" });
+    const body = await request.json();
+    const { id } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "Item ID is required" }, { status: 400 });
+    }
+    
+    const result = await prisma.item.deleteMany({
+      where: {
+        id: id,
+        userId: session.user.id, 
+      },
+    });
+
+    if (result.count === 0) {
+      return NextResponse.json({ error: "Item not found or unauthorized" }, { status: 404 });
+    }
+
+    return NextResponse.json({ msg: "Item deleted successfully" });
+
+  } catch (error) {
+    console.error("DELETE_ERROR:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }

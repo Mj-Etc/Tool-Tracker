@@ -48,13 +48,13 @@ export function SignInForm() {
 
   const onSubmit: SubmitHandler<SignInValues> = async (data) => {
     try {
-      const result = await signIn.email({
+      const response = await signIn.email({
         email: data.email,
         password: data.password,
       });
 
-      if (result.error) {
-        toast.error(result.error.message || "Something went wrong.", {
+      if (response.error) {
+        toast.error(response.error.message || "Something went wrong.", {
           duration: 2000,
         });
       } else {
@@ -138,10 +138,10 @@ export function SignInForm() {
               <Field>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
-                    <span className="flex items-center justify-center gap-2">
+                    <>
                       <Spinner />
                       Signing in...
-                    </span>
+                    </>
                   ) : (
                     "Sign In"
                   )}
