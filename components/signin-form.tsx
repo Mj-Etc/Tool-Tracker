@@ -26,6 +26,7 @@ import { ToolCase, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
+import Image from "next/image";
 
 type SignInValues = z.infer<typeof SignInSchema>;
 
@@ -73,7 +74,13 @@ export function SignInForm() {
       <Card>
         <CardHeader className="flex flex-col justify-center items-center">
           <div>
-            <ToolCase className="w-20 h-20" />
+            <Image
+              src="/tool.gif"
+              width={80}
+              height={80}
+              alt="Tool Tracker Logo"
+              unoptimized
+            />
           </div>
           <CardTitle className="text-xl pb-4">Tool Tracker</CardTitle>
           <CardDescription>
