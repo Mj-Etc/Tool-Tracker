@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
-const protectedRoutes = ["/admin/dashboard", "/dashboard"];
+const protectedRoutes = ["/admin/dashboard", "/cashier/dashboard"];
 const publicRoutes = ["/", "/sign-up"];
 
 export async function proxy(request: NextRequest) {
@@ -22,11 +22,11 @@ export async function proxy(request: NextRequest) {
 
   if (session) {
     if (path.startsWith("/admin") && role !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
+      return NextResponse.redirect(new URL("/cashier/dashboard", request.nextUrl));
     }
 
     if (
-      path.startsWith("/dashboard") &&
+      path.startsWith("/cashier") &&
       !path.startsWith("/admin") &&
       role !== "cashier"
     ) {
@@ -39,7 +39,7 @@ export async function proxy(request: NextRequest) {
     if (isPublicRoute) {
       return NextResponse.redirect(
         new URL(
-          role === "admin" ? "/admin/dashboard" : "/dashboard",
+          role === "admin" ? "/admin/dashboard" : "/cashier/dashboard",
           request.nextUrl,
         ),
       );

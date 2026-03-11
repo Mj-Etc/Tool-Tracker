@@ -16,7 +16,7 @@ import { ListItem } from "@/components/list-item";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
-  const { user } = session || {};
+  const user = session?.user;
 
   return (
     <div className="h-screen bg-card flex items-center justify-center relative">
@@ -58,7 +58,7 @@ export default function DashboardPage() {
       </div>
       <div className="h-full w-full overflow-hidden grow">
         <div className="flex h-full flex-col gap-4 items-center p-4 overflow-y-auto grow">
-          <ListItem id={user?.id}/>
+          <ListItem id={session?.user?.id}/>
         </div>
       </div>
     </div>

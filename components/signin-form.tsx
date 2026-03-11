@@ -59,7 +59,7 @@ export function SignInForm() {
           duration: 2000,
         });
       } else {
-        router.push("dashboard");
+        router.push("/cashier/dashboard");
         toast.success("Signed-in successfully.", {
           duration: 2000,
         });
