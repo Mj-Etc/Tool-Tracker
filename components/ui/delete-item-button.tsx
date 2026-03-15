@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSWRConfig } from "swr";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { Trash2 } from "lucide-react";
@@ -20,34 +19,29 @@ import { useSocket } from "../socket-provider";
 
 interface DeleteProps {
   itemId: string;
-  endpoint: string;
 }
 
-export function DeleteItemButton({ itemId, endpoint }: DeleteProps) {
+export function DeleteItemButton({ itemId }: DeleteProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const { mutate } = useSWRConfig();
   const [open, setOpen] = useState(false);
   const { sendMessage } = useSocket();
 
   const handleDelete = async () => {
     setIsDeleting(true);
-
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch("/api/item/delete-item", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: itemId }),
       });
-
       if (!response.ok) {
-        toast.error("Failed to delete item.", { duration: 2000 });
+        toast.error("Failed to delete item.");
       }
-      await mutate("/api/item/list-items");
-      sendMessage({ type: 'items:deleted' });
+      sendMessage({ type: "items:deleted" });
       setOpen(false);
-      toast.success("Deleted successfully!", { duration: 2000 });
-    } catch (err) {
-      toast.error("An unexpected error occurred.", { duration: 2000 });
+      toast.success("Item deleted successfully!")
+    } catch (error) {
+      toast.error("An unexpected error occurred.");
     }
   };
 

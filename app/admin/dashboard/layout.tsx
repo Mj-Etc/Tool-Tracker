@@ -33,17 +33,10 @@ export default async function AdminDashboardLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar 
-        variant="inset"
-        user={navUserData}
-      />
+      <AppSidebar variant="inset" user={navUserData} />
       <SidebarInset>
-          <SiteHeader />
-            <div className="@container/main">
-              <div className="p-4">
-                {children}
-              </div>
-          </div>
+        <SiteHeader />
+          <div className="h-full p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

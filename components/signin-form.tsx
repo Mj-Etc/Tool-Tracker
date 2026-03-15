@@ -56,14 +56,10 @@ export function SignInForm() {
       });
 
       if (response.error) {
-        toast.error(response.error.message || "Something went wrong.", {
-          duration: 2000,
-        });
+        toast.error(response.error.message || "Something went wrong.");
       } else {
         router.refresh();
-        toast.success("Signed-in successfully.", {
-          duration: 2000,
-        });
+        toast.success("Signed-in successfully.");
       }
     } catch (err) {
       toast.error("An unexpected error occurred.");

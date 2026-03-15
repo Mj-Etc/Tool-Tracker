@@ -1,26 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { ToolCase } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
   CardContent,
 } from "./ui/card";
 import { FieldGroup, Field, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
-import { useSWRConfig } from "swr";
 import { Spinner } from "./ui/spinner";
 import { useSocket } from "./socket-provider";
 
 export function CreateItem() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { mutate } = useSWRConfig();
   const [isLoading, setIsLoading] = useState(false);
   const { sendMessage } = useSocket();
 
@@ -34,18 +28,16 @@ export function CreateItem() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (response.ok) {
-        sendMessage({ type: 'items:created' });
-        setName("");
-        setDescription("");
-        setIsLoading(false);
-        toast.success("Item has been created.", {
-          position: "top-center",
-          duration: 2000,
-        });
+      if (!response.ok) {
+        toast.error("Failed to create item.");
       }
+      sendMessage({ type: "items:created" });
+      setName("");
+      setDescription("");
+      setIsLoading(false);
+      toast.success("Item created successfully!");
     } catch (error) {
-      console.error(error);
+      toast.error("An unexpected error occurred.");
     }
   };
 
@@ -76,10 +68,7 @@ export function CreateItem() {
               />
             </Field>
             <Field>
-              <Button
-                disabled={!name || (!description)}
-                type="submit"
-              >
+              <Button disabled={!name || !description} type="submit">
                 {isLoading ? (
                   <>
                     <Spinner />

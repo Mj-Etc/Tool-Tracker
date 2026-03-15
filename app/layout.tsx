@@ -30,7 +30,7 @@ export default function RootLayout({
               <TooltipProvider>{children}</TooltipProvider>
             </ScrollArea>
           </SocketProvider>
-          <Toaster position="top-center" />
+          <Toaster position="top-center" duration={2000} />
         </ThemeProvider>
       </body>
     </html>

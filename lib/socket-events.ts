@@ -8,10 +8,7 @@ import { ScopedMutator } from 'swr/_internal';
  */
 export const SOCKET_EVENT_MAP: Record<string, string | string[] | ((mutate: ScopedMutator, payload: any) => void)> = {
   // Item events
-  'items:created': (mutate) => {
-    mutate('/api/item/list-items');
-    toast.success('A new item has been added!');
-  },
+  'items:created': '/api/item/list-items',
   'items:updated': '/api/item/list-items',
   'items:deleted': '/api/item/list-items',
 

@@ -82,9 +82,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
-            <Logo className="h-7.5 w-7.5" />
-            <p className="font-bold">Tool Tracker</p>
+          <SidebarMenuItem>
+            <Link href="/admin/dashboard" className="flex p-1 rounded-xl justify-center border items-center gap-2 bg-background">
+              <Logo className="h-7.5 w-7.5" />
+              <p className="font-bold">Tool Tracker</p>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

@@ -20,7 +20,7 @@ export function SignOutButton() {
   };
 
   return (
-    <Button onClick={handleSignOut} disabled={isLoading} className="w-full">
+    <Button onClick={handleSignOut} disabled={isLoading}>
       {isLoading ? (
         <span className="flex items-center gap-2">
           <Spinner />

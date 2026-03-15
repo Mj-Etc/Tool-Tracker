@@ -54,15 +54,10 @@ export function SignUpForm() {
       });
 
       if (response.error) {
-        toast.error(response.error.message || "Signup failed.", {
-          duration: 2000,
-        });
+        toast.error(response.error.message || "Signup failed.");
       } else {
         router.push("/");
-        toast.success("Account created!", {
-          position: "top-center",
-          duration: 2000,
-        });
+        toast.success("Account created!");
       }
     } catch (err) {
       toast.error("An unexpected error occurred.");
