@@ -15,12 +15,14 @@ import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
 import { Spinner } from "./ui/spinner";
+import { useSocket } from "./socket-provider";
 
 export function CreateItem() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const { mutate } = useSWRConfig();
   const [isLoading, setIsLoading] = useState(false);
+  const { sendMessage } = useSocket();
 
   const submitData = async (e: React.SubmitEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ export function CreateItem() {
         body: JSON.stringify(data),
       });
       if (response.ok) {
-        mutate("/api/item/list-items");
+        sendMessage({ type: 'items:created' });
         setName("");
         setDescription("");
         setIsLoading(false);
@@ -49,15 +51,6 @@ export function CreateItem() {
 
   return (
     <Card className="w-full max-w-sm">
-      <CardHeader className="flex flex-col justify-center items-center">
-        <div>
-          <ToolCase className="w-20 h-20" />
-        </div>
-        <CardTitle className="text-xl pb-4">Tool Tracker</CardTitle>
-        <CardDescription>
-          Enter the item details you want to create
-        </CardDescription>
-      </CardHeader>
       <CardContent>
         <form onSubmit={submitData}>
           <FieldGroup>

@@ -1,0 +1,28 @@
+// lib/socket-events.ts
+import { toast } from 'sonner';
+import { ScopedMutator } from 'swr/_internal';
+
+/**
+ * Maps WebSocket event types to SWR keys that should be revalidated.
+ * Can be a single string, an array of strings, or a custom callback function.
+ */
+export const SOCKET_EVENT_MAP: Record<string, string | string[] | ((mutate: ScopedMutator, payload: any) => void)> = {
+  // Item events
+  'items:created': (mutate) => {
+    mutate('/api/item/list-items');
+    toast.success('A new item has been added!');
+  },
+  'items:updated': '/api/item/list-items',
+  'items:deleted': '/api/item/list-items',
+
+  // Placeholder for future events
+  'user:profile_updated': '/api/auth/session',
+  'notifications:received': '/api/notifications/unread-count',
+
+  // Example of a complex callback
+  'order:shipped': (mutate, payload) => {
+    mutate('/api/orders');
+    mutate(`/api/orders/${payload.orderId}`);
+    toast.info(`Order #${payload.orderId} is on the way!`);
+  }
+};

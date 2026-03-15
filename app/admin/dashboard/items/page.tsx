@@ -1,28 +1,18 @@
-import { ListItem } from "@/components/list-item";
 import { CreateItem } from "@/components/create-item-form";
-import { getSession } from "@/lib/auth-helpers";
-import { redirect } from "next/navigation";
+import { ListItem } from "@/components/list-item";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default async function ItemsPage() {
-  const session = await getSession();
-
-  if (!session?.user) {
-    redirect("/login");
-  }
-
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Items Management</h1>
-      </div>
-      
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-3 gap-4 grid-rows-1">
+      <div className="">
         <CreateItem />
       </div>
-
-      <div className="flex h-full flex-col gap-4 items-center p-4 overflow-y-auto">
-        <ListItem id={session.user.id} />
-      </div>
+        <ScrollArea className="h-70 col-start-2 border p-4 rounded-xl">
+          <div className="flex flex-col gap-4">
+            <ListItem />
+          </div>
+        </ScrollArea>
     </div>
   );
 }

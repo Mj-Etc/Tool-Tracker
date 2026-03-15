@@ -1,7 +1,3 @@
-import { SettingsClient } from "@/components/client-pages/dashboard/settings";
-
-export default function DashboardPage() {
-  return (
-      <SettingsClient />
-  );
+export default async function SettingsPage() {
+  return <p>Settings Page</p>;
 }

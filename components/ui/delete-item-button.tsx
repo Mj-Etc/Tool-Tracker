@@ -16,6 +16,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "./dialog";
+import { useSocket } from "../socket-provider";
 
 interface DeleteProps {
   itemId: string;
@@ -26,6 +27,7 @@ export function DeleteItemButton({ itemId, endpoint }: DeleteProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { mutate } = useSWRConfig();
   const [open, setOpen] = useState(false);
+  const { sendMessage } = useSocket();
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -41,6 +43,7 @@ export function DeleteItemButton({ itemId, endpoint }: DeleteProps) {
         toast.error("Failed to delete item.", { duration: 2000 });
       }
       await mutate("/api/item/list-items");
+      sendMessage({ type: 'items:deleted' });
       setOpen(false);
       toast.success("Deleted successfully!", { duration: 2000 });
     } catch (err) {
