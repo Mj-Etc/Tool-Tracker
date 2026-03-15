@@ -40,7 +40,7 @@ const adminNavMain: NavItem[] = [
     icon: IconDashboard,
   },
   {
-    title: "Items",
+    title: "Products & Inventory",
     url: "/admin/dashboard/items",
     icon: IconPackage,
   },
@@ -48,11 +48,6 @@ const adminNavMain: NavItem[] = [
     title: "Users",
     url: "/admin/dashboard/users",
     icon: IconUsers,
-  },
-  {
-    title: "Borrowers",
-    url: "/admin/dashboard/borrowers",
-    icon: IconUserCircle,
   },
   {
     title: "Reports",

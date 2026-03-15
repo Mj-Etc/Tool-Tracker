@@ -1,40 +1,53 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
+  CardHeader,
+  CardTitle,
 } from "./ui/card";
 import { FieldGroup, Field, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
 import { useSocket } from "./socket-provider";
+import { ItemSchema, ItemInput } from "@/schemas/item";
 
 export function CreateItem() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const { sendMessage } = useSocket();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ItemInput>({
+    resolver: zodResolver(ItemSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      price: 0,
+      quantity: 0,
+      lowStockThreshold: 10,
+      category: "",
+    },
+  });
 
-  const submitData = async (e: React.SubmitEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const onSubmit = async (data: ItemInput) => {
     try {
-      const data = { name, description };
       const response = await fetch("/api/item/create-item", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        toast.error("Failed to create item.");
+        throw new Error("Failed to create item.");
       }
       sendMessage({ type: "items:created" });
-      setName("");
-      setDescription("");
-      setIsLoading(false);
+      reset();
       toast.success("Item created successfully!");
     } catch (error) {
       toast.error("An unexpected error occurred.");
@@ -43,39 +56,81 @@ export function CreateItem() {
 
   return (
     <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle>Add New Product</CardTitle>
+      </CardHeader>
       <CardContent>
-        <form onSubmit={submitData}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="name">Item name</FieldLabel>
               <Input
                 id="name"
+                {...register("name")}
                 autoFocus
-                onChange={(e) => setName(e.target.value)}
                 type="text"
-                value={name}
               />
+              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
             </Field>
             <Field>
               <FieldLabel htmlFor="description">Description</FieldLabel>
               <Input
                 id="description"
-                aria-colspan={50}
-                onChange={(e) => setDescription(e.target.value)}
-                aria-rowspan={8}
+                {...register("description")}
                 type="text"
-                value={description}
               />
+              {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
             </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field>
+                <FieldLabel htmlFor="price">Price</FieldLabel>
+                <Input
+                  id="price"
+                  {...register("price", { valueAsNumber: true })}
+                  type="number"
+                  step="0.01"
+                />
+                {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="quantity">Quantity</FieldLabel>
+                <Input
+                  id="quantity"
+                  {...register("quantity", { valueAsNumber: true })}
+                  type="number"
+                />
+                {errors.quantity && <p className="text-sm text-red-500">{errors.quantity.message}</p>}
+              </Field>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Field>
+                <FieldLabel htmlFor="lowStockThreshold">Low Stock Alert</FieldLabel>
+                <Input
+                  id="lowStockThreshold"
+                  {...register("lowStockThreshold", { valueAsNumber: true })}
+                  type="number"
+                />
+                {errors.lowStockThreshold && <p className="text-sm text-red-500">{errors.lowStockThreshold.message}</p>}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="category">Category</FieldLabel>
+                <Input
+                  id="category"
+                  {...register("category")}
+                  type="text"
+                />
+                {errors.category && <p className="text-sm text-red-500">{errors.category.message}</p>}
+              </Field>
+            </div>
             <Field>
-              <Button disabled={!name || !description} type="submit">
-                {isLoading ? (
+              <Button disabled={isSubmitting} type="submit" className="w-full">
+                {isSubmitting ? (
                   <>
-                    <Spinner />
-                    Creating item...
+                    <Spinner className="mr-2" />
+                    Creating...
                   </>
                 ) : (
-                  "Add item"
+                  "Add Item"
                 )}
               </Button>
             </Field>

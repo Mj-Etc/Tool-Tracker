@@ -8,9 +8,12 @@ import { ScopedMutator } from 'swr/_internal';
  */
 export const SOCKET_EVENT_MAP: Record<string, string | string[] | ((mutate: ScopedMutator, payload: any) => void)> = {
   // Item events
-  'items:created': '/api/item/list-items',
-  'items:updated': '/api/item/list-items',
-  'items:deleted': '/api/item/list-items',
+  'items:created': ['/api/item/list-items', '/api/stats'],
+  'items:updated': ['/api/item/list-items', '/api/stats'],
+  'items:deleted': ['/api/item/list-items', '/api/stats'],
+
+  // Transaction events
+  'transaction:created': ['/api/item/list-items', '/api/transactions', '/api/stats'],
 
   // Placeholder for future events
   'user:profile_updated': '/api/auth/session',

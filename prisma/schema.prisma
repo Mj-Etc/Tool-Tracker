@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../app/generated/prisma"
 }
 
@@ -26,6 +26,7 @@ model User {
 
   role  String @default("cashier")
   items Item[]
+  transactions Transaction[]
 
   @@unique([email])
   @@map("user")
@@ -83,8 +84,33 @@ model Item {
   id          String   @id @default(cuid())
   name        String
   description String
+  price       Decimal  @db.Decimal(10, 2) @default(0.0)
+  quantity    Int      @default(0)
+  lowStockThreshold Int @default(10)
+  category    String?
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  transactionItems TransactionItem[]
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  cashierId   String
+  totalAmount Decimal           @db.Decimal(10, 2)
+  createdAt   DateTime          @default(now())
+  cashier     User              @relation(fields: [cashierId], references: [id])
+  items       TransactionItem[]
+}
+
+model TransactionItem {
+  id            String      @id @default(cuid())
+  transactionId String
+  itemId        String
+  quantity      Int
+  unitPrice     Decimal     @db.Decimal(10, 2)
+  subtotal      Decimal     @db.Decimal(10, 2)
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  item          Item        @relation(fields: [itemId], references: [id])
 }
