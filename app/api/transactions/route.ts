@@ -19,6 +19,7 @@ export async function POST(request: Request) {
       const transaction = await tx.transaction.create({
         data: {
           cashierId: session.user.id,
+          customerName: validatedData.customerName,
           totalAmount: validatedData.totalAmount,
         },
       });

@@ -84,6 +84,7 @@ model Item {
   id          String   @id @default(cuid())
   name        String
   description String
+  costPrice   Decimal  @db.Decimal(10, 2) @default(0.0)
   price       Decimal  @db.Decimal(10, 2) @default(0.0)
   quantity    Int      @default(0)
   lowStockThreshold Int @default(10)
@@ -96,12 +97,13 @@ model Item {
 }
 
 model Transaction {
-  id          String            @id @default(cuid())
-  cashierId   String
-  totalAmount Decimal           @db.Decimal(10, 2)
-  createdAt   DateTime          @default(now())
-  cashier     User              @relation(fields: [cashierId], references: [id])
-  items       TransactionItem[]
+  id           String            @id @default(cuid())
+  cashierId    String
+  customerName String?
+  totalAmount  Decimal           @db.Decimal(10, 2)
+  createdAt    DateTime          @default(now())
+  cashier      User              @relation(fields: [cashierId], references: [id])
+  items        TransactionItem[]
 }
 
 model TransactionItem {

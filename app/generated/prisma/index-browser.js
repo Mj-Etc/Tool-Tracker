@@ -171,6 +171,7 @@ exports.Prisma.ItemScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  costPrice: 'costPrice',
   price: 'price',
   quantity: 'quantity',
   lowStockThreshold: 'lowStockThreshold',
@@ -183,6 +184,7 @@ exports.Prisma.ItemScalarFieldEnum = {
 exports.Prisma.TransactionScalarFieldEnum = {
   id: 'id',
   cashierId: 'cashierId',
+  customerName: 'customerName',
   totalAmount: 'totalAmount',
   createdAt: 'createdAt'
 };

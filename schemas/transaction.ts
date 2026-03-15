@@ -8,6 +8,7 @@ export const TransactionItemSchema = z.object({
 });
 
 export const TransactionSchema = z.object({
+  customerName: z.string().optional(),
   items: z.array(TransactionItemSchema).min(1, "At least one item is required"),
   totalAmount: z.number().min(0),
 });

@@ -29,6 +29,7 @@ export function CreateItem() {
     defaultValues: {
       name: "",
       description: "",
+      costPrice: 0,
       price: 0,
       quantity: 0,
       lowStockThreshold: 10,
@@ -83,7 +84,17 @@ export function CreateItem() {
             </Field>
             <div className="grid grid-cols-2 gap-4">
               <Field>
-                <FieldLabel htmlFor="price">Price</FieldLabel>
+                <FieldLabel htmlFor="costPrice">Cost Price</FieldLabel>
+                <Input
+                  id="costPrice"
+                  {...register("costPrice", { valueAsNumber: true })}
+                  type="number"
+                  step="0.01"
+                />
+                {errors.costPrice && <p className="text-sm text-red-500">{errors.costPrice.message}</p>}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="price">Selling Price</FieldLabel>
                 <Input
                   id="price"
                   {...register("price", { valueAsNumber: true })}
@@ -92,6 +103,8 @@ export function CreateItem() {
                 />
                 {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
               </Field>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <Field>
                 <FieldLabel htmlFor="quantity">Quantity</FieldLabel>
                 <Input
@@ -101,8 +114,6 @@ export function CreateItem() {
                 />
                 {errors.quantity && <p className="text-sm text-red-500">{errors.quantity.message}</p>}
               </Field>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
               <Field>
                 <FieldLabel htmlFor="lowStockThreshold">Low Stock Alert</FieldLabel>
                 <Input
@@ -112,16 +123,16 @@ export function CreateItem() {
                 />
                 {errors.lowStockThreshold && <p className="text-sm text-red-500">{errors.lowStockThreshold.message}</p>}
               </Field>
-              <Field>
-                <FieldLabel htmlFor="category">Category</FieldLabel>
-                <Input
-                  id="category"
-                  {...register("category")}
-                  type="text"
-                />
-                {errors.category && <p className="text-sm text-red-500">{errors.category.message}</p>}
-              </Field>
             </div>
+            <Field>
+              <FieldLabel htmlFor="category">Category</FieldLabel>
+              <Input
+                id="category"
+                {...register("category")}
+                type="text"
+              />
+              {errors.category && <p className="text-sm text-red-500">{errors.category.message}</p>}
+            </Field>
             <Field>
               <Button disabled={isSubmitting} type="submit" className="w-full">
                 {isSubmitting ? (

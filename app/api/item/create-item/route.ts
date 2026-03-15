@@ -10,11 +10,12 @@ export async function POST(request: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { name, description, price, quantity, lowStockThreshold, category } = await request.json();
+    const { name, description, costPrice, price, quantity, lowStockThreshold, category } = await request.json();
     const item = await prisma.item.create({
       data: {
         name,
         description,
+        costPrice: Number(costPrice),
         price: Number(price),
         quantity: Number(quantity),
         lowStockThreshold: Number(lowStockThreshold),

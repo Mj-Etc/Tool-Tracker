@@ -24,6 +24,7 @@ type Item = {
 export function SalesForm() {
   const { data: items, isLoading: itemsLoading } = useSWR<Item[]>("/api/item/list-items", fetcher);
   const [searchTerm, setSearchTerm] = useState("");
+  const [customerName, setCustomerName] = useState("");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [cart, setCart] = useState<(TransactionItemInput & { name: string })[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -115,6 +116,7 @@ export function SalesForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          customerName,
           items: cart.map(({ name, ...rest }) => rest),
           totalAmount
         }),
@@ -127,6 +129,7 @@ export function SalesForm() {
 
       toast.success("Transaction completed!");
       setCart([]);
+      setCustomerName("");
       sendMessage({ type: "transaction:created" });
     } catch (error: any) {
       toast.error(error.message || "Failed to process transaction");
@@ -205,7 +208,16 @@ export function SalesForm() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-[400px]">
+          <div className="mb-4 p-3 bg-muted/30 rounded-lg">
+            <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">Customer / Contractor (Optional)</label>
+            <Input 
+              placeholder="Enter customer name..." 
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              className="bg-background"
+            />
+          </div>
+          <ScrollArea className="h-[350px]">
             {cart.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                 <p>Cart is empty</p>
