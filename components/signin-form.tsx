@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, SubmitHandler } from "react-hook-form"; //
+import { useForm, SubmitHandler } from "react-hook-form";
 import { signIn } from "@/lib/auth-client";
 import { SignInSchema } from "@/schemas/auth";
-import { zodResolver } from "@hookform/resolvers/zod"; //
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,11 +22,12 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { ToolCase, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
 import Image from "next/image";
+import { Logo } from "./logo";
 
 type SignInValues = z.infer<typeof SignInSchema>;
 
@@ -59,7 +60,7 @@ export function SignInForm() {
           duration: 2000,
         });
       } else {
-        router.push("/cashier/dashboard");
+        router.refresh();
         toast.success("Signed-in successfully.", {
           duration: 2000,
         });
@@ -73,16 +74,8 @@ export function SignInForm() {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="flex flex-col justify-center items-center">
-          <div>
-            <Image
-              src="/tool.gif"
-              width={80}
-              height={80}
-              alt="Tool Tracker Logo"
-              unoptimized
-            />
-          </div>
-          <CardTitle className="text-xl pb-4">Tool Tracker</CardTitle>
+          <Logo className="text-primary h-20 w-20" />
+          <CardTitle className="text-lg font-bold">Tool Tracker</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>

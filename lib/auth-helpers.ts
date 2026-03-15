@@ -39,7 +39,7 @@ export async function requireRole(roles: UserRole[]) {
   const user = await requireAuth();
   if (!user || !roles.includes(user.role as UserRole)) {
     const { redirect } = await import("next/navigation");
-    redirect(user?.role === "admin" ? "/admin/dashboard" : "/cashier/dashboard");
+    redirect(user?.role === "admin" ? "/admin/dashboard" : "/cashier/");
   }
   return user;
 }

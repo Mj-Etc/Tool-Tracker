@@ -10,12 +10,19 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { SignOutButton } from "@/components/ui/signout-button";
+import { CreateItem } from "@/components/create-item-form";
 import { useSession } from "@/lib/auth-client";
 import { ListItem } from "@/components/list-item";
 
-export default function DashboardPage() {
+export function MainClient() {
   const { data: session } = useSession();
   const user = session?.user;
+
+  if (!user) {
+    return (
+      <p>Loading...</p>
+    );
+  }
 
   return (
     <div className="h-screen bg-card flex items-center justify-center relative">
@@ -25,10 +32,10 @@ export default function DashboardPage() {
       <div className="flex min-h-svh w-full items-center gap-4 p-4">
         <Card className="w-full max-w-sm">
           <CardHeader>
-            <CardTitle>Tool Tracker Cashier Dashboard</CardTitle>
-            {user?.role === "cashier" ? (
+            <CardTitle>Tool Tracker Admin Dashboard</CardTitle>
+            {user?.role === "admin" ? (
               <CardDescription>
-                Welcome, cashier {user?.name}! This is your dashboard where you
+                Welcome, admin {user?.name}! This is your dashboard where you
                 can manage your tools and view your activity.
               </CardDescription>
             ) : (
@@ -53,6 +60,7 @@ export default function DashboardPage() {
             <SignOutButton />
           </CardFooter>
         </Card>
+        <CreateItem />
       </div>
       <div className="h-full w-full overflow-hidden grow">
         <div className="flex h-full flex-col gap-4 items-center p-4 overflow-y-auto grow">

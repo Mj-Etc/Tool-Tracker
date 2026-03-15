@@ -13,9 +13,15 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-export default function SettingsPage() {
+export function SettingsClient() {
   const { data: session } = useSession();
   const user = session?.user;
+
+  if (!user) {
+    return (
+      <p>Loading...</p>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
