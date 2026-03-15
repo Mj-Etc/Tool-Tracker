@@ -4,18 +4,23 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session && session!.user.role !== "admin") {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-  const { name, description } = await request.json();
-  const item = await prisma.item.create({
-    data: {
-      name,
-      description,
-      user: { connect: { id: session?.user?.id } },
-    },
-  });
-  return NextResponse.json(item, { status: 201 });
+    const { name, description } = await request.json();
+    const item = await prisma.item.create({
+      data: {
+        name,
+        description,
+        user: { connect: { id: session?.user?.id } },
+      },
+    });
+    return NextResponse.json(item, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }

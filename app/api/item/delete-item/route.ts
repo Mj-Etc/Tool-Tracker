@@ -26,13 +26,13 @@ export async function DELETE(request: Request) {
     });
 
     if (result.count === 0) {
-      return NextResponse.json({ error: "Item not found or unauthorized" }, { status: 404 });
+      return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
     return NextResponse.json({ msg: "Item deleted successfully" });
 
   } catch (error) {
-    console.error("DELETE_ERROR:", error);
+    console.error(error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

@@ -4,18 +4,23 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
-  const items = await prisma.item.findMany({
-    include: {
-        user: true,
-    },
-    orderBy: {
-        createdAt: "desc",
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
-  });
-  return NextResponse.json(items, { status: 200 });
+
+    const items = await prisma.item.findMany({
+      include: {
+        user: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return NextResponse.json(items, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }
