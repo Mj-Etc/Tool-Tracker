@@ -227,7 +227,8 @@ export function ListItem() {
         enableHiding: false,
         cell: ({ row }) => {
           const item = row.original;
-          return <ActionsCell item={item} isAdmin={isAdmin} />;
+          const isSelected = row.getIsSelected();
+          return <ActionsCell item={item} isAdmin={isAdmin} isSelected={isSelected} />;
         },
       },
     ],
@@ -509,10 +510,10 @@ export function ListItem() {
   );
 }
 
-function ActionsCell({ item, isAdmin }: { item: ItemWithUser; isAdmin: boolean }) {
+function ActionsCell({ item, isAdmin, isSelected }: { item: ItemWithUser; isAdmin: boolean; isSelected: boolean }) {
   const [open, setOpen] = React.useState(false);
 
-  if (!isAdmin) return null;
+  if (!isAdmin || isSelected) return null;
 
   return (
     <div className="flex justify-end">
