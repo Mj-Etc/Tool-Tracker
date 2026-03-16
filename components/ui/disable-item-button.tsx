@@ -19,9 +19,10 @@ import { useSocket } from "../socket-provider";
 
 interface DisableProps {
   itemId: string;
+  onSuccess?: () => void;
 }
 
-export function DisableItemButton({ itemId }: DisableProps) {
+export function DisableItemButton({ itemId, onSuccess }: DisableProps) {
   const [isDisabling, setIsDisabling] = useState(false);
   const [open, setOpen] = useState(false);
   const { sendMessage } = useSocket();
@@ -39,6 +40,7 @@ export function DisableItemButton({ itemId }: DisableProps) {
       }
       sendMessage({ type: "items:updated" });
       setOpen(false);
+      onSuccess?.();
       toast.success("Item disabled successfully!");
     } catch (error) {
       toast.error("An unexpected error occurred.");

@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, Trash2, PowerOff, CheckCircle2, Filter } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, PowerOff, Filter } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,8 +23,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -229,31 +227,7 @@ export function ListItem() {
         enableHiding: false,
         cell: ({ row }) => {
           const item = row.original;
-
-          if (!isAdmin) return null;
-
-          return (
-            <div className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <div className="p-1">
-                    <EditItemDialog item={item} />
-                  </div>
-                  <div className="p-1">
-                    <DisableItemButton itemId={item.id} />
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
+          return <ActionsCell item={item} isAdmin={isAdmin} />;
         },
       },
     ],
@@ -531,6 +505,35 @@ export function ListItem() {
           </Button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ActionsCell({ item, isAdmin }: { item: ItemWithUser; isAdmin: boolean }) {
+  const [open, setOpen] = React.useState(false);
+
+  if (!isAdmin) return null;
+
+  return (
+    <div className="flex justify-end">
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <div className="p-1">
+            <EditItemDialog item={item} onSuccess={() => setOpen(false)} />
+          </div>
+          <div className="p-1">
+            <DisableItemButton itemId={item.id} onSuccess={() => setOpen(false)} />
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

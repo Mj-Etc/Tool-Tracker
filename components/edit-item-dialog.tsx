@@ -55,9 +55,10 @@ interface EditItemDialogProps {
     category: { id: string; name: string };
     subcategory: { id: string; name: string };
   };
+  onSuccess?: () => void;
 }
 
-export function EditItemDialog({ item }: EditItemDialogProps) {
+export function EditItemDialog({ item, onSuccess }: EditItemDialogProps) {
   const [open, setOpen] = useState(false);
   const { sendMessage } = useSocket();
   const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher);
@@ -107,6 +108,7 @@ export function EditItemDialog({ item }: EditItemDialogProps) {
       }
       sendMessage({ type: "items:updated" });
       setOpen(false);
+      onSuccess?.();
       toast.success("Item updated successfully!");
     } catch (error) {
       toast.error("An unexpected error occurred.");
