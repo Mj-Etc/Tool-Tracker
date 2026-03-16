@@ -1,1 +1,2 @@
-In disabled-items-dialog.tsx turn the actions into a dropmenu same in data-table. Also add a select for batch restore and delete, also a search functionality and categpry filter.
+Read guide/shadcn-dropdown-menu.md and add dropdownmenusub for subcategories then removed the old subcategories
+   dropdownmenu

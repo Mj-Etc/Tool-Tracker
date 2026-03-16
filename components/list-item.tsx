@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, Trash2, PowerOff, CheckCircle2, Filter, ListFilter } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, Trash2, PowerOff, CheckCircle2, Filter } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +22,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -331,60 +335,71 @@ export function ListItem() {
               <Button variant="outline" size="sm" className="h-9 gap-2">
                 <Filter className="h-4 w-4" />
                 {selectedCategory === "all" 
-                  ? "Category" 
+                  ? "Filter by Category" 
                   : categories?.find(c => c.id === selectedCategory)?.name}
+                {table.getColumn("subcategory_name")?.getFilterValue() && (
+                  <span className="text-muted-foreground font-normal">
+                    / {categories?.find(c => c.id === selectedCategory)?.subcategories.find(s => s.id === table.getColumn("subcategory_name")?.getFilterValue())?.name}
+                  </span>
+                )}
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-50">
-              <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
+            <DropdownMenuContent align="start" className="w-56">
+              <DropdownMenuLabel>Categories</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup 
-                value={selectedCategory} 
-                onValueChange={(value) => {
-                  table.getColumn("category_name")?.setFilterValue(value === "all" ? "" : value);
+              <DropdownMenuItem 
+                onClick={() => {
+                  table.getColumn("category_name")?.setFilterValue("");
                   table.getColumn("subcategory_name")?.setFilterValue("");
                 }}
               >
-                <DropdownMenuRadioItem value="all">All Categories</DropdownMenuRadioItem>
-                {categories?.map((cat) => (
-                  <DropdownMenuRadioItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-9 gap-2"
-                disabled={selectedCategory === "all"}
-              >
-                <ListFilter className="h-4 w-4" />
-                {table.getColumn("subcategory_name")?.getFilterValue() === "" || !table.getColumn("subcategory_name")?.getFilterValue()
-                  ? "Subcategory" 
-                  : availableSubcategories.find(s => s.id === table.getColumn("subcategory_name")?.getFilterValue())?.name}
-                <ChevronDown className="h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-50">
-              <DropdownMenuLabel>Filter by Subcategory</DropdownMenuLabel>
+                All Categories
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup 
-                value={(table.getColumn("subcategory_name")?.getFilterValue() as string) || "all"} 
-                onValueChange={(value) => table.getColumn("subcategory_name")?.setFilterValue(value === "all" ? "" : value)}
-              >
-                <DropdownMenuRadioItem value="all">All Subcategories</DropdownMenuRadioItem>
-                {availableSubcategories.map((sub) => (
-                  <DropdownMenuRadioItem key={sub.id} value={sub.id}>
-                    {sub.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
+              {categories?.map((cat) => (
+                cat.subcategories && cat.subcategories.length > 0 ? (
+                  <DropdownMenuSub key={cat.id}>
+                    <DropdownMenuSubTrigger>
+                      {cat.name}
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuPortal>
+                      <DropdownMenuSubContent>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            table.getColumn("category_name")?.setFilterValue(cat.id);
+                            table.getColumn("subcategory_name")?.setFilterValue("");
+                          }}
+                        >
+                          All {cat.name}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        {cat.subcategories.map((sub) => (
+                          <DropdownMenuItem
+                            key={sub.id}
+                            onClick={() => {
+                              table.getColumn("category_name")?.setFilterValue(cat.id);
+                              table.getColumn("subcategory_name")?.setFilterValue(sub.id);
+                            }}
+                          >
+                            {sub.name}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuPortal>
+                  </DropdownMenuSub>
+                ) : (
+                  <DropdownMenuItem
+                    key={cat.id}
+                    onClick={() => {
+                      table.getColumn("category_name")?.setFilterValue(cat.id);
+                      table.getColumn("subcategory_name")?.setFilterValue("");
+                    }}
+                  >
+                    {cat.name}
+                  </DropdownMenuItem>
+                )
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
