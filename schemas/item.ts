@@ -7,7 +7,8 @@ export const ItemSchema = z.object({
   price: z.number().min(0, "Price must be at least 0"),
   quantity: z.number().int().min(0, "Quantity must be at least 0"),
   lowStockThreshold: z.number().int().min(0, "Threshold must be at least 0"),
-  category: z.string().optional(),
+  categoryId: z.string().min(1, "Category is required"),
+  subcategoryId: z.string().min(1, "Subcategory is required"),
 });
 
 export type ItemInput = z.infer<typeof ItemSchema>;

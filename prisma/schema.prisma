@@ -86,6 +86,30 @@ model Verification {
   @@map("verification")
 }
 
+model Category {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  subcategories Subcategory[]
+  items         Item[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("category")
+}
+
+model Subcategory {
+  id         String   @id @default(cuid())
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  items      Item[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([name, categoryId])
+  @@map("subcategory")
+}
+
 model Item {
   id                String            @id @default(cuid())
   name              String
@@ -94,12 +118,17 @@ model Item {
   price             Decimal           @db.Decimal(10, 2) @default(0.0)
   quantity          Int               @default(0)
   lowStockThreshold Int               @default(10)
-  category          String?
+  categoryId        String
+  category          Category          @relation(fields: [categoryId], references: [id])
+  subcategoryId     String
+  subcategory       Subcategory       @relation(fields: [subcategoryId], references: [id])
   userId            String
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
   transactionItems  TransactionItem[]
+
+  @@map("item")
 }
 
 model Transaction {
@@ -110,6 +139,8 @@ model Transaction {
   createdAt    DateTime          @default(now())
   cashier      User              @relation(fields: [cashierId], references: [id])
   items        TransactionItem[]
+
+  @@map("transaction")
 }
 
 model TransactionItem {
@@ -121,4 +152,6 @@ model TransactionItem {
   subtotal      Decimal     @db.Decimal(10, 2)
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
   item          Item        @relation(fields: [itemId], references: [id])
+
+  @@map("transactionItem")
 }

@@ -13,6 +13,8 @@ export async function GET() {
     const items = await prisma.item.findMany({
       include: {
         user: true,
+        category: true,
+        subcategory: true,
       },
       orderBy: {
         createdAt: "desc",

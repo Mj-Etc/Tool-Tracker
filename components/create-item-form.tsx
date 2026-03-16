@@ -15,13 +15,31 @@ import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
 import { useSocket } from "./socket-provider";
 import { ItemSchema, ItemInput } from "@/schemas/item";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
+import { useState, useEffect } from "react";
+
+interface Subcategory {
+  id: string;
+  name: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  subcategories: Subcategory[];
+}
 
 export function CreateItem() {
   const { sendMessage } = useSocket();
+  const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher);
+  
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ItemInput>({
     resolver: zodResolver(ItemSchema),
@@ -32,9 +50,23 @@ export function CreateItem() {
       price: 0,
       quantity: 0,
       lowStockThreshold: 10,
-      category: "",
+      categoryId: "",
+      subcategoryId: "",
     },
   });
+
+  const selectedCategoryId = watch("categoryId");
+  const [availableSubcategories, setAvailableSubcategories] = useState<Subcategory[]>([]);
+
+  useEffect(() => {
+    if (selectedCategoryId && categories) {
+      const category = categories.find(c => c.id === selectedCategoryId);
+      setAvailableSubcategories(category?.subcategories || []);
+      setValue("subcategoryId", ""); // Reset subcategory when category changes
+    } else {
+      setAvailableSubcategories([]);
+    }
+  }, [selectedCategoryId, categories, setValue]);
 
   const onSubmit = async (data: ItemInput) => {
     try {
@@ -81,6 +113,43 @@ export function CreateItem() {
               />
               {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
             </Field>
+            
+            <Field>
+              <FieldLabel htmlFor="categoryId">Category</FieldLabel>
+              <select
+                id="categoryId"
+                {...register("categoryId")}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={loadingCategories}
+              >
+                <option value="">Select Category</option>
+                {categories?.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+              {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="subcategoryId">Subcategory</FieldLabel>
+              <select
+                id="subcategoryId"
+                {...register("subcategoryId")}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={!selectedCategoryId || availableSubcategories.length === 0}
+              >
+                <option value="">Select Subcategory</option>
+                {availableSubcategories.map((sub) => (
+                  <option key={sub.id} value={sub.id}>
+                    {sub.name}
+                  </option>
+                ))}
+              </select>
+              {errors.subcategoryId && <p className="text-sm text-red-500">{errors.subcategoryId.message}</p>}
+            </Field>
+
             <div className="grid grid-cols-2 gap-4">
               <Field>
                 <FieldLabel htmlFor="costPrice">Cost Price</FieldLabel>
@@ -123,15 +192,6 @@ export function CreateItem() {
                 {errors.lowStockThreshold && <p className="text-sm text-red-500">{errors.lowStockThreshold.message}</p>}
               </Field>
             </div>
-            <Field>
-              <FieldLabel htmlFor="category">Category</FieldLabel>
-              <Input
-                id="category"
-                {...register("category")}
-                type="text"
-              />
-              {errors.category && <p className="text-sm text-red-500">{errors.category.message}</p>}
-            </Field>
             <Field>
               <Button disabled={isSubmitting} type="submit" className="w-full">
                 {isSubmitting ? (

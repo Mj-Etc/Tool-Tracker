@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  CardDescription,
   CardFooter,
 } from "./ui/card";
 import useSWR from "swr";
@@ -24,7 +23,14 @@ type ItemWithUser = {
   price: number;
   quantity: number;
   lowStockThreshold: number;
-  category: string | null;
+  category: {
+    id: string;
+    name: string;
+  };
+  subcategory: {
+    id: string;
+    name: string;
+  };
   user: {
     id: string;
     name: string;
@@ -90,7 +96,11 @@ export function ListItem() {
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="flex flex-col">
                     <span className="text-muted-foreground">Category</span>
-                    <span>{item.category || "N/A"}</span>
+                    <span>{item.category?.name || "N/A"}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-muted-foreground">Subcategory</span>
+                    <span>{item.subcategory?.name || "N/A"}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-muted-foreground">Price</span>
@@ -102,12 +112,9 @@ export function ListItem() {
                       {item.quantity} units
                     </span>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-muted-foreground">Description</span>
-                    <span className="line-clamp-1">{item.description}</span>
-                  </div>
                 </div>
                 <div className="mt-4 pt-4 border-t text-xs text-muted-foreground space-y-1">
+                  <p>Description: {item.description}</p>
                   <p>Owner: {item.user.name} ({item.user.email})</p>
                   <p>ID: {item.id}</p>
                 </div>
