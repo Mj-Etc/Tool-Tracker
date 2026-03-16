@@ -30,6 +30,16 @@ interface Category {
   subcategories: Subcategory[];
 }
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+
 export function CreateItem() {
   const { sendMessage } = useSocket();
   const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher);
@@ -56,17 +66,17 @@ export function CreateItem() {
   });
 
   const selectedCategoryId = watch("categoryId");
+  const selectedSubcategoryId = watch("subcategoryId");
   const [availableSubcategories, setAvailableSubcategories] = useState<Subcategory[]>([]);
 
   useEffect(() => {
     if (selectedCategoryId && categories) {
       const category = categories.find(c => c.id === selectedCategoryId);
       setAvailableSubcategories(category?.subcategories || []);
-      setValue("subcategoryId", ""); // Reset subcategory when category changes
     } else {
       setAvailableSubcategories([]);
     }
-  }, [selectedCategoryId, categories, setValue]);
+  }, [selectedCategoryId, categories]);
 
   const onSubmit = async (data: ItemInput) => {
     try {
@@ -116,37 +126,52 @@ export function CreateItem() {
             
             <Field>
               <FieldLabel htmlFor="categoryId">Category</FieldLabel>
-              <select
-                id="categoryId"
-                {...register("categoryId")}
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              <Select
+                value={selectedCategoryId}
+                onValueChange={(value) => {
+                  setValue("categoryId", value);
+                  setValue("subcategoryId", ""); // Reset subcategory when category changes
+                }}
                 disabled={loadingCategories}
               >
-                <option value="">Select Category</option>
-                {categories?.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id="categoryId" className="w-full">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Categories</SelectLabel>
+                    {categories?.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
             </Field>
 
             <Field>
               <FieldLabel htmlFor="subcategoryId">Subcategory</FieldLabel>
-              <select
-                id="subcategoryId"
-                {...register("subcategoryId")}
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              <Select
+                value={selectedSubcategoryId}
+                onValueChange={(value) => setValue("subcategoryId", value)}
                 disabled={!selectedCategoryId || availableSubcategories.length === 0}
               >
-                <option value="">Select Subcategory</option>
-                {availableSubcategories.map((sub) => (
-                  <option key={sub.id} value={sub.id}>
-                    {sub.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id="subcategoryId" className="w-full">
+                  <SelectValue placeholder="Select Subcategory" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Subcategories</SelectLabel>
+                    {availableSubcategories.map((sub) => (
+                      <SelectItem key={sub.id} value={sub.id}>
+                        {sub.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               {errors.subcategoryId && <p className="text-sm text-red-500">{errors.subcategoryId.message}</p>}
             </Field>
 
