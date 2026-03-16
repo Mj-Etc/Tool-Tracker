@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, PowerOff, Filter } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, PowerOff, Filter, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -524,9 +524,19 @@ export function ListItem() {
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="text-xs text-muted-foreground">
-          Showing {table.getFilteredRowModel().rows.length} total items
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            className="h-8 w-8 p-0 lg:flex"
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <span className="sr-only">Go to first page</span>
+            <ChevronsLeft className="h-4 w-4" />
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -542,6 +552,15 @@ export function ListItem() {
             disabled={!table.getCanNextPage()}
           >
             Next
+          </Button>
+          <Button
+            variant="outline"
+            className="h-8 w-8 p-0 lg:flex"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            <span className="sr-only">Go to last page</span>
+            <ChevronsRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
