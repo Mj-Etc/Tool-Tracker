@@ -105,7 +105,9 @@ export function ListItem() {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
+    subcategory_name: false,
+  });
   const [rowSelection, setRowSelection] = React.useState({});
   const [isBatchProcessing, setIsBatchProcessing] = React.useState(false);
   const [isBatchDisableDialogOpen, setIsBatchDisableDialogOpen] = React.useState(false);
@@ -304,7 +306,7 @@ export function ListItem() {
   return (
     // Selected row/rows actions
     <div className="w-full space-y-4 p-4">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input

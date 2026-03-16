@@ -310,7 +310,7 @@ export function DisabledItemsDialog() {
             </div>
           )}
 
-          <ScrollArea className="max-h-75">
+          <ScrollArea className="max-h-75 pr-4">
             <div className="rounded-md border bg-background">
             {/* <div className="rounded-md border bg-background overflow-hidden"> */}
               <div className="">
