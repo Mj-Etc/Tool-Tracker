@@ -337,7 +337,7 @@ export function ListItem() {
                 {selectedCategory === "all" 
                   ? "Filter by Category" 
                   : categories?.find(c => c.id === selectedCategory)?.name}
-                {table.getColumn("subcategory_name")?.getFilterValue() && (
+                {!!table.getColumn("subcategory_name")?.getFilterValue() && (
                   <span className="text-muted-foreground font-normal">
                     / {categories?.find(c => c.id === selectedCategory)?.subcategories.find(s => s.id === table.getColumn("subcategory_name")?.getFilterValue())?.name}
                   </span>
