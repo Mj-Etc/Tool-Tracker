@@ -153,7 +153,7 @@ export function SalesForm() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="mb-4"
           />
-          <ScrollArea className="h-[500px] pr-4">
+          <ScrollArea className="h-61.5 pr-4">
             {itemsLoading ? (
               <div className="flex justify-center p-10"><Spinner /></div>
             ) : (
@@ -217,7 +217,7 @@ export function SalesForm() {
               className="bg-background"
             />
           </div>
-          <ScrollArea className="h-[350px]">
+          <ScrollArea className="h-61.5 pr-4">
             {cart.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                 <p>Cart is empty</p>
