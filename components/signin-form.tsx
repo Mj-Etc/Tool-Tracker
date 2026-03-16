@@ -17,16 +17,13 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
-import Image from "next/image";
 import { Logo } from "./logo";
 
 type SignInValues = z.infer<typeof SignInSchema>;
@@ -142,15 +139,6 @@ export function SignInForm() {
                     "Sign In"
                   )}
                 </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account?
-                  <Link
-                    href="/sign-up"
-                    className="ml-1 underline underline-offset-auto"
-                  >
-                    Sign up
-                  </Link>
-                </FieldDescription>
               </Field>
             </FieldGroup>
           </form>

@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
 const protectedRoutes = ["/admin/dashboard", "/cashier"];
-const publicRoutes = ["/", "/sign-up"];
+const publicRoutes = ["/"];
 
 export async function proxy(request: NextRequest) {
   const session = await auth.api.getSession({

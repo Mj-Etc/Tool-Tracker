@@ -24,9 +24,13 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role  String @default("cashier")
-  items Item[]
+  role         String        @default("cashier")
+  items        Item[]
   transactions Transaction[]
+
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
 
   @@unique([email])
   @@map("user")
@@ -42,6 +46,8 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
 
   @@unique([token])
   @@index([userId])
@@ -81,19 +87,19 @@ model Verification {
 }
 
 model Item {
-  id          String   @id @default(cuid())
-  name        String
-  description String
-  costPrice   Decimal  @db.Decimal(10, 2) @default(0.0)
-  price       Decimal  @db.Decimal(10, 2) @default(0.0)
-  quantity    Int      @default(0)
-  lowStockThreshold Int @default(10)
-  category    String?
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  transactionItems TransactionItem[]
+  id                String            @id @default(cuid())
+  name              String
+  description       String
+  costPrice         Decimal           @db.Decimal(10, 2) @default(0.0)
+  price             Decimal           @db.Decimal(10, 2) @default(0.0)
+  quantity          Int               @default(0)
+  lowStockThreshold Int               @default(10)
+  category          String?
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  transactionItems  TransactionItem[]
 }
 
 model Transaction {
