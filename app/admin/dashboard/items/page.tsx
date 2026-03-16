@@ -1,24 +1,20 @@
-import { CreateItem } from "@/components/create-item-form";
 import { ListItem } from "@/components/list-item";
 import { CategoriesDialog } from "@/components/categories-dialog";
 import { DisabledItemsDialog } from "@/components/disabled-items-dialog";
+import { AddItemDialog } from "@/components/add-item-dialog";
 
 export default async function ItemsPage() {
   return (
-    <div className="h-full flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-evenly md:items-start p-4">
-      <div className="flex flex-col gap-4 w-full max-w-sm">
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold">Manage Items</h2>
-            <div className="flex gap-2">
-              <DisabledItemsDialog />
-              <CategoriesDialog />
-            </div>
-          </div>
+    <div className="h-full flex flex-col gap-4 p-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold tracking-tight">Inventory Management</h2>
+        <div className="flex items-center gap-2">
+          <AddItemDialog />
+          <DisabledItemsDialog />
+          <CategoriesDialog />
         </div>
-        <CreateItem />
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex-1 overflow-auto border rounded-xl bg-card shadow-sm">
         <ListItem />
       </div>
     </div>
