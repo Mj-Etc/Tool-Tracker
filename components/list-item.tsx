@@ -336,7 +336,7 @@ export function ListItem() {
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-[200px]">
+            <DropdownMenuContent align="start" className="w-50">
               <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup 
@@ -371,7 +371,7 @@ export function ListItem() {
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-[200px]">
+            <DropdownMenuContent align="start" className="w-50">
               <DropdownMenuLabel>Filter by Subcategory</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup 
