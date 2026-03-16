@@ -29,6 +29,16 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -98,6 +108,7 @@ export function ListItem() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [isBatchProcessing, setIsBatchProcessing] = React.useState(false);
+  const [isBatchDisableDialogOpen, setIsBatchDisableDialogOpen] = React.useState(false);
 
   const columns: ColumnDef<ItemWithUser>[] = React.useMemo(
     () => [
@@ -280,16 +291,17 @@ export function ListItem() {
       toast.error("Failed to disable items");
     } finally {
       setIsBatchProcessing(false);
+      setIsBatchDisableDialogOpen(false);
     }
   };
 
   const selectedCategory = (table.getColumn("category_name")?.getFilterValue() as string) ?? "all";
-  const availableSubcategories = categories?.find(c => c.id === selectedCategory)?.subcategories || [];
 
   if (error) return <div className="p-4 text-center text-red-500">Failed to load items.</div>;
   if (isLoading) return <div className="p-8 flex justify-center"><Spinner className="h-8 w-8" /></div>;
 
   return (
+    // Selected row/rows actions
     <div className="w-full space-y-4 p-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <div className="relative flex-1 max-w-sm">
@@ -416,15 +428,39 @@ export function ListItem() {
                 <EditItemDialog item={selectedRows[0].original} />
               </div>
             )}
-            <Button 
-              variant="secondary" 
-              size="sm" 
-              onClick={handleBatchDisable}
-              disabled={isBatchProcessing}
-            >
-              {isBatchProcessing ? <Spinner className="mr-2 h-4 w-4" /> : <PowerOff className="mr-2 h-4 w-4" />}
-              {selectedCount === 1 ? "Disable Item" : `Disable ${selectedCount} Items`}
-            </Button>
+            <Dialog open={isBatchDisableDialogOpen} onOpenChange={setIsBatchDisableDialogOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="secondary" 
+                  size="sm"
+                  disabled={isBatchProcessing}
+                >
+                  <PowerOff className="mr-2 h-4 w-4" />
+                  {selectedCount === 1 ? "Disable Item" : `Disable ${selectedCount} Items`}
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Are you sure you want to disable {selectedCount} item(s)?</DialogTitle>
+                  <DialogDescription>
+                    This will hide the selected items from the main list. You can re-enable them later.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    variant="secondary"
+                    onClick={handleBatchDisable}
+                    disabled={isBatchProcessing}
+                  >
+                    {isBatchProcessing ? <Spinner className="mr-2 h-4 w-4" /> : null}
+                    Confirm Disable
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
             <Button variant="ghost" size="sm" onClick={() => table.resetRowSelection()}>
               Clear Selection
             </Button>

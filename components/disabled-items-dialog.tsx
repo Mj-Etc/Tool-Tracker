@@ -173,7 +173,7 @@ export function DisabledItemsDialog() {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
-        cell: ({ row }) => <div className="font-medium truncate max-w-[150px]">{row.getValue("name")}</div>,
+        cell: ({ row }) => <div className="font-medium truncate max-w-37.5">{row.getValue("name")}</div>,
       },
       {
         id: "category_name",
@@ -287,7 +287,7 @@ export function DisabledItemsDialog() {
                   <ChevronDown className="h-4 w-4 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[200px]">
+              <DropdownMenuContent align="start" className="w-50">
                 <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup 
@@ -336,7 +336,7 @@ export function DisabledItemsDialog() {
           )}
 
           <div className="rounded-md border bg-background overflow-hidden">
-            <div className="max-h-[300px] overflow-auto">
+            <div className="max-h-75 overflow-auto">
               <Table>
                 <TableHeader className="sticky top-0 bg-background z-10">
                   {table.getHeaderGroups().map((headerGroup) => (
