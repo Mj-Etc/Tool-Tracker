@@ -19,8 +19,8 @@ export async function POST(request: Request) {
         price: Number(price),
         quantity: Number(quantity),
         lowStockThreshold: Number(lowStockThreshold),
-        categoryId,
-        subcategoryId,
+        category: { connect: { id: categoryId } },
+        subcategory: { connect: { id: subcategoryId } },
         user: { connect: { id: session.user.id } },
       },
     });
