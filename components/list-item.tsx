@@ -286,6 +286,7 @@ export function ListItem() {
       toast.success(`Successfully disabled ${selectedCount} items`);
       sendMessage({ type: "items:updated" });
       table.resetRowSelection();
+      sendMessage({ type: "items:disabled" });
       mutate();
     } catch (error) {
       toast.error("Failed to disable items");

@@ -61,6 +61,7 @@ import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 import { useSocket } from "./socket-provider";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface Subcategory {
   id: string;
@@ -193,37 +194,11 @@ export function DisabledItemsDialog() {
       {
         id: "actions",
         cell: ({ row }) => {
-          const item = row.original;
-          return (
-            <div className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleRestore([item.id])}>
-                    <RotateCcw className="mr-2 h-4 w-4" />
-                    Restore
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => handlePermanentDelete([item.id])}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Permanently
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
+          return <ActionsCell row={row} handleRestore={handleRestore} handlePermanentDelete={handlePermanentDelete} />;
         },
       },
     ],
-    []
+    [handleRestore, handlePermanentDelete]
   );
 
   const table = useReactTable({
@@ -335,59 +310,62 @@ export function DisabledItemsDialog() {
             </div>
           )}
 
-          <div className="rounded-md border bg-background overflow-hidden">
-            <div className="max-h-75 overflow-auto">
-              <Table>
-                <TableHeader className="sticky top-0 bg-background z-10">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={columns.length} className="h-24 text-center">
-                        <Spinner className="mx-auto" />
-                      </TableCell>
-                    </TableRow>
-                  ) : table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id} className="py-2">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
+          <ScrollArea className="max-h-75">
+            <div className="rounded-md border bg-background">
+            {/* <div className="rounded-md border bg-background overflow-hidden"> */}
+              <div className="">
+                <Table>
+                  <TableHeader className="sticky top-0">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
                         ))}
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground text-sm">
-                        No disabled items found.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                    ))}
+                  </TableHeader>
+                  <TableBody>
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                          <Spinner className="mx-auto" />
+                        </TableCell>
+                      </TableRow>
+                    ) : table.getRowModel().rows?.length ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow
+                          key={row.id}
+                          data-state={row.getIsSelected() && "selected"}
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id} className="py-2">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground text-sm">
+                          No disabled items found.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
-          </div>
+          </ScrollArea>
           
           <div className="flex items-center justify-between px-2">
             <div className="text-[10px] text-muted-foreground">
@@ -423,5 +401,41 @@ export function DisabledItemsDialog() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ActionsCell({ row, handleRestore, handlePermanentDelete }: { row: any, handleRestore: (ids: string[]) => void, handlePermanentDelete: (ids: string[]) => void }) {
+  const item = row.original;
+  const isSelected = row.getIsSelected();
+
+  if (isSelected) {
+    return null;
+  }
+  
+  return (
+    <div className="flex justify-end">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => handleRestore([item.id])}>
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Restore
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => handlePermanentDelete([item.id])}
+            className="text-destructive focus:text-destructive"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete Permanently
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }
