@@ -126,6 +126,7 @@ model Item {
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+  isActive          Boolean           @default(true)
   transactionItems  TransactionItem[]
 
   @@map("item")

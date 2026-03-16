@@ -11,7 +11,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Item, ItemMedia, ItemContent, ItemTitle } from "./ui/item";
 import { Spinner } from "./ui/spinner";
-import { DeleteItemButton } from "./ui/delete-item-button";
+import { DisableItemButton } from "./ui/disable-item-button";
 import { useSession } from "@/lib/auth-client";
 import { ScrollArea } from "./ui/scroll-area";
 import { Badge } from "./ui/badge";
@@ -20,6 +20,7 @@ type ItemWithUser = {
   id: string;
   name: string;
   description: string;
+  costPrice: number;
   price: number;
   quantity: number;
   lowStockThreshold: number;
@@ -37,6 +38,8 @@ type ItemWithUser = {
     email: string;
   };
 };
+
+import { EditItemDialog } from "./edit-item-dialog";
 
 export function ListItem() {
   const { data: session } = useSession();
@@ -121,7 +124,8 @@ export function ListItem() {
               </CardContent>
               {me?.user.role === "admin" ? (
                 <CardFooter className="flex-col gap-2">
-                  <DeleteItemButton itemId={item.id} />
+                  <EditItemDialog item={item} />
+                  <DisableItemButton itemId={item.id} />
                 </CardFooter>
               ) : null}
             </Card>

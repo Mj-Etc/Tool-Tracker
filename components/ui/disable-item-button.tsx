@@ -1,0 +1,91 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "./button";
+import { Spinner } from "./spinner";
+import { PowerOff } from "lucide-react";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "./dialog";
+import { useSocket } from "../socket-provider";
+
+interface DisableProps {
+  itemId: string;
+}
+
+export function DisableItemButton({ itemId }: DisableProps) {
+  const [isDisabling, setIsDisabling] = useState(false);
+  const [open, setOpen] = useState(false);
+  const { sendMessage } = useSocket();
+
+  const handleDisable = async () => {
+    setIsDisabling(true);
+    try {
+      const response = await fetch("/api/item/toggle-active", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: itemId, isActive: false }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to disable item.");
+      }
+      sendMessage({ type: "items:updated" });
+      setOpen(false);
+      toast.success("Item disabled successfully!");
+    } catch (error) {
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setIsDisabling(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="w-full flex items-center justify-center gap-2"
+        >
+          <PowerOff size={16} />
+          Disable Item
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="w-96">
+        <DialogHeader>
+          <DialogTitle>Disable Item?</DialogTitle>
+          <DialogDescription>
+            This will hide the item from the main list. You can re-enable it later from the Disabled Items menu.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter className="flex justify-end gap-2">
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button
+            variant="secondary"
+            disabled={isDisabling}
+            onClick={handleDisable}
+          >
+            {isDisabling ? (
+              <>
+                <Spinner className="mr-2 h-4 w-4" />
+                Disabling...
+              </>
+            ) : (
+              "Confirm Disable"
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
