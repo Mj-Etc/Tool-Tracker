@@ -65,9 +65,27 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
+        const { searchParams } = new URL(request.url);
+        const dateParam = searchParams.get("date");
+
+        let where = {};
+        if (dateParam) {
+            const startDate = new Date(dateParam);
+            startDate.setHours(0, 0, 0, 0);
+            const endDate = new Date(dateParam);
+            endDate.setHours(23, 59, 59, 999);
+            where = {
+                createdAt: {
+                    gte: startDate,
+                    lte: endDate
+                }
+            };
+        }
+
         const transactions = await prisma.transaction.findMany({
+            where,
             include: {
                 cashier: {
                     select: {

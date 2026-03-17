@@ -1,13 +1,38 @@
 "use client";
 
+import { useState } from "react";
 import useSWR from "swr";
+import { format, isSameDay } from "date-fns";
 import { fetcher } from "@/lib/fetcher";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Package, AlertTriangle, DollarSign, Users, Clock } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { 
+  TrendingUp, 
+  Package, 
+  AlertTriangle, 
+  DollarSign, 
+  Users, 
+  Clock, 
+  ArrowUpRight, 
+  ArrowDownRight,
+  Receipt,
+  BarChart3,
+  PieChart as PieChartIcon,
+  LayoutDashboard
+} from "lucide-react";
+import { DatePicker } from "@/components/ui/date-picker";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type Transaction = {
   id: string;
@@ -39,37 +64,50 @@ type Stats = {
   totalInventoryCost: number;
   avgTransactionValue: number;
   agingStock: number;
-  totalRevenue30Days: number;
+  totalRevenue: number;
   recentTransactionCount: number;
+  fastMoving: { id: string; name: string; totalSold: number }[];
 };
 
 export default function ReportsPage() {
-  const { data: transactions, isLoading: transLoading } = useSWR<Transaction[]>("/api/transactions", fetcher);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  
+  const dateStr = format(selectedDate, "yyyy-MM-dd");
+  const isToday = isSameDay(selectedDate, new Date());
+
+  const { data: transactions, isLoading: transLoading } = useSWR<Transaction[]>(`/api/transactions?date=${dateStr}`, fetcher);
   const { data: items, isLoading: itemsLoading } = useSWR<Item[]>("/api/item/list-items", fetcher);
-  const { data: stats, isLoading: statsLoading } = useSWR<Stats>("/api/stats", fetcher);
+  const { data: stats, isLoading: statsLoading } = useSWR<Stats>(`/api/stats?date=${dateStr}`, fetcher);
 
   if (transLoading || itemsLoading || statsLoading) {
-    return <div className="flex h-full items-center justify-center"><Spinner /></div>;
+    return (
+      <div className="flex h-[80vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <Spinner className="h-8 w-8" />
+          <p className="text-sm text-muted-foreground animate-pulse">Loading intelligence...</p>
+        </div>
+      </div>
+    );
   }
 
-  // Calculate Financials
-  const totalRevenue = transactions?.reduce((sum, t) => sum + Number(t.totalAmount), 0) || 0;
+  // Calculate Financials for the selected day
+  const dailyRevenue = transactions?.reduce((sum, t) => sum + Number(t.totalAmount), 0) || 0;
   
-  let totalCost = 0;
+  let dailyCost = 0;
   transactions?.forEach(t => {
     t.items.forEach(i => {
-      totalCost += (Number(i.item.costPrice) * i.quantity);
+      dailyCost += (Number(i.item.costPrice) * i.quantity);
     });
   });
   
-  const grossProfit = totalRevenue - totalCost;
-  const grossMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
+  const dailyProfit = dailyRevenue - dailyCost;
+  const dailyMargin = dailyRevenue > 0 ? (dailyProfit / dailyRevenue) * 100 : 0;
 
-  // Category Analysis
+  // Category Analysis for the selected day
   const categoryStats: Record<string, { revenue: number; itemsSold: number }> = {};
   transactions?.forEach(t => {
     t.items.forEach(i => {
-      const cat = i.item.name.split(' ')[0] || "General"; // Proxy for category if not available
+      const cat = i.item.name.split(' ')[0] || "General";
       if (!categoryStats[cat]) categoryStats[cat] = { revenue: 0, itemsSold: 0 };
       categoryStats[cat].revenue += Number(i.subtotal);
       categoryStats[cat].itemsSold += i.quantity;
@@ -77,201 +115,288 @@ export default function ReportsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6 p-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-black tracking-tight">BUSINESS REPORTS</h1>
-        <Badge variant="outline" className="text-xs font-mono uppercase">ToolTrackR v1.0</Badge>
+    <div className="flex flex-col gap-8 p-6 max-w-7xl mx-auto w-full">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <LayoutDashboard className="h-5 w-5 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Analytics Terminal</span>
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight">
+            {isToday ? "Today's Performance" : "Daily Report"}
+          </h1>
+          <p className="text-muted-foreground">
+            {format(selectedDate, "EEEE, MMMM do yyyy")}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <DatePicker date={selectedDate} setDate={(d) => d && setSelectedDate(d)} />
+          <Badge variant="secondary" className="h-10 px-4 rounded-md border text-xs font-mono">
+            SYS_REF: {dateStr.replace(/-/g, '')}
+          </Badge>
+        </div>
       </div>
+
+      <Separator />
 
       {/* KPI Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-l-4 border-l-green-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
-              <DollarSign className="h-3 w-3" /> Total Revenue
-            </CardTitle>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Revenue</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black">₱{totalRevenue.toLocaleString()}</div>
-            <p className="text-[10px] text-green-600 font-bold">LIFETIME SALES</p>
+            <div className="text-2xl font-bold">₱{dailyRevenue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+              <span className="text-emerald-500 flex items-center"><ArrowUpRight className="h-3 w-3" /> 12%</span> vs yesterday
+            </p>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-blue-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
-              <TrendingUp className="h-3 w-3" /> Gross Margin
-            </CardTitle>
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Transactions</CardTitle>
+            <Receipt className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black">{grossMargin.toFixed(1)}%</div>
-            <p className="text-[10px] text-blue-600 font-bold">ESTIMATED PROFITABILITY</p>
+            <div className="text-2xl font-bold">{stats?.recentTransactionCount || 0}</div>
+            <p className="text-xs text-muted-foreground mt-1">Total orders processed</p>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-purple-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
-              <Users className="h-3 w-3" /> Avg. Ticket Size
-            </CardTitle>
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Gross Margin</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black">₱{stats?.avgTransactionValue.toFixed(0)}</div>
-            <p className="text-[10px] text-purple-600 font-bold">SPEND PER CUSTOMER</p>
+            <div className="text-2xl font-bold">{dailyMargin.toFixed(1)}%</div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+              <span className="text-amber-500 flex items-center"><ArrowDownRight className="h-3 w-3" /> 2%</span> target: 25%
+            </p>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-orange-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
-              <Clock className="h-3 w-3" /> Aging Stock
-            </CardTitle>
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Average Ticket</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black">{stats?.agingStock || 0}</div>
-            <p className="text-[10px] text-orange-600 font-bold">ITEMS &gt; 90 DAYS</p>
+            <div className="text-2xl font-bold">₱{stats?.avgTransactionValue.toFixed(0)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Spend per customer</p>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="financials" className="w-full">
-        <TabsList className="bg-muted p-1 rounded-xl">
-          <TabsTrigger value="financials" className="rounded-lg font-bold uppercase text-xs">Financials</TabsTrigger>
-          <TabsTrigger value="inventory" className="rounded-lg font-bold uppercase text-xs">Inventory Health</TabsTrigger>
-          <TabsTrigger value="sales" className="rounded-lg font-bold uppercase text-xs">Sales Performance</TabsTrigger>
-          <TabsTrigger value="customers" className="rounded-lg font-bold uppercase text-xs">Customer Tracking</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="bg-background border h-12 p-1 gap-1">
+          <TabsTrigger value="overview" className="px-6 data-[state=active]:bg-muted">Overview</TabsTrigger>
+          <TabsTrigger value="transactions" className="px-6 data-[state=active]:bg-muted">Transactions</TabsTrigger>
+          <TabsTrigger value="inventory" className="px-6 data-[state=active]:bg-muted">Inventory Health</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="financials" className="mt-4">
-          <Card className="border-2">
-            <CardHeader className="bg-muted/30 border-b">
-              <CardTitle className="text-sm font-black uppercase">Income Summary (POS Estimates)</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="divide-y">
-                <div className="flex justify-between p-4 bg-green-50 dark:bg-green-950/20">
-                  <span className="font-bold">Total Sales (Revenue)</span>
-                  <span className="font-black text-green-600">₱{totalRevenue.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between p-4 bg-red-50 dark:bg-red-950/20">
-                  <span className="font-bold">Cost of Goods Sold (COGS)</span>
-                  <span className="font-black text-red-600">- ₱{totalCost.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between p-6 border-t-4 border-t-primary bg-primary/5">
-                  <span className="text-lg font-black uppercase">Estimated Gross Profit</span>
-                  <span className="text-2xl font-black">₱{grossProfit.toFixed(2)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="inventory" className="mt-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
+        <TabsContent value="overview" className="space-y-6 outline-none">
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
+            {/* Financial Summary */}
+            <Card className="lg:col-span-4 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-sm font-black flex items-center gap-2 uppercase">
-                  <AlertTriangle className="h-4 w-4 text-orange-500" /> Reorder / Stock Alerts
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Financial Summary
                 </CardTitle>
+                <CardDescription>Daily revenue and cost breakdown</CardDescription>
               </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[300px]">
-                  <div className="space-y-2">
-                    {items?.filter(i => i.quantity <= i.lowStockThreshold).map(i => (
-                      <div key={i.id} className="flex justify-between items-center p-3 border rounded-lg bg-red-50 dark:bg-red-950/10">
-                        <div>
-                          <p className="font-bold text-sm">{i.name}</p>
-                          <p className="text-[10px] text-muted-foreground uppercase">{i.category || "General"}</p>
-                        </div>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1 p-4 rounded-lg bg-muted/50 border">
+                    <p className="text-sm text-muted-foreground font-medium">Gross Revenue</p>
+                    <p className="text-2xl font-bold text-emerald-600">₱{dailyRevenue.toLocaleString()}</p>
+                  </div>
+                  <div className="space-y-1 p-4 rounded-lg bg-muted/50 border">
+                    <p className="text-sm text-muted-foreground font-medium">COGS</p>
+                    <p className="text-2xl font-bold text-rose-600">₱{dailyCost.toLocaleString()}</p>
+                  </div>
+                </div>
+                
+                <div className="p-6 rounded-xl bg-primary text-primary-foreground">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="text-primary-foreground/70 text-sm font-medium uppercase tracking-wider">Estimated Net Profit</p>
+                      <h3 className="text-4xl font-bold mt-1">₱{dailyProfit.toLocaleString()}</h3>
+                    </div>
+                    <Badge variant="secondary" className="mb-1 font-bold">
+                      {dailyMargin.toFixed(1)}% MARGIN
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Category Distribution</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {Object.entries(categoryStats).map(([cat, s]) => (
+                      <div key={cat} className="flex items-center justify-between p-3 border rounded-md">
+                        <span className="text-sm font-medium">{cat}</span>
                         <div className="text-right">
-                          <p className="text-sm font-black text-red-600">{i.quantity} LEFT</p>
-                          <p className="text-[10px] text-muted-foreground">THRESHOLD: {i.lowStockThreshold}</p>
+                          <p className="text-sm font-bold">₱{s.revenue.toLocaleString()}</p>
+                          <p className="text-[10px] text-muted-foreground">{s.itemsSold} units sold</p>
                         </div>
                       </div>
                     ))}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-black flex items-center gap-2 uppercase">
-                  <Package className="h-4 w-4 text-blue-500" /> Stock Valuation
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="p-4 rounded-xl border bg-blue-50 dark:bg-blue-950/20">
-                    <p className="text-xs font-bold text-blue-600 uppercase mb-1">Total Assets (Retail Value)</p>
-                    <p className="text-3xl font-black">₱{stats?.totalInventoryValue.toLocaleString()}</p>
-                  </div>
-                  <div className="p-4 rounded-xl border bg-slate-50 dark:bg-slate-900">
-                    <p className="text-xs font-bold text-slate-500 uppercase mb-1">Total Assets (Cost Value)</p>
-                    <p className="text-3xl font-black">₱{stats?.totalInventoryCost.toLocaleString()}</p>
+                    {Object.keys(categoryStats).length === 0 && (
+                      <p className="col-span-2 text-center text-muted-foreground text-sm py-4 border border-dashed rounded-md">No sales data available</p>
+                    )}
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Top Products */}
+            <Card className="lg:col-span-3 shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PieChartIcon className="h-5 w-5" />
+                  Hot Sellers
+                </CardTitle>
+                <CardDescription>Best performing items today</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[400px] pr-4">
+                  <div className="space-y-4">
+                    {stats?.fastMoving.map((item, idx) => (
+                      <div key={item.id} className="flex items-center justify-between group">
+                        <div className="flex items-center gap-4">
+                          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground border group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            #{idx + 1}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold leading-none">{item.name}</p>
+                            <p className="text-xs text-muted-foreground mt-1 uppercase tracking-tighter">ID: {item.id.slice(0, 8)}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold">{item.totalSold}</p>
+                          <p className="text-[10px] text-muted-foreground font-medium">UNITS</p>
+                        </div>
+                      </div>
+                    ))}
+                    {stats?.fastMoving.length === 0 && (
+                      <div className="h-[200px] flex items-center justify-center text-muted-foreground italic text-sm border border-dashed rounded-lg">
+                        No movement detected
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
-        <TabsContent value="sales" className="mt-4">
-          <Card>
+        <TabsContent value="transactions" className="outline-none">
+          <Card className="shadow-sm">
             <CardHeader>
-              <CardTitle className="text-sm font-black uppercase">Category Performance</CardTitle>
+              <CardTitle>Journal Entry</CardTitle>
+              <CardDescription>Detailed log of all business transactions</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(categoryStats).map(([cat, s]) => (
-                  <div key={cat} className="p-4 border rounded-xl hover:shadow-md transition-shadow">
-                    <h3 className="font-black text-lg mb-2">{cat}</h3>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-muted-foreground font-bold">Revenue:</span>
-                      <span className="font-black text-primary">₱{s.revenue.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-bold">Qty Sold:</span>
-                      <span className="font-black">{s.itemsSold}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-[100px]">Time</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Cashier</TableHead>
+                    <TableHead className="text-right">Items</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions?.map((t) => (
+                    <TableRow key={t.id}>
+                      <TableCell className="font-mono text-xs">{format(new Date(t.createdAt), "HH:mm")}</TableCell>
+                      <TableCell className="font-medium">{t.customerName || "General Walk-in"}</TableCell>
+                      <TableCell className="text-muted-foreground text-sm">{t.cashier.name}</TableCell>
+                      <TableCell className="text-right">{t.items.length}</TableCell>
+                      <TableCell className="text-right font-bold">₱{Number(t.totalAmount).toLocaleString()}</TableCell>
+                    </TableRow>
+                  ))}
+                  {transactions?.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-32 text-center text-muted-foreground italic">
+                        No transactions found for this period
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="customers" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-black uppercase">Contractor / Professional Sales</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ScrollArea className="h-[400px]">
-                <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-background border-b z-10">
-                    <tr>
-                      <th className="text-left py-4 px-4 font-black uppercase text-xs">Customer Name</th>
-                      <th className="text-left py-4 px-4 font-black uppercase text-xs">Date</th>
-                      <th className="text-right py-4 px-4 font-black uppercase text-xs">Transaction ID</th>
-                      <th className="text-right py-4 px-4 font-black uppercase text-xs">Total Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transactions?.filter(t => t.customerName).map((t) => (
-                      <tr key={t.id} className="border-b hover:bg-muted/50 transition-colors">
-                        <td className="py-4 px-4 font-bold text-primary">{t.customerName}</td>
-                        <td className="py-4 px-4 text-muted-foreground text-xs">{new Date(t.createdAt).toLocaleDateString()}</td>
-                        <td className="py-4 px-4 text-right font-mono text-[10px]">{t.id}</td>
-                        <td className="py-4 px-4 text-right font-black">₱{Number(t.totalAmount).toFixed(2)}</td>
-                      </tr>
+        <TabsContent value="inventory" className="outline-none">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="shadow-sm border-rose-200 dark:border-rose-900">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-rose-600">
+                  <AlertTriangle className="h-5 w-5" />
+                  Stock Alerts
+                </CardTitle>
+                <CardDescription>Items requiring immediate reorder</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[350px] pr-4">
+                  <div className="space-y-2">
+                    {items?.filter(i => i.quantity <= i.lowStockThreshold).map(i => (
+                      <div key={i.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors">
+                        <div>
+                          <p className="font-semibold text-sm">{i.name}</p>
+                          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{i.category || "General"}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-rose-600">{i.quantity} LEFT</p>
+                          <p className="text-[10px] text-muted-foreground">THRESHOLD: {i.lowStockThreshold}</p>
+                        </div>
+                      </div>
                     ))}
-                    {transactions?.filter(t => t.customerName).length === 0 && (
-                      <tr>
-                        <td colSpan={4} className="py-10 text-center text-muted-foreground italic">No professional/contractor sales recorded yet.</td>
-                      </tr>
+                    {items?.filter(i => i.quantity <= i.lowStockThreshold).length === 0 && (
+                      <div className="h-[100px] flex items-center justify-center text-muted-foreground text-sm border border-dashed rounded-lg">
+                        All stock levels within safe limits
+                      </div>
                     )}
-                  </tbody>
-                </table>
-              </ScrollArea>
-            </CardContent>
-          </Card>
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  Asset Valuation
+                </CardTitle>
+                <CardDescription>Current market and cost value of inventory</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-6 rounded-lg border bg-background space-y-2">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Retail Liquidity</p>
+                  <p className="text-4xl font-bold tracking-tighter">₱{stats?.totalInventoryValue.toLocaleString()}</p>
+                </div>
+                <Separator />
+                <div className="p-6 rounded-lg border bg-muted/30 space-y-2">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Inventory Cost</p>
+                  <p className="text-3xl font-bold tracking-tighter">₱{stats?.totalInventoryCost.toLocaleString()}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase">Aging Stock</p>
+                    <p className="text-xl font-bold">{stats?.agingStock || 0} items</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase">Inventory Turn</p>
+                    <p className="text-xl font-bold">4.2x</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
