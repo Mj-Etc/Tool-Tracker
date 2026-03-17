@@ -5,7 +5,6 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -13,16 +12,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { 
-  ArrowUpDown, 
-  ChevronDown, 
-  MoreHorizontal, 
-  Search, 
-  RotateCcw, 
-  Trash2, 
-  Archive, 
+import {
+  ArrowUpDown,
+  ChevronDown,
+  MoreHorizontal,
+  Search,
+  RotateCcw,
+  Trash2,
+  Archive,
   Filter,
-  CheckCircle2
 } from "lucide-react";
 
 import useSWR from "swr";
@@ -59,7 +57,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
-import { Badge } from "./ui/badge";
 import { useSocket } from "./socket-provider";
 import { ScrollArea } from "./ui/scroll-area";
 
@@ -84,11 +81,17 @@ interface Item {
 export function DisabledItemsDialog() {
   const [open, setOpen] = React.useState(false);
   const { sendMessage } = useSocket();
-  const { data: items, mutate, isLoading } = useSWR<Item[]>("/api/item/list-items?disabled=true", fetcher);
+  const {
+    data: items,
+    mutate,
+    isLoading,
+  } = useSWR<Item[]>("/api/item/list-items?disabled=true", fetcher);
   const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
   const [rowSelection, setRowSelection] = React.useState({});
   const [isProcessing, setIsProcessing] = React.useState(false);
 
@@ -115,8 +118,13 @@ export function DisabledItemsDialog() {
   };
 
   const handlePermanentDelete = async (ids: string[]) => {
-    if (!confirm(`Are you sure you want to PERMANENTLY delete ${ids.length} item(s)? This action cannot be undone.`)) return;
-    
+    if (
+      !confirm(
+        `Are you sure you want to PERMANENTLY delete ${ids.length} item(s)? This action cannot be undone.`,
+      )
+    )
+      return;
+
     setIsProcessing(true);
     try {
       const response = await fetch("/api/item/batch-permanent-delete", {
@@ -144,16 +152,20 @@ export function DisabledItemsDialog() {
         id: "select",
         header: ({ table }) => (
           <Checkbox
+            className="ml-1"
             checked={
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && "indeterminate")
             }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
           />
         ),
         cell: ({ row }) => (
           <Checkbox
+            className="ml-1"
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
@@ -174,7 +186,11 @@ export function DisabledItemsDialog() {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
-        cell: ({ row }) => <div className="font-medium truncate max-w-37.5">{row.getValue("name")}</div>,
+        cell: ({ row }) => (
+          <div className="font-medium truncate max-w-37.5">
+            {row.getValue("name")}
+          </div>
+        ),
       },
       {
         id: "category_name",
@@ -182,8 +198,12 @@ export function DisabledItemsDialog() {
         header: "Category",
         cell: ({ row }) => (
           <div className="flex flex-col">
-            <span className="text-xs font-medium">{row.original.category?.name}</span>
-            <span className="text-[10px] text-muted-foreground">{row.original.subcategory?.name}</span>
+            <span className="text-xs font-medium">
+              {row.original.category?.name}
+            </span>
+            <span className="text-[10px] text-muted-foreground">
+              {row.original.subcategory?.name}
+            </span>
           </div>
         ),
         filterFn: (row, id, value) => {
@@ -194,11 +214,17 @@ export function DisabledItemsDialog() {
       {
         id: "actions",
         cell: ({ row }) => {
-          return <ActionsCell row={row} handleRestore={handleRestore} handlePermanentDelete={handlePermanentDelete} />;
+          return (
+            <ActionsCell
+              row={row}
+              handleRestore={handleRestore}
+              handlePermanentDelete={handlePermanentDelete}
+            />
+          );
         },
       },
     ],
-    [handleRestore, handlePermanentDelete]
+    [handleRestore, handlePermanentDelete],
   );
 
   const table = useReactTable({
@@ -220,7 +246,8 @@ export function DisabledItemsDialog() {
 
   const selectedRows = table.getFilteredSelectedRowModel().rows;
   const selectedCount = selectedRows.length;
-  const selectedCategory = (table.getColumn("category_name")?.getFilterValue() as string) ?? "all";
+  const selectedCategory =
+    (table.getColumn("category_name")?.getFilterValue() as string) ?? "all";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -234,7 +261,8 @@ export function DisabledItemsDialog() {
         <DialogHeader>
           <DialogTitle>Disabled Items Archive</DialogTitle>
           <DialogDescription>
-            Manage items that have been disabled. You can restore them to the active list or permanently delete them.
+            Manage items that have been disabled. You can restore them to the
+            active list or permanently delete them.
           </DialogDescription>
         </DialogHeader>
 
@@ -244,34 +272,40 @@ export function DisabledItemsDialog() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search items..."
-                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                value={
+                  (table.getColumn("name")?.getFilterValue() as string) ?? ""
+                }
                 onChange={(event) =>
                   table.getColumn("name")?.setFilterValue(event.target.value)
                 }
                 className="pl-9 h-9"
               />
             </div>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-9 gap-2">
                   <Filter className="h-4 w-4" />
-                  {selectedCategory === "all" 
-                    ? "Category" 
-                    : categories?.find(c => c.id === selectedCategory)?.name}
+                  {selectedCategory === "all"
+                    ? "Category"
+                    : categories?.find((c) => c.id === selectedCategory)?.name}
                   <ChevronDown className="h-4 w-4 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-50">
                 <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup 
-                  value={selectedCategory} 
+                <DropdownMenuRadioGroup
+                  value={selectedCategory}
                   onValueChange={(value) => {
-                    table.getColumn("category_name")?.setFilterValue(value === "all" ? "" : value);
+                    table
+                      .getColumn("category_name")
+                      ?.setFilterValue(value === "all" ? "" : value);
                   }}
                 >
-                  <DropdownMenuRadioItem value="all">All Categories</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="all">
+                    All Categories
+                  </DropdownMenuRadioItem>
                   {categories?.map((cat) => (
                     <DropdownMenuRadioItem key={cat.id} value={cat.id}>
                       {cat.name}
@@ -284,26 +318,42 @@ export function DisabledItemsDialog() {
 
           {selectedCount > 0 && (
             <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg animate-in fade-in slide-in-from-top-1">
-              <span className="text-xs font-medium ml-2">{selectedCount} selected</span>
+              <span className="text-xs font-medium ml-2">
+                {selectedCount} selected
+              </span>
               <div className="ml-auto flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="h-8 text-xs"
-                  onClick={() => handleRestore(selectedRows.map(r => r.original.id))}
+                  onClick={() =>
+                    handleRestore(selectedRows.map((r) => r.original.id))
+                  }
                   disabled={isProcessing}
                 >
-                  {isProcessing ? <Spinner className="mr-1 h-3 w-3" /> : <RotateCcw className="mr-1 h-3 w-3" />}
+                  {isProcessing ? (
+                    <Spinner className="mr-1 h-3 w-3" />
+                  ) : (
+                    <RotateCcw className="mr-1 h-3 w-3" />
+                  )}
                   Restore
                 </Button>
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
+                <Button
+                  variant="destructive"
+                  size="sm"
                   className="h-8 text-xs"
-                  onClick={() => handlePermanentDelete(selectedRows.map(r => r.original.id))}
+                  onClick={() =>
+                    handlePermanentDelete(
+                      selectedRows.map((r) => r.original.id),
+                    )
+                  }
                   disabled={isProcessing}
                 >
-                  {isProcessing ? <Spinner className="mr-1 h-3 w-3" /> : <Trash2 className="mr-1 h-3 w-3" />}
+                  {isProcessing ? (
+                    <Spinner className="mr-1 h-3 w-3" />
+                  ) : (
+                    <Trash2 className="mr-1 h-3 w-3" />
+                  )}
                   Delete
                 </Button>
               </div>
@@ -312,7 +362,7 @@ export function DisabledItemsDialog() {
 
           <ScrollArea className="max-h-75 pr-4">
             <div className="rounded-md border bg-background">
-            {/* <div className="rounded-md border bg-background overflow-hidden"> */}
+              {/* <div className="rounded-md border bg-background overflow-hidden"> */}
               <div className="">
                 <Table>
                   <TableHeader className="sticky top-0">
@@ -324,7 +374,7 @@ export function DisabledItemsDialog() {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         ))}
@@ -334,7 +384,10 @@ export function DisabledItemsDialog() {
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                        <TableCell
+                          colSpan={columns.length}
+                          className="h-24 text-center"
+                        >
                           <Spinner className="mx-auto" />
                         </TableCell>
                       </TableRow>
@@ -348,7 +401,7 @@ export function DisabledItemsDialog() {
                             <TableCell key={cell.id} className="py-2">
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext()
+                                cell.getContext(),
                               )}
                             </TableCell>
                           ))}
@@ -356,7 +409,10 @@ export function DisabledItemsDialog() {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground text-sm">
+                        <TableCell
+                          colSpan={columns.length}
+                          className="h-24 text-center text-muted-foreground text-sm"
+                        >
                           No disabled items found.
                         </TableCell>
                       </TableRow>
@@ -366,7 +422,7 @@ export function DisabledItemsDialog() {
               </div>
             </div>
           </ScrollArea>
-          
+
           <div className="flex items-center justify-between px-2">
             <div className="text-[10px] text-muted-foreground">
               Total: {table.getFilteredRowModel().rows.length} items
@@ -395,7 +451,11 @@ export function DisabledItemsDialog() {
         </div>
 
         <DialogFooter className="mt-2">
-          <Button variant="outline" onClick={() => setOpen(false)} className="w-full">
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            className="w-full"
+          >
             Close
           </Button>
         </DialogFooter>
@@ -404,14 +464,22 @@ export function DisabledItemsDialog() {
   );
 }
 
-function ActionsCell({ row, handleRestore, handlePermanentDelete }: { row: any, handleRestore: (ids: string[]) => void, handlePermanentDelete: (ids: string[]) => void }) {
+function ActionsCell({
+  row,
+  handleRestore,
+  handlePermanentDelete,
+}: {
+  row: any;
+  handleRestore: (ids: string[]) => void;
+  handlePermanentDelete: (ids: string[]) => void;
+}) {
   const item = row.original;
   const isSelected = row.getIsSelected();
 
   if (isSelected) {
     return null;
   }
-  
+
   return (
     <div className="flex justify-end">
       <DropdownMenu>
@@ -427,7 +495,7 @@ function ActionsCell({ row, handleRestore, handlePermanentDelete }: { row: any, 
             <RotateCcw className="mr-2 h-4 w-4" />
             Restore
           </DropdownMenuItem>
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => handlePermanentDelete([item.id])}
             className="text-destructive focus:text-destructive"
           >

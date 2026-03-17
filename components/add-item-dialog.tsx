@@ -118,76 +118,79 @@ export function AddItemDialog() {
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="mt-4">
-            <Field>
-              <FieldLabel htmlFor="new-name">Item name</FieldLabel>
-              <Input
-                id="new-name"
-                {...register("name")}
-                autoFocus
-                type="text"
-              />
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="new-description">Description</FieldLabel>
-              <Input
-                id="new-description"
-                {...register("description")}
-                type="text"
-              />
-              {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
-            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field>
+                <FieldLabel htmlFor="new-name">Item name</FieldLabel>
+                <Input
+                  id="new-name"
+                  {...register("name")}
+                  autoFocus
+                  type="text"
+                />
+                {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="new-description">Description</FieldLabel>
+                <Input
+                  id="new-description"
+                  {...register("description")}
+                  type="text"
+                />
+                {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+              </Field>
+            </div>
             
-            <Field>
-              <FieldLabel htmlFor="new-categoryId">Category</FieldLabel>
-              <Select
-                value={selectedCategoryId}
-                onValueChange={(value) => {
-                  setValue("categoryId", value);
-                  setValue("subcategoryId", "");
-                }}
-                disabled={loadingCategories}
-              >
-                <SelectTrigger id="new-categoryId" className="w-full">
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Categories</SelectLabel>
-                    {categories?.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="new-subcategoryId">Subcategory</FieldLabel>
-              <Select
-                value={watch("subcategoryId")}
-                onValueChange={(value) => setValue("subcategoryId", value)}
-                disabled={!selectedCategoryId || availableSubcategories.length === 0}
-              >
-                <SelectTrigger id="new-subcategoryId" className="w-full">
-                  <SelectValue placeholder="Select Subcategory" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Subcategories</SelectLabel>
-                    {availableSubcategories.map((sub) => (
-                      <SelectItem key={sub.id} value={sub.id}>
-                        {sub.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors.subcategoryId && <p className="text-sm text-red-500">{errors.subcategoryId.message}</p>}
-            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field>
+                <FieldLabel htmlFor="new-categoryId">Category</FieldLabel>
+                <Select
+                  value={selectedCategoryId}
+                  onValueChange={(value) => {
+                    setValue("categoryId", value);
+                    setValue("subcategoryId", "");
+                  }}
+                  disabled={loadingCategories}
+                >
+                  <SelectTrigger id="new-categoryId" className="w-full">
+                    <SelectValue placeholder="Select Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Categories</SelectLabel>
+                      {categories?.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="new-subcategoryId">Subcategory</FieldLabel>
+                <Select
+                  value={watch("subcategoryId")}
+                  onValueChange={(value) => setValue("subcategoryId", value)}
+                  disabled={!selectedCategoryId || availableSubcategories.length === 0}
+                >
+                  <SelectTrigger id="new-subcategoryId" className="w-full">
+                    <SelectValue placeholder="Select Subcategory" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Subcategories</SelectLabel>
+                      {availableSubcategories.map((sub) => (
+                        <SelectItem key={sub.id} value={sub.id}>
+                          {sub.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {errors.subcategoryId && <p className="text-sm text-red-500">{errors.subcategoryId.message}</p>}
+              </Field>
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <Field>
