@@ -35,6 +35,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Transaction = {
   id: string;
@@ -71,6 +72,78 @@ type Stats = {
   fastMoving: { id: string; name: string; totalSold: number }[];
 };
 
+function ReportSkeleton() {
+  return (
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-4" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-8 w-20 mb-2" />
+              <Skeleton className="h-3 w-32" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="space-y-6">
+        <div className="bg-background border h-12 p-1 gap-1 flex rounded-md w-fit">
+          <div className="h-full w-24 bg-muted rounded-sm animate-pulse" />
+          <div className="h-full w-24 bg-muted/50 rounded-sm" />
+          <div className="h-full w-24 bg-muted/50 rounded-sm" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
+          <Card className="lg:col-span-4 shadow-sm">
+            <CardHeader>
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-4 w-64" />
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+              <Skeleton className="h-32 w-full rounded-xl" />
+              <div className="grid grid-cols-2 gap-3">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="lg:col-span-3 shadow-sm">
+            <CardHeader>
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-4 w-48" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-20" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-8 w-12" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ReportsPage() {
   const [reportMode, setReportMode] = useState<"daily" | "overall">("daily");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -86,7 +159,7 @@ export default function ReportsPage() {
   const { data: stats, isLoading: statsLoading, isValidating: statsValidating } = useSWR<Stats>(statsUrl, fetcher);
 
   const isDataLoading = transLoading || statsLoading || itemsLoading;
-  const isRefreshing = transValidating || statsValidating;
+  const isRefreshing = (transValidating || statsValidating) && !isDataLoading;
 
   // Calculate Financials for the selected day/mode
   const revenue = transactions?.reduce((sum, t) => sum + Number(t.totalAmount), 0) || 0;
@@ -113,10 +186,10 @@ export default function ReportsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-8 p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-8 p-6 max-w-7xl mx-auto w-full min-h-screen">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <div className="space-y-1">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 min-h-[100px]">
+        <div className="space-y-1 flex-1">
           <div className="flex items-center gap-2">
             <LayoutDashboard className="h-5 w-5 text-muted-foreground" />
             <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Analytics Terminal</span>
@@ -128,7 +201,7 @@ export default function ReportsPage() {
             {reportMode === "overall" ? "All-time aggregated business metrics" : format(selectedDate, "EEEE, MMMM do yyyy")}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
           <ToggleGroup type="single" value={reportMode} onValueChange={(v) => v && setReportMode(v as any)} className="border p-1 bg-muted/50 rounded-lg">
             <ToggleGroupItem value="daily" className="px-4 text-xs font-bold uppercase tracking-wider data-[state=on]:bg-background">Daily</ToggleGroupItem>
             <ToggleGroupItem value="overall" className="px-4 text-xs font-bold uppercase tracking-wider data-[state=on]:bg-background">Overall</ToggleGroupItem>
@@ -136,17 +209,21 @@ export default function ReportsPage() {
           
           <Separator orientation="vertical" className="h-10 mx-1 hidden sm:block" />
 
-          <div className="flex items-center gap-2">
-            {isRefreshing && <Spinner className="h-4 w-4 text-muted-foreground animate-spin" />}
-            {reportMode === "daily" ? (
-              <DatePicker date={selectedDate} setDate={(d) => d && setSelectedDate(d)} />
-            ) : (
-              <Badge variant="outline" className="h-10 px-4 rounded-md border text-xs font-mono gap-2">
-                <Globe className="h-3 w-3" /> ALL_TIME_ACTIVE
-              </Badge>
-            )}
+          <div className="flex items-center gap-2 min-w-[320px] justify-end relative">
+            <div className="w-5 h-5 flex items-center justify-center">
+              {isRefreshing && <Spinner className="h-4 w-4 text-muted-foreground animate-spin" />}
+            </div>
+            <div className="w-[280px]">
+              {reportMode === "daily" ? (
+                <DatePicker date={selectedDate} setDate={(d) => d && setSelectedDate(d)} />
+              ) : (
+                <Badge variant="outline" className="h-10 w-full px-4 rounded-md border text-xs font-mono gap-2 justify-center">
+                  <Globe className="h-3 w-3" /> ALL_TIME_ACTIVE
+                </Badge>
+              )}
+            </div>
           </div>
-          <Badge variant="secondary" className="h-10 px-4 rounded-md border text-xs font-mono">
+          <Badge variant="secondary" className="h-10 px-4 rounded-md border text-xs font-mono shrink-0">
             SYS_REF: {reportMode === "overall" ? "00000000" : dateStr.replace(/-/g, '')}
           </Badge>
         </div>
@@ -155,17 +232,7 @@ export default function ReportsPage() {
       <Separator />
 
       {isDataLoading ? (
-        <div className="flex h-[400px] items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <Spinner className="h-12 w-12 text-primary" />
-            <div className="space-y-1 text-center">
-              <p className="text-sm font-medium animate-pulse">Computing metrics...</p>
-              <p className="text-xs text-muted-foreground">
-                {reportMode === "overall" ? "Aggregating lifetime data" : `Fetching ledger for ${dateStr}`}
-              </p>
-            </div>
-          </div>
-        </div>
+        <ReportSkeleton />
       ) : (
         <div className="space-y-8 animate-in fade-in duration-500">
           {/* KPI Overview */}
