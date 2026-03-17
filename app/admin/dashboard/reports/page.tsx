@@ -188,16 +188,16 @@ export default function ReportsPage() {
   return (
     <div className="flex flex-col gap-8 p-6 max-w-7xl mx-auto w-full min-h-screen">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 min-h-[100px]">
-        <div className="space-y-1 flex-1">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 transition-[height] duration-300 ease-in-out">
+        <div className="space-y-1 flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <LayoutDashboard className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Analytics Terminal</span>
+            <LayoutDashboard className="h-5 w-5 text-muted-foreground shrink-0" />
+            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider truncate">Analytics Terminal</span>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight">
+          <h1 className="text-4xl font-bold tracking-tight transition-all duration-300">
             {reportMode === "overall" ? "Lifetime Performance" : (isToday ? "Today's Performance" : "Daily Report")}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground transition-all duration-300">
             {reportMode === "overall" ? "All-time aggregated business metrics" : format(selectedDate, "EEEE, MMMM do yyyy")}
           </p>
         </div>
