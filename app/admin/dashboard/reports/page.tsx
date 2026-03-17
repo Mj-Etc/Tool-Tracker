@@ -57,7 +57,7 @@ type Item = {
   costPrice: number;
   price: number;
   quantity: number;
-  category: string | null;
+  category: { name: string } | null;
   createdAt: string;
   lowStockThreshold: number;
 };
@@ -457,11 +457,15 @@ export default function ReportsPage() {
                   <CardContent>
                     <ScrollArea className="h-[350px] pr-4">
                       <div className="space-y-2">
-                        {items?.filter(i => i.quantity <= i.lowStockThreshold).map(i => (
+                        {items?.filter(i => i.quantity <= (i.lowStockThreshold ?? 0)).map(i => (
                           <div key={i.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors">
                             <div>
                               <p className="font-semibold text-sm">{i.name}</p>
-                              <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{i.category || "General"}</p>
+                              <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                {typeof i.category === "string" 
+                                  ? i.category 
+                                  : (i.category?.name || "General")}
+                              </p>
                             </div>
                             <div className="text-right">
                               <p className="text-sm font-bold text-rose-600">{i.quantity} LEFT</p>
@@ -469,7 +473,7 @@ export default function ReportsPage() {
                             </div>
                           </div>
                         ))}
-                        {items?.filter(i => i.quantity <= i.lowStockThreshold).length === 0 && (
+                        {items?.filter(i => i.quantity <= (i.lowStockThreshold ?? 0)).length === 0 && (
                           <div className="h-[100px] flex items-center justify-center text-muted-foreground text-sm border border-dashed rounded-lg">
                             All stock levels within safe limits
                           </div>
@@ -490,12 +494,12 @@ export default function ReportsPage() {
                   <CardContent className="space-y-4">
                     <div className="p-6 rounded-lg border bg-background space-y-2">
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Retail Liquidity</p>
-                      <p className="text-4xl font-bold tracking-tighter">₱{stats?.totalInventoryValue.toLocaleString()}</p>
+                      <p className="text-4xl font-bold tracking-tighter">₱{(stats?.totalInventoryValue ?? 0).toLocaleString()}</p>
                     </div>
                     <Separator />
                     <div className="p-6 rounded-lg border bg-muted/30 space-y-2">
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Inventory Cost</p>
-                      <p className="text-3xl font-bold tracking-tighter">₱{stats?.totalInventoryCost.toLocaleString()}</p>
+                      <p className="text-3xl font-bold tracking-tighter">₱{(stats?.totalInventoryCost ?? 0).toLocaleString()}</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4 pt-2">
                       <div className="space-y-1">
