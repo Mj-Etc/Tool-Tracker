@@ -22,7 +22,8 @@ import {
   Receipt,
   BarChart3,
   PieChart as PieChartIcon,
-  LayoutDashboard
+  LayoutDashboard,
+  Globe
 } from "lucide-react";
 import { DatePicker } from "@/components/ui/date-picker";
 import {
@@ -33,6 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 type Transaction = {
   id: string;
@@ -70,32 +72,36 @@ type Stats = {
 };
 
 export default function ReportsPage() {
+  const [reportMode, setReportMode] = useState<"daily" | "overall">("daily");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   
   const dateStr = format(selectedDate, "yyyy-MM-dd");
   const isToday = isSameDay(selectedDate, new Date());
 
-  const { data: transactions, isLoading: transLoading, isValidating: transValidating } = useSWR<Transaction[]>(`/api/transactions?date=${dateStr}`, fetcher);
+  const statsUrl = reportMode === "daily" ? `/api/stats?date=${dateStr}` : `/api/stats?overall=true`;
+  const transUrl = reportMode === "daily" ? `/api/transactions?date=${dateStr}` : `/api/transactions?overall=true`;
+
+  const { data: transactions, isLoading: transLoading, isValidating: transValidating } = useSWR<Transaction[]>(transUrl, fetcher);
   const { data: items, isLoading: itemsLoading } = useSWR<Item[]>("/api/item/list-items", fetcher);
-  const { data: stats, isLoading: statsLoading, isValidating: statsValidating } = useSWR<Stats>(`/api/stats?date=${dateStr}`, fetcher);
+  const { data: stats, isLoading: statsLoading, isValidating: statsValidating } = useSWR<Stats>(statsUrl, fetcher);
 
   const isDataLoading = transLoading || statsLoading || itemsLoading;
   const isRefreshing = transValidating || statsValidating;
 
-  // Calculate Financials for the selected day
-  const dailyRevenue = transactions?.reduce((sum, t) => sum + Number(t.totalAmount), 0) || 0;
+  // Calculate Financials for the selected day/mode
+  const revenue = transactions?.reduce((sum, t) => sum + Number(t.totalAmount), 0) || 0;
   
-  let dailyCost = 0;
+  let cost = 0;
   transactions?.forEach(t => {
     t.items.forEach(i => {
-      dailyCost += (Number(i.item.costPrice) * i.quantity);
+      cost += (Number(i.item.costPrice) * i.quantity);
     });
   });
   
-  const dailyProfit = dailyRevenue - dailyCost;
-  const dailyMargin = dailyRevenue > 0 ? (dailyProfit / dailyRevenue) * 100 : 0;
+  const profit = revenue - cost;
+  const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
 
-  // Category Analysis for the selected day
+  // Category Analysis for the selected day/mode
   const categoryStats: Record<string, { revenue: number; itemsSold: number }> = {};
   transactions?.forEach(t => {
     t.items.forEach(i => {
@@ -116,19 +122,32 @@ export default function ReportsPage() {
             <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Analytics Terminal</span>
           </div>
           <h1 className="text-4xl font-bold tracking-tight">
-            {isToday ? "Today's Performance" : "Daily Report"}
+            {reportMode === "overall" ? "Lifetime Performance" : (isToday ? "Today's Performance" : "Daily Report")}
           </h1>
           <p className="text-muted-foreground">
-            {format(selectedDate, "EEEE, MMMM do yyyy")}
+            {reportMode === "overall" ? "All-time aggregated business metrics" : format(selectedDate, "EEEE, MMMM do yyyy")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <ToggleGroup type="single" value={reportMode} onValueChange={(v) => v && setReportMode(v as any)} className="border p-1 bg-muted/50 rounded-lg">
+            <ToggleGroupItem value="daily" className="px-4 text-xs font-bold uppercase tracking-wider data-[state=on]:bg-background">Daily</ToggleGroupItem>
+            <ToggleGroupItem value="overall" className="px-4 text-xs font-bold uppercase tracking-wider data-[state=on]:bg-background">Overall</ToggleGroupItem>
+          </ToggleGroup>
+          
+          <Separator orientation="vertical" className="h-10 mx-1 hidden sm:block" />
+
           <div className="flex items-center gap-2">
             {isRefreshing && <Spinner className="h-4 w-4 text-muted-foreground animate-spin" />}
-            <DatePicker date={selectedDate} setDate={(d) => d && setSelectedDate(d)} />
+            {reportMode === "daily" ? (
+              <DatePicker date={selectedDate} setDate={(d) => d && setSelectedDate(d)} />
+            ) : (
+              <Badge variant="outline" className="h-10 px-4 rounded-md border text-xs font-mono gap-2">
+                <Globe className="h-3 w-3" /> ALL_TIME_ACTIVE
+              </Badge>
+            )}
           </div>
           <Badge variant="secondary" className="h-10 px-4 rounded-md border text-xs font-mono">
-            SYS_REF: {dateStr.replace(/-/g, '')}
+            SYS_REF: {reportMode === "overall" ? "00000000" : dateStr.replace(/-/g, '')}
           </Badge>
         </div>
       </div>
@@ -141,7 +160,9 @@ export default function ReportsPage() {
             <Spinner className="h-12 w-12 text-primary" />
             <div className="space-y-1 text-center">
               <p className="text-sm font-medium animate-pulse">Computing metrics...</p>
-              <p className="text-xs text-muted-foreground">Fetching ledger for {dateStr}</p>
+              <p className="text-xs text-muted-foreground">
+                {reportMode === "overall" ? "Aggregating lifetime data" : `Fetching ledger for ${dateStr}`}
+              </p>
             </div>
           </div>
         </div>
@@ -155,9 +176,13 @@ export default function ReportsPage() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">₱{dailyRevenue.toLocaleString()}</div>
+                <div className="text-2xl font-bold">₱{revenue.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                  <span className="text-emerald-500 flex items-center"><ArrowUpRight className="h-3 w-3" /> 12%</span> vs yesterday
+                  {reportMode === "daily" ? (
+                    <span className="text-emerald-500 flex items-center"><ArrowUpRight className="h-3 w-3" /> 12% vs yesterday</span>
+                  ) : (
+                    <span className="text-muted-foreground uppercase tracking-tighter">Lifetime gross income</span>
+                  )}
                 </p>
               </CardContent>
             </Card>
@@ -168,18 +193,24 @@ export default function ReportsPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats?.recentTransactionCount || 0}</div>
-                <p className="text-xs text-muted-foreground mt-1">Total orders processed</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {reportMode === "daily" ? "Total orders today" : "Total lifetime orders"}
+                </p>
               </CardContent>
             </Card>
             <Card className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Gross Margin</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Average Margin</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{dailyMargin.toFixed(1)}%</div>
+                <div className="text-2xl font-bold">{margin.toFixed(1)}%</div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                  <span className="text-amber-500 flex items-center"><ArrowDownRight className="h-3 w-3" /> 2%</span> target: 25%
+                  {reportMode === "daily" ? (
+                     <span className="text-amber-500 flex items-center"><ArrowDownRight className="h-3 w-3" /> 2% vs target</span>
+                  ) : (
+                    "Across all transactions"
+                  )}
                 </p>
               </CardContent>
             </Card>
@@ -198,8 +229,8 @@ export default function ReportsPage() {
           <Tabs defaultValue="overview" className="space-y-6">
             <TabsList className="bg-background border h-12 p-1 gap-1">
               <TabsTrigger value="overview" className="px-6 data-[state=active]:bg-muted">Overview</TabsTrigger>
-              <TabsTrigger value="transactions" className="px-6 data-[state=active]:bg-muted">Transactions</TabsTrigger>
-              <TabsTrigger value="inventory" className="px-6 data-[state=active]:bg-muted">Inventory Health</TabsTrigger>
+              <TabsTrigger value="transactions" className="px-6 data-[state=active]:bg-muted">Journal</TabsTrigger>
+              <TabsTrigger value="inventory" className="px-6 data-[state=active]:bg-muted">Inventory</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6 outline-none">
@@ -211,28 +242,30 @@ export default function ReportsPage() {
                       <BarChart3 className="h-5 w-5" />
                       Financial Summary
                     </CardTitle>
-                    <CardDescription>Daily revenue and cost breakdown</CardDescription>
+                    <CardDescription>
+                      {reportMode === "daily" ? "Daily revenue and cost breakdown" : "Aggregated all-time financials"}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1 p-4 rounded-lg bg-muted/50 border">
-                        <p className="text-sm text-muted-foreground font-medium">Gross Revenue</p>
-                        <p className="text-2xl font-bold text-emerald-600">₱{dailyRevenue.toLocaleString()}</p>
+                        <p className="text-sm text-muted-foreground font-medium">Total Revenue</p>
+                        <p className="text-2xl font-bold text-emerald-600">₱{revenue.toLocaleString()}</p>
                       </div>
                       <div className="space-y-1 p-4 rounded-lg bg-muted/50 border">
-                        <p className="text-sm text-muted-foreground font-medium">COGS</p>
-                        <p className="text-2xl font-bold text-rose-600">₱{dailyCost.toLocaleString()}</p>
+                        <p className="text-sm text-muted-foreground font-medium">Total COGS</p>
+                        <p className="text-2xl font-bold text-rose-600">₱{cost.toLocaleString()}</p>
                       </div>
                     </div>
                     
-                    <div className="p-6 rounded-xl bg-primary text-primary-foreground">
+                    <div className="p-6 rounded-xl bg-primary text-primary-foreground shadow-lg">
                       <div className="flex justify-between items-end">
                         <div>
-                          <p className="text-primary-foreground/70 text-sm font-medium uppercase tracking-wider">Estimated Net Profit</p>
-                          <h3 className="text-4xl font-bold mt-1">₱{dailyProfit.toLocaleString()}</h3>
+                          <p className="text-primary-foreground/70 text-sm font-medium uppercase tracking-wider">Estimated Gross Profit</p>
+                          <h3 className="text-4xl font-bold mt-1">₱{profit.toLocaleString()}</h3>
                         </div>
                         <Badge variant="secondary" className="mb-1 font-bold">
-                          {dailyMargin.toFixed(1)}% MARGIN
+                          {margin.toFixed(1)}% MARGIN
                         </Badge>
                       </div>
                     </div>
@@ -241,7 +274,7 @@ export default function ReportsPage() {
                       <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Category Distribution</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {Object.entries(categoryStats).map(([cat, s]) => (
-                          <div key={cat} className="flex items-center justify-between p-3 border rounded-md">
+                          <div key={cat} className="flex items-center justify-between p-3 border rounded-md group hover:border-primary transition-colors">
                             <span className="text-sm font-medium">{cat}</span>
                             <div className="text-right">
                               <p className="text-sm font-bold">₱{s.revenue.toLocaleString()}</p>
@@ -264,7 +297,9 @@ export default function ReportsPage() {
                       <PieChartIcon className="h-5 w-5" />
                       Hot Sellers
                     </CardTitle>
-                    <CardDescription>Best performing items today</CardDescription>
+                    <CardDescription>
+                      {reportMode === "daily" ? "Best performing items today" : "All-time fast moving items"}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ScrollArea className="h-[400px] pr-4">
@@ -302,13 +337,15 @@ export default function ReportsPage() {
               <Card className="shadow-sm">
                 <CardHeader>
                   <CardTitle>Journal Entry</CardTitle>
-                  <CardDescription>Detailed log of all business transactions</CardDescription>
+                  <CardDescription>
+                    {reportMode === "daily" ? `Transactions for ${format(selectedDate, "PPP")}` : "All-time transaction ledger"}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow className="hover:bg-transparent">
-                        <TableHead className="w-[100px]">Time</TableHead>
+                        <TableHead className="w-[120px]">Date/Time</TableHead>
                         <TableHead>Customer</TableHead>
                         <TableHead>Cashier</TableHead>
                         <TableHead className="text-right">Items</TableHead>
@@ -318,7 +355,9 @@ export default function ReportsPage() {
                     <TableBody>
                       {transactions?.map((t) => (
                         <TableRow key={t.id}>
-                          <TableCell className="font-mono text-xs">{format(new Date(t.createdAt), "HH:mm")}</TableCell>
+                          <TableCell className="font-mono text-xs">
+                            {reportMode === "daily" ? format(new Date(t.createdAt), "HH:mm") : format(new Date(t.createdAt), "MMM d, HH:mm")}
+                          </TableCell>
                           <TableCell className="font-medium">{t.customerName || "General Walk-in"}</TableCell>
                           <TableCell className="text-muted-foreground text-sm">{t.cashier.name}</TableCell>
                           <TableCell className="text-right">{t.items.length}</TableCell>
@@ -339,7 +378,7 @@ export default function ReportsPage() {
             </TabsContent>
 
             <TabsContent value="inventory" className="outline-none">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="shadow-sm border-rose-200 dark:border-rose-900">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-rose-600">

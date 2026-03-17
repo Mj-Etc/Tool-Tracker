@@ -69,9 +69,10 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const dateParam = searchParams.get("date");
+        const isOverall = searchParams.get("overall") === "true";
 
         let where = {};
-        if (dateParam) {
+        if (!isOverall && dateParam) {
             const startDate = new Date(dateParam);
             startDate.setHours(0, 0, 0, 0);
             const endDate = new Date(dateParam);

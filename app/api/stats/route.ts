@@ -12,19 +12,24 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const dateParam = searchParams.get("date");
+    const isOverall = searchParams.get("overall") === "true";
 
-    let startDate: Date;
-    let endDate: Date;
+    let startDate: Date | undefined;
+    let endDate: Date | undefined;
+    let dateFilter = {};
 
-    if (dateParam) {
-      startDate = new Date(dateParam);
-      startDate.setHours(0, 0, 0, 0);
-      endDate = new Date(dateParam);
-      endDate.setHours(23, 59, 59, 999);
-    } else {
-      startDate = new Date();
-      startDate.setDate(startDate.getDate() - 30);
-      endDate = new Date();
+    if (!isOverall) {
+      if (dateParam) {
+        startDate = new Date(dateParam);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(dateParam);
+        endDate.setHours(23, 59, 59, 999);
+      } else {
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 30);
+        endDate = new Date();
+      }
+      dateFilter = { gte: startDate, lte: endDate };
     }
 
     // 1. Core Inventory Stats
@@ -43,7 +48,7 @@ export async function GET(request: Request) {
 
     // 3. Sales Analysis
     const recentTransactions = await prisma.transaction.findMany({
-      where: { createdAt: { gte: startDate, lte: endDate } },
+      where: isOverall ? {} : { createdAt: dateFilter },
       include: { items: true }
     });
 
@@ -56,7 +61,7 @@ export async function GET(request: Request) {
       _sum: { quantity: true },
       orderBy: { _sum: { quantity: "desc" } },
       take: 5,
-      where: { transaction: { createdAt: { gte: startDate, lte: endDate } } },
+      where: isOverall ? {} : { transaction: { createdAt: dateFilter } },
     });
 
     const fastMovingDetails = await Promise.all(
