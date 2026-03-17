@@ -5,10 +5,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SocketProvider } from "@/components/socket-provider";
-import { Public_Sans } from "next/font/google";
+import { Public_Sans, Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const publicSans = Public_Sans({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Tool Tracker",
@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", publicSans.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
