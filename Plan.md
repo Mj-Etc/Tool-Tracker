@@ -425,3 +425,85 @@ The following features are explicitly **not included** in this system:
 **Store:** J&LL Hardware Store  
 **Location:** Purok 14, Barangay Poblacion, Tupi, South Cotabato  
 **System Name:** ToolTrackR  
+
+
+
+
+
+
+
+
+# Implementation Plan - Stock Movement Log System
+
+Implementing a tracking system for all inventory changes (sales, restocks, manual adjustments) to provide a "Daily Inventory Movement" report.
+
+## 1. Database Schema Update
+
+### `prisma/schema.prisma`
+Add the `StockLog` model to track every change in item quantity.
+
+```prisma
+model StockLog {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  change    Int      // Positive for restock/creation, negative for sales
+  reason    String   // "SALE", "RESTOCK", "MANUAL_ADJUSTMENT", "CREATION"
+  oldStock  Int
+  newStock  Int
+  createdAt DateTime @default(now())
+
+  @@map("stockLog")
+}
+```
+
+Update `Item` and `User` models to include the relation.
+
+## 2. API Updates (Logging)
+
+### `app/api/item/create-item/route.ts`
+Log the initial quantity as "CREATION".
+
+### `app/api/item/update-item/route.ts`
+1. Fetch the current item to get `oldStock`.
+2. Calculate `change = newStock - oldStock`.
+3. Log the change as "RESTOCK" if positive, or "MANUAL_ADJUSTMENT" if negative (or different context).
+
+### `app/api/transactions/route.ts`
+Inside the transaction loop:
+1. Log the decrement as "SALE" for each item.
+
+## 3. New API Endpoint
+
+### `app/api/reports/stock-movement/route.ts`
+Create a GET endpoint that:
+- Accepts `startDate` and `endDate` (or `date`).
+- Returns a list of `StockLog` entries with joined `Item` and `User` data.
+
+## 4. UI Components
+
+### `components/reports/stock-movement-table.tsx`
+A table to display:
+- Timestamp
+- Item Name
+- Action (Type)
+- User (who did it)
+- Change (+/-)
+- Resulting Stock
+
+### `app/admin/dashboard/reports/page.tsx`
+Integrate the `StockMovementTable` into the "Inventory" tab.
+
+## 5. Verification Plan
+
+### Automated Tests
+- Test that creating an item creates a `StockLog`.
+- Test that updating an item's quantity creates a `StockLog` with the correct `change`.
+- Test that a transaction creates a `StockLog` with a negative `change`.
+
+### Manual Verification
+- Create a new item -> check Stock Movement report.
+- Edit an item's quantity -> check Stock Movement report.
+- Perform a sale -> check Stock Movement report.

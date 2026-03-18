@@ -27,6 +27,7 @@ model User {
   role         String        @default("cashier")
   items        Item[]
   transactions Transaction[]
+  stockLogs    StockLog[]
 
   banned     Boolean?  @default(false)
   banReason  String?
@@ -128,8 +129,24 @@ model Item {
   updatedAt         DateTime          @updatedAt
   isActive          Boolean           @default(true)
   transactionItems  TransactionItem[]
+  stockLogs         StockLog[]
 
   @@map("item")
+}
+
+model StockLog {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  change    Int      // Positive for restock/creation, negative for sales
+  reason    String   // "SALE", "RESTOCK", "MANUAL_ADJUSTMENT", "CREATION"
+  oldStock  Int
+  newStock  Int
+  createdAt DateTime @default(now())
+
+  @@map("stockLog")
 }
 
 model Transaction {

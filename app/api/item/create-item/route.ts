@@ -11,19 +11,38 @@ export async function POST(request: Request) {
     }
 
     const { name, description, costPrice, price, quantity, lowStockThreshold, categoryId, subcategoryId } = await request.json();
-    const item = await prisma.item.create({
-      data: {
-        name,
-        description,
-        costPrice: Number(costPrice),
-        price: Number(price),
-        quantity: Number(quantity),
-        lowStockThreshold: Number(lowStockThreshold),
-        category: { connect: { id: categoryId } },
-        subcategory: { connect: { id: subcategoryId } },
-        user: { connect: { id: session.user.id } },
-      },
+    
+    const item = await prisma.$transaction(async (tx) => {
+      const newItem = await tx.item.create({
+        data: {
+          name,
+          description,
+          costPrice: Number(costPrice),
+          price: Number(price),
+          quantity: Number(quantity),
+          lowStockThreshold: Number(lowStockThreshold),
+          category: { connect: { id: categoryId } },
+          subcategory: { connect: { id: subcategoryId } },
+          user: { connect: { id: session.user.id } },
+        },
+      });
+
+      if (Number(quantity) !== 0) {
+        await tx.stockLog.create({
+          data: {
+            itemId: newItem.id,
+            userId: session.user.id,
+            change: Number(quantity),
+            reason: "CREATION",
+            oldStock: 0,
+            newStock: Number(quantity),
+          },
+        });
+      }
+
+      return newItem;
     });
+
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error(error);

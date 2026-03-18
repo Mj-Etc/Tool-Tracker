@@ -29,6 +29,7 @@ import {
   Item,
   Stats,
   ReportMode,
+  StockLog,
 } from "@/components/reports/types";
 
 export default function ReportsPage() {
@@ -64,6 +65,11 @@ export default function ReportsPage() {
       ? `/api/transactions?overall=true`
       : `/api/transactions?startDate=${format(startDate!, "yyyy-MM-dd")}&endDate=${format(endDate!, "yyyy-MM-dd")}`;
 
+  const logsUrl =
+    reportMode === "overall"
+      ? `/api/reports/stock-movement?overall=true`
+      : `/api/reports/stock-movement?startDate=${format(startDate!, "yyyy-MM-dd")}&endDate=${format(endDate!, "yyyy-MM-dd")}`;
+
   const {
     data: transactions,
     isLoading: transLoading,
@@ -79,7 +85,12 @@ export default function ReportsPage() {
     isValidating: statsValidating,
   } = useSWR<Stats>(statsUrl, fetcher);
 
-  const isDataLoading = transLoading || statsLoading || itemsLoading;
+  const {
+    data: stockLogs,
+    isLoading: logsLoading,
+  } = useSWR<StockLog[]>(logsUrl, fetcher);
+
+  const isDataLoading = transLoading || statsLoading || itemsLoading || logsLoading;
   const isRefreshing = (transValidating || statsValidating) && !isDataLoading;
 
   // Business Logic Calculations
@@ -201,7 +212,7 @@ export default function ReportsPage() {
             </TabsContent>
 
             <TabsContent value="inventory" className="outline-none">
-              <InventoryStats items={items} stats={stats} />
+              <InventoryStats items={items} stats={stats} stockLogs={stockLogs} />
             </TabsContent>
           </Tabs>
         </div>

@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -50,6 +50,18 @@ export async function POST(request: Request) {
         if (product.quantity < 0) {
           throw new Error(`Insufficient stock for item: ${product.name}`);
         }
+
+        // Log the change
+        await tx.stockLog.create({
+          data: {
+            itemId: item.itemId,
+            userId: session.user.id,
+            change: -item.quantity,
+            reason: "SALE",
+            oldStock: product.quantity + item.quantity,
+            newStock: product.quantity,
+          },
+        });
       }
 
       return transaction;
@@ -59,9 +71,9 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error(error);
     if (error.name === "ZodError") {
-      return new NextResponse(JSON.stringify(error.errors), { status: 400 });
+      return NextResponse.json({ error: error.errors }, { status: 400 });
     }
-    return new NextResponse(error.message || "Internal Server Error", { status: 500 });
+    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -121,6 +133,7 @@ export async function GET(request: Request) {
         });
         return NextResponse.json(transactions);
     } catch (error) {
-        return new NextResponse("Internal Server Error", { status: 500 });
+        console.error(error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

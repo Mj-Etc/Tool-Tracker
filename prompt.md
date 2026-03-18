@@ -74,3 +74,39 @@ How to use this prompt:
 
 1. Replace the placeholders in [...] (like [NAME_OF_ENTITY]) with your specific domain data (e.g., "Items", "Transactions", "Products").
 2. Provide your specific TypeScript interface for the data to ensure the AI generates correct accessor keys.
+
+
+Implementing a daily report for inventory is a valuable consideration, but its necessity depends on what you want to
+  track. Based on the current codebase, here is an analysis of the existing system and how a daily report could fit in:
+
+  Current Implementation
+   * Real-time Snapshot: The "Inventory" tab in the reports already provides a real-time view of Stock Alerts (low stock)
+     and Asset Valuation (total liquidity vs. cost).
+   * Static Data: Currently, inventory stats (like totalItems, totalInventoryValue) in api/stats are calculated from the
+     current state of the item table. They do not change when you toggle the "Daily/Weekly/Monthly" filters because the
+     system doesn't store historical snapshots of stock levels.
+
+  Proposed: "Inventory Movement" (Daily Report)
+  Instead of just a static snapshot, a Daily Inventory Movement report would be highly beneficial for audits. This would
+  track:
+   1. Stock-In: New items added or restocked today.
+   2. Stock-Out: Items sold (already tracked via transactions) or manually removed/damaged.
+   3. Opening/Closing Balance: What you started with at 8:00 AM vs. what you have at 5:00 PM.
+
+  Recommendation
+  If you decide to proceed, I recommend implementing an "Inventory Journal" or "Audit Log". 
+
+  Why?
+   * Theft Prevention: It helps reconcile physical stock with system records.
+   * Trend Analysis: You can see if inventory value is growing or shrinking over time.
+
+  How to implement?
+   1. Schema Change: Add a StockLog table to record every time a quantity changes (who, when, why, and how much).
+   2. UI Update: Add a sub-section in the "Inventory" tab of the Reports page to list these "Movements" filtered by the
+      selected date.
+
+  Decision:
+  Would you like me to:
+   1. Plan a Stock Log system to track daily movements?
+   2. Add a "Daily Snapshot" (even if simulated for now) to the existing Inventory tab?
+   3. Leave it as is, as the "Stock Alerts" already handle immediate needs?

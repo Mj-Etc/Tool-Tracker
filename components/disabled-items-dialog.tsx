@@ -133,14 +133,18 @@ export function DisabledItemsDialog() {
         body: JSON.stringify({ ids }),
       });
 
-      if (!response.ok) throw new Error("Failed to delete items");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete items");
+      }
 
       toast.success(`Successfully deleted ${ids.length} item(s) permanently`);
       sendMessage({ type: "items:deleted" });
       setRowSelection({});
       mutate();
-    } catch (err) {
-      toast.error("An unexpected error occurred.");
+    } catch (err: any) {
+      toast.error(err.message || "An unexpected error occurred.", {duration: 5000});
     } finally {
       setIsProcessing(false);
     }

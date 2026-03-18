@@ -34,3 +34,16 @@ export type Stats = {
 };
 
 export type ReportMode = "daily" | "weekly" | "monthly" | "overall";
+
+export type StockLog = {
+  id: string;
+  itemId: string;
+  item: { name: string };
+  userId: string;
+  user: { name: string };
+  change: number;
+  reason: "SALE" | "RESTOCK" | "MANUAL_ADJUSTMENT" | "CREATION";
+  oldStock: number;
+  newStock: number;
+  createdAt: string;
+};
