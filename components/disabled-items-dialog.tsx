@@ -61,6 +61,14 @@ import { useSocket } from "./socket-provider";
 import { ScrollArea } from "./ui/scroll-area";
 import { DeleteItemButton } from "@/components/ui/delete-item-button";
 
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 interface Subcategory {
   id: string;
   name: string;
@@ -77,6 +85,9 @@ interface Item {
   name: string;
   category: Category;
   subcategory: Subcategory;
+  _count?: {
+    transactionItems: number;
+  };
 }
 
 export function DisabledItemsDialog() {
@@ -158,11 +169,41 @@ export function DisabledItemsDialog() {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
-        cell: ({ row }) => (
-          <div className="font-medium truncate max-w-37.5">
-            {row.getValue("name")}
-          </div>
-        ),
+        cell: ({ row }) => {
+          const item = row.original;
+          const txCount = item._count?.transactionItems ?? 0;
+          const isSafe = txCount === 0;
+
+          return (
+            <div className="flex items-center gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge 
+                      variant={`${
+                        isSafe 
+                          ? "success" 
+                          : "destructive"
+                      }`}
+                    >
+                      {isSafe ? "SAFE" : "USED"} 
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {isSafe ? (
+                      <p>Safe to delete: No sales history</p>
+                    ) : (
+                      <p>Has {txCount} transaction record{txCount !== 1 ? 's' : ''}. Deletion is disabled to preserve history.</p>
+                    )}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <div className="font-medium wrap-break-word whitespace-normal">
+                {item.name}
+              </div>
+            </div>
+          );
+        },
       },
       {
         id: "category_name",

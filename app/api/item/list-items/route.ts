@@ -39,6 +39,11 @@ export async function GET(request: Request) {
         user: true,
         category: true,
         subcategory: true,
+        _count: {
+          select: {
+            transactionItems: true
+          }
+        }
       },
       orderBy: {
         createdAt: "desc",
