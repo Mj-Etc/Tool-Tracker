@@ -171,7 +171,7 @@ export function ItemsTable({
             </div>
           </div>
         ),
-        filterFn: (row, value) => {
+        filterFn: (row, id, value) => {
           if (!value || value === "all") return true;
           return row.original.category?.id === value;
         },
