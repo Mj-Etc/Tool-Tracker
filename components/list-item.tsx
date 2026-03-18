@@ -259,9 +259,9 @@ export function ListItem() {
               <span
                 className={
                   quantity === 0
-                    ? "text-destructive font-bold" // Style for zero
+                    ? "text-destructive" // Style for zero
                     : quantity <= threshold
-                      ? "text-yellow-500 font-bold" // Style for low stock
+                      ? "text-yellow-500" // Style for low stock
                       : "" // Default style
                 }
               >
@@ -702,6 +702,6 @@ function ActionsCell({
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-    // Emd of row actions
+    // End of row actions
   );
 }
