@@ -40,13 +40,14 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { StockLog } from "./types";
+import { StockLog, ReportMode } from "./types";
 
 interface StockMovementTableProps {
   logs?: StockLog[];
+  reportMode?: ReportMode;
 }
 
-export function StockMovementTable({ logs = [] }: StockMovementTableProps) {
+export function StockMovementTable({ logs = [], reportMode = "overall" }: StockMovementTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -62,13 +63,15 @@ export function StockMovementTable({ logs = [] }: StockMovementTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Timestamp
+            Date/Time
             <ArrowUpDown className="ml-2 h-3 w-3" />
           </Button>
         ),
         cell: ({ row }) => (
           <div className="font-mono text-[10px] text-muted-foreground uppercase">
-            {format(new Date(row.getValue("createdAt")), "HH:mm:ss")}
+            {reportMode === "daily" 
+              ? format(new Date(row.getValue("createdAt")), "HH:mm") 
+              : format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
           </div>
         ),
       },

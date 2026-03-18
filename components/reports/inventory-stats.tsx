@@ -103,7 +103,7 @@ export function InventoryStats({ items, stats, stockLogs, reportMode, endDate }:
         </Card>
       </div>
 
-      <StockMovementTable logs={stockLogs} />
+      <StockMovementTable logs={stockLogs} reportMode={reportMode} />
     </div>
   );
 }
