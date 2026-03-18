@@ -135,14 +135,14 @@ export function ItemsTable({
               }
               className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
             >
-              Product Node
+              Item Name
               <ArrowUpDown className="ml-2 h-3 w-3" />
             </Button>
           );
         },
         cell: ({ row }) => (
           <div className="flex flex-col">
-            <span className="font-bold tracking-tight">
+            <span className="font-semibold tracking-tight">
               {row.getValue("name")}
             </span>
             <span className="text-[10px] font-mono text-muted-foreground uppercase">
@@ -163,7 +163,7 @@ export function ItemsTable({
           <div className="flex flex-col">
             <Badge
               variant="outline"
-              className="w-fit text-[10px] font-bold uppercase tracking-widest border-primary/20 bg-primary/5"
+              className="w-fit text-[10px] font-semibold uppercase tracking-widest border-primary/20 bg-primary/5"
             >
               {row.original.category?.name}
             </Badge>
@@ -205,7 +205,7 @@ export function ItemsTable({
             style: "currency",
             currency: "PHP",
           }).format(amount);
-          return <div className="font-bold tracking-tigh">{formatted}</div>;
+          return <div className="font-semibold tracking-tigh">{formatted}</div>;
         },
       },
       {
@@ -261,18 +261,18 @@ export function ItemsTable({
 
           return (
             <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-1 font-mono text-sm font-bold">
+              <div className="text-sm">
                 <span
                   className={
                     quantity === 0
                       ? "text-destructive"
                       : quantity <= threshold
                         ? "text-yellow-500"
-                        : "font-bold tracking-tigh"
+                        : "tracking-tigh font-semibold"
                   }
                 >
                   {quantity}{" "}
-                  <span className="text-[10px] uppercase font-normal text-muted-foreground tracking-tighter">
+                  <span className="text-[10px] uppercase font-normal tracking-tighter">
                     Units
                   </span>
                 </span>
@@ -469,7 +469,7 @@ export function ItemsTable({
       {selectedCount > 0 && isAdmin && (
         <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg animate-in fade-in slide-in-from-top-1 border border-primary/10">
           <span className="text-sm font-medium ml-2">
-            {selectedCount} product nodes selected
+            {selectedCount} Item selected
           </span>
           <div className="ml-auto flex gap-2">
             {selectedCount === 1 && (
@@ -488,15 +488,15 @@ export function ItemsTable({
                 >
                   <PowerOff className="mr-2 h-4 w-4" />
                   {selectedCount === 1
-                    ? "Deactivate Node"
-                    : `Deactivate ${selectedCount} Nodes`}
+                    ? "Deactivate Item"
+                    : `Deactivate ${selectedCount} Items`}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Confirm Node Deactivation</DialogTitle>
+                  <DialogTitle>Deactivate Selected Item?</DialogTitle>
                   <DialogDescription>
-                    Selected nodes will be moved to the deactivated cluster.
+                    Selected Item will be moved to the archive.
                     They will not be visible in standard inventory lists.
                   </DialogDescription>
                 </DialogHeader>
@@ -505,7 +505,7 @@ export function ItemsTable({
                     <Button variant="outline">Abort</Button>
                   </DialogClose>
                   <Button
-                    variant="secondary"
+                    variant="destructive"
                     onClick={handleBatchDisableInternal}
                     disabled={isBatchProcessing}
                   >
@@ -573,7 +573,7 @@ export function ItemsTable({
                   colSpan={columns.length}
                   className="h-32 text-center text-muted-foreground italic"
                 >
-                  No product nodes detected in cluster.
+                  No Items detected in cluster.
                 </TableCell>
               </TableRow>
             )}
@@ -584,7 +584,7 @@ export function ItemsTable({
       {/* Pagination */}
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
-          Node Page {table.getState().pagination.pageIndex + 1} of{" "}
+          Items Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
@@ -650,7 +650,7 @@ function ActionsCell({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            Node Actions
+            Item Actions
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <EditItemDialog
@@ -669,9 +669,10 @@ function ActionsCell({
             trigger={
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}
+                variant="destructive"
               >
                 <PowerOff className="mr-2 h-4 w-4" />
-                Disable
+                Deactivate
               </DropdownMenuItem>
             }
           />

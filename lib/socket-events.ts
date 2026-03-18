@@ -23,13 +23,42 @@ export const SOCKET_EVENT_MAP: Record<
     mutate((key) => typeof key === "string" && key.startsWith("/api/stats"));
     mutate((key) => typeof key === "string" && key.startsWith("/api/reports/stock-movement"));
   },
-  "items:updated": ["/api/item/list-items", "/api/stats"],
-  "items:deleted": ["/api/item/list-items", "/api/stats"],
-  "items:disabled": [
-    "/api/item/list-items?disabled=true",
-    "/api/item/list-items",
-    "/api/stats",
-  ],
+  "items:updated": (mutate) => {
+    // Revalidate all keys starting with these paths
+    mutate(
+      (key) =>
+        typeof key === "string" && key.startsWith("/api/item/list-items"),
+    );
+    mutate(
+      (key) => typeof key === "string" && key.startsWith("/api/transactions"),
+    );
+    mutate((key) => typeof key === "string" && key.startsWith("/api/stats"));
+    mutate((key) => typeof key === "string" && key.startsWith("/api/reports/stock-movement"));
+  },
+  "items:deleted": (mutate) => {
+    // Revalidate all keys starting with these paths
+    mutate(
+      (key) =>
+        typeof key === "string" && key.startsWith("/api/item/list-items"),
+    );
+    mutate(
+      (key) => typeof key === "string" && key.startsWith("/api/transactions"),
+    );
+    mutate((key) => typeof key === "string" && key.startsWith("/api/stats"));
+    mutate((key) => typeof key === "string" && key.startsWith("/api/reports/stock-movement"));
+  },
+  "items:disabled": (mutate) => {
+    // Revalidate all keys starting with these paths
+    mutate(
+      (key) =>
+        typeof key === "string" && key.startsWith("/api/item/list-items"),
+    );
+    mutate(
+      (key) => typeof key === "string" && key.startsWith("/api/transactions"),
+    );
+    mutate((key) => typeof key === "string" && key.startsWith("/api/stats"));
+    mutate((key) => typeof key === "string" && key.startsWith("/api/reports/stock-movement"));
+  },
 
   // Transaction events
   "transaction:created": (mutate) => {

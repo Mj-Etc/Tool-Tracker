@@ -66,9 +66,9 @@ export function DisableItemButton({ itemId, onSuccess, trigger }: DisableProps) 
       </DialogTrigger>
       <DialogContent className="w-96">
         <DialogHeader>
-          <DialogTitle>Disable Item?</DialogTitle>
+          <DialogTitle>Deactivate Item?</DialogTitle>
           <DialogDescription>
-            This will hide the item from the main list. You can re-enable it later from the Disabled Items menu.
+            This will hide the item from the main list. You can restore it later from the Archive menu.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex justify-end gap-2">
@@ -76,7 +76,7 @@ export function DisableItemButton({ itemId, onSuccess, trigger }: DisableProps) 
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button
-            variant="secondary"
+            variant="destructive"
             disabled={isDisabling}
             onClick={handleDisable}
           >
@@ -86,7 +86,7 @@ export function DisableItemButton({ itemId, onSuccess, trigger }: DisableProps) 
                 Disabling...
               </>
             ) : (
-              "Confirm Disable"
+              "Confirm Deactivation"
             )}
           </Button>
         </DialogFooter>
