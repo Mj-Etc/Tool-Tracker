@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
-import { Trash2 } from "lucide-react";
+import { ShieldAlert, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -21,7 +21,13 @@ interface DeleteProps {
   ids: string[];
   onSuccess?: () => void;
   trigger?: React.ReactNode;
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
   disabled?: boolean;
@@ -34,7 +40,7 @@ export function DeleteItemButton({
   variant = "destructive",
   size = "sm",
   className,
-  disabled
+  disabled,
 }: DeleteProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -48,13 +54,13 @@ export function DeleteItemButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
-      
+
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to delete item.");
       }
-      
+
       sendMessage({ type: "items:deleted" });
       setOpen(false);
       toast.success(`Successfully deleted ${ids.length} item(s) permanently`);
@@ -73,7 +79,9 @@ export function DeleteItemButton({
           <Button
             variant={variant}
             size={size}
-            className={className || "w-full flex items-center justify-center gap-2"}
+            className={
+              className || "w-full flex items-center justify-center gap-2"
+            }
             disabled={disabled}
           >
             <Trash2 className="h-4 w-4" />
@@ -83,9 +91,14 @@ export function DeleteItemButton({
       </DialogTrigger>
       <DialogContent className="w-96">
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-destructive" />
+            Are you absolutely sure?
+          </DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete {ids.length === 1 ? "the item" : `${ids.length} items`} and remove all its records.
+            This action cannot be undone. This will permanently delete{" "}
+            {ids.length === 1 ? "the item" : `${ids.length} items`} and remove
+            all its records.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex justify-end gap-2">
