@@ -483,7 +483,7 @@ export function ItemsTable({
                   variant="secondary"
                   size="sm"
                   disabled={isBatchProcessing}
-                  className="text-amber-600 hover:text-amber-700"
+                  className="text-destructive hover:text-destructive/70"
                 >
                   <PowerOff className="mr-2 h-4 w-4" />
                   {selectedCount === 1

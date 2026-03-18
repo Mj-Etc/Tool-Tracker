@@ -261,13 +261,19 @@ export function DisabledItemsDialog() {
   const selectedCount = selectedRows.length;
   const selectedCategory =
     (table.getColumn("category_name")?.getFilterValue() as string) ?? "all";
+  const disabledCount = items?.length ?? 0;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="relative">
           <Archive size={16} className="mr-2" />
           Archive
+          {disabledCount > 0 && (
+            <div className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] text-white">
+              {disabledCount}
+            </div>
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
