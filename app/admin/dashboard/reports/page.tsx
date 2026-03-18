@@ -213,7 +213,7 @@ export default function ReportsPage() {
             <div className="w-5 h-5 flex items-center justify-center">
               {isRefreshing && <Spinner className="h-4 w-4 text-muted-foreground animate-spin" />}
             </div>
-            <div className="w-[280px]">
+            <div className="w-70">
               {reportMode === "daily" ? (
                 <DatePicker date={selectedDate} setDate={(d) => d && setSelectedDate(d)} />
               ) : (
@@ -246,7 +246,7 @@ export default function ReportsPage() {
                 <div className="text-2xl font-bold">₱{revenue.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                   {reportMode === "daily" ? (
-                    <span className="text-emerald-500 flex items-center"><ArrowUpRight className="h-3 w-3" /> 12% vs yesterday</span>
+                    <span>Gross income today</span>
                   ) : (
                     <span className="text-muted-foreground uppercase tracking-tighter">Lifetime gross income</span>
                   )}
@@ -369,7 +369,7 @@ export default function ReportsPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ScrollArea className="h-[400px] pr-4">
+                    <ScrollArea className="h-100 pr-4">
                       <div className="space-y-4">
                         {stats?.fastMoving.map((item, idx) => (
                           <div key={item.id} className="flex items-center justify-between group">
@@ -389,7 +389,7 @@ export default function ReportsPage() {
                           </div>
                         ))}
                         {stats?.fastMoving.length === 0 && (
-                          <div className="h-[200px] flex items-center justify-center text-muted-foreground italic text-sm border border-dashed rounded-lg">
+                          <div className="h-50 flex items-center justify-center text-muted-foreground italic text-sm border border-dashed rounded-lg">
                             No movement detected
                           </div>
                         )}
@@ -412,7 +412,7 @@ export default function ReportsPage() {
                   <Table>
                     <TableHeader>
                       <TableRow className="hover:bg-transparent">
-                        <TableHead className="w-[120px]">Date/Time</TableHead>
+                        <TableHead className="w-30">Date/Time</TableHead>
                         <TableHead>Customer</TableHead>
                         <TableHead>Cashier</TableHead>
                         <TableHead className="text-right">Items</TableHead>
@@ -455,7 +455,7 @@ export default function ReportsPage() {
                     <CardDescription>Items requiring immediate reorder</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ScrollArea className="h-[350px] pr-4">
+                    <ScrollArea className="h-87.5 pr-4">
                       <div className="space-y-2">
                         {items?.filter(i => i.quantity <= (i.lowStockThreshold ?? 0)).map(i => (
                           <div key={i.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors">
@@ -474,7 +474,7 @@ export default function ReportsPage() {
                           </div>
                         ))}
                         {items?.filter(i => i.quantity <= (i.lowStockThreshold ?? 0)).length === 0 && (
-                          <div className="h-[100px] flex items-center justify-center text-muted-foreground text-sm border border-dashed rounded-lg">
+                          <div className="h-25 flex items-center justify-center text-muted-foreground text-sm border border-dashed rounded-lg">
                             All stock levels within safe limits
                           </div>
                         )}
