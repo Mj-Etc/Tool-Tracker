@@ -59,6 +59,7 @@ import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
 import { useSocket } from "./socket-provider";
 import { ScrollArea } from "./ui/scroll-area";
+import { DeleteItemButton } from "@/components/ui/delete-item-button";
 
 interface Subcategory {
   id: string;
@@ -112,39 +113,6 @@ export function DisabledItemsDialog() {
       mutate();
     } catch (err) {
       toast.error("An unexpected error occurred.");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handlePermanentDelete = async (ids: string[]) => {
-    if (
-      !confirm(
-        `Are you sure you want to PERMANENTLY delete ${ids.length} item(s)? This action cannot be undone.`,
-      )
-    )
-      return;
-
-    setIsProcessing(true);
-    try {
-      const response = await fetch("/api/item/batch-permanent-delete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to delete items");
-      }
-
-      toast.success(`Successfully deleted ${ids.length} item(s) permanently`);
-      sendMessage({ type: "items:deleted" });
-      setRowSelection({});
-      mutate();
-    } catch (err: any) {
-      toast.error(err.message || "An unexpected error occurred.", {duration: 5000});
     } finally {
       setIsProcessing(false);
     }
@@ -222,13 +190,13 @@ export function DisabledItemsDialog() {
             <ActionsCell
               row={row}
               handleRestore={handleRestore}
-              handlePermanentDelete={handlePermanentDelete}
+              onSuccess={() => mutate()}
             />
           );
         },
       },
     ],
-    [handleRestore, handlePermanentDelete],
+    [handleRestore, mutate],
   );
 
   const table = useReactTable({
@@ -342,24 +310,15 @@ export function DisabledItemsDialog() {
                   )}
                   Restore
                 </Button>
-                <Button
-                  variant="destructive"
+                <DeleteItemButton
+                  ids={selectedRows.map((r) => r.original.id)}
+                  onSuccess={() => {
+                    mutate();
+                    setRowSelection({});
+                  }}
                   size="sm"
-                  className="h-8 text-xs"
-                  onClick={() =>
-                    handlePermanentDelete(
-                      selectedRows.map((r) => r.original.id),
-                    )
-                  }
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? (
-                    <Spinner className="mr-1 h-3 w-3" />
-                  ) : (
-                    <Trash2 className="mr-1 h-3 w-3" />
-                  )}
-                  Delete
-                </Button>
+                  className="h-8 text-xs flex items-center justify-center gap-1 px-3"
+                />
               </div>
             </div>
           )}
@@ -471,12 +430,13 @@ export function DisabledItemsDialog() {
 function ActionsCell({
   row,
   handleRestore,
-  handlePermanentDelete,
+  onSuccess,
 }: {
   row: any;
   handleRestore: (ids: string[]) => void;
-  handlePermanentDelete: (ids: string[]) => void;
+  onSuccess: () => void;
 }) {
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const item = row.original;
   const isSelected = row.getIsSelected();
 
@@ -486,7 +446,7 @@ function ActionsCell({
 
   return (
     <div className="flex justify-end">
-      <DropdownMenu>
+      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <MoreHorizontal className="h-4 w-4" />
@@ -499,13 +459,25 @@ function ActionsCell({
             <RotateCcw className="mr-2 h-4 w-4" />
             Restore
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handlePermanentDelete([item.id])}
-            className="text-destructive focus:text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete Permanently
-          </DropdownMenuItem>
+          <div className="p-1">
+            <DeleteItemButton
+              ids={[item.id]}
+              onSuccess={() => {
+                onSuccess();
+                setDropdownOpen(false);
+              }}
+              trigger={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full flex items-center justify-start gap-2 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete Permanently
+                </Button>
+              }
+            />
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

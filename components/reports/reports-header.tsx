@@ -59,12 +59,6 @@ export function ReportsHeader({
           className="border p-1 bg-muted/50 rounded-lg"
         >
           <ToggleGroupItem
-            value="overall"
-            className="px-3 h-7 text-[10px] font-bold uppercase tracking-wider data-[state=on]:bg-background"
-          >
-            Overall
-          </ToggleGroupItem>
-          <ToggleGroupItem
             value="daily"
             className="px-3 h-7 text-[10px] font-bold uppercase tracking-wider data-[state=on]:bg-background"
           >
@@ -81,6 +75,12 @@ export function ReportsHeader({
             className="px-3 h-7 text-[10px] font-bold uppercase tracking-wider data-[state=on]:bg-background"
           >
             Monthly
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="overall"
+            className="px-3 h-7 text-[10px] font-bold uppercase tracking-wider data-[state=on]:bg-background"
+          >
+            Overall
           </ToggleGroupItem>
         </ToggleGroup>
 
