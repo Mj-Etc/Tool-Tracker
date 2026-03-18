@@ -32,7 +32,7 @@ import {
 } from "@/components/reports/types";
 
 export default function ReportsPage() {
-  const [reportMode, setReportMode] = useState<ReportMode>("daily");
+  const [reportMode, setReportMode] = useState<ReportMode>("overall");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const dateStr = format(selectedDate, "yyyy-MM-dd");
