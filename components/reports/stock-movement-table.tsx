@@ -180,7 +180,7 @@ export function StockMovementTable({ logs = [], reportMode = "overall" }: StockM
         enableGlobalFilter: false,
       },
     ],
-    [],
+    [reportMode],
   );
 
   const table = useReactTable({
