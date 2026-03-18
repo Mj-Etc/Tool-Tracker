@@ -69,20 +69,35 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const dateParam = searchParams.get("date");
+        const startDateParam = searchParams.get("startDate");
+        const endDateParam = searchParams.get("endDate");
         const isOverall = searchParams.get("overall") === "true";
 
         let where = {};
-        if (!isOverall && dateParam) {
-            const startDate = new Date(dateParam);
-            startDate.setHours(0, 0, 0, 0);
-            const endDate = new Date(dateParam);
-            endDate.setHours(23, 59, 59, 999);
-            where = {
-                createdAt: {
-                    gte: startDate,
-                    lte: endDate
-                }
-            };
+        if (!isOverall) {
+            if (startDateParam && endDateParam) {
+                const start = new Date(startDateParam);
+                start.setHours(0, 0, 0, 0);
+                const end = new Date(endDateParam);
+                end.setHours(23, 59, 59, 999);
+                where = {
+                    createdAt: {
+                        gte: start,
+                        lte: end
+                    }
+                };
+            } else if (dateParam) {
+                const startDate = new Date(dateParam);
+                startDate.setHours(0, 0, 0, 0);
+                const endDate = new Date(dateParam);
+                endDate.setHours(23, 59, 59, 999);
+                where = {
+                    createdAt: {
+                        gte: startDate,
+                        lte: endDate
+                    }
+                };
+            }
         }
 
         const transactions = await prisma.transaction.findMany({

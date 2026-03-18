@@ -12,6 +12,8 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const dateParam = searchParams.get("date");
+    const startDateParam = searchParams.get("startDate");
+    const endDateParam = searchParams.get("endDate");
     const isOverall = searchParams.get("overall") === "true";
 
     let startDate: Date | undefined;
@@ -19,7 +21,12 @@ export async function GET(request: Request) {
     let dateFilter = {};
 
     if (!isOverall) {
-      if (dateParam) {
+      if (startDateParam && endDateParam) {
+        startDate = new Date(startDateParam);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(endDateParam);
+        endDate.setHours(23, 59, 59, 999);
+      } else if (dateParam) {
         startDate = new Date(dateParam);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(dateParam);
