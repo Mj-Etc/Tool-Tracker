@@ -15,7 +15,7 @@ export function InventoryStats({ items, stats }: InventoryStatsProps) {
   const lowStockItems = items?.filter(i => i.quantity <= (i.lowStockThreshold ?? 0)) || [];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
       <Card className="shadow-sm border-rose-200 dark:border-rose-900">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-rose-600">
@@ -25,7 +25,7 @@ export function InventoryStats({ items, stats }: InventoryStatsProps) {
           <CardDescription>Items requiring immediate reorder</CardDescription>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-87.5 pr-4">
+          <ScrollArea className="h-83.5 pr-4">
             <div className="space-y-2">
               {lowStockItems.map(i => (
                 <div key={i.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors">

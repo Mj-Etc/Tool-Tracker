@@ -30,7 +30,7 @@ export function RevenueTrendChart({ reportMode, chartData }: RevenueTrendChartPr
         </CardTitle>
         <CardDescription>Daily revenue performance for the selected period</CardDescription>
       </CardHeader>
-      <CardContent className="h-[300px] w-full">
+      <CardContent className="h-75 w-full">
         <ChartContainer config={chartConfig} className="h-full w-full">
           <BarChart data={chartData}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
