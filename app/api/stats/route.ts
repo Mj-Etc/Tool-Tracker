@@ -72,13 +72,15 @@ export async function GET(request: Request) {
 
       const logMap = new Map(logsAfterEndDate.map(log => [log.itemId, log._sum.change || 0]));
       
-      historicalItems = allItems.map(item => {
-        const changeAfter = logMap.get(item.id) || 0;
-        return {
-          ...item,
-          quantity: Math.max(0, item.quantity - changeAfter)
-        };
-      });
+      historicalItems = allItems
+        .filter(item => item.createdAt <= effectiveEndDate)
+        .map(item => {
+          const changeAfter = logMap.get(item.id) || 0;
+          return {
+            ...item,
+            quantity: Math.max(0, item.quantity - changeAfter)
+          };
+        });
     }
 
     const totalItems = historicalItems.length;
