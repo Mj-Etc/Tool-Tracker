@@ -14,14 +14,15 @@ export const SOCKET_EVENT_MAP: Record<
   "items:created": ["/api/item/list-items", "/api/stats"],
   "items:updated": ["/api/item/list-items", "/api/stats"],
   "items:deleted": ["/api/item/list-items", "/api/stats"],
-  "items:disabled": ["/api/item/list-items?disabled=true"],
+  "items:disabled": ["/api/item/list-items?disabled=true", "/api/item/list-items", "/api/stats"],
 
   // Transaction events
-  "transaction:created": [
-    "/api/item/list-items",
-    "/api/transactions",
-    "/api/stats",
-  ],
+  "transaction:created": (mutate) => {
+    // Revalidate all keys starting with these paths
+    mutate((key) => typeof key === "string" && key.startsWith("/api/item/list-items"));
+    mutate((key) => typeof key === "string" && key.startsWith("/api/transactions"));
+    mutate((key) => typeof key === "string" && key.startsWith("/api/stats"));
+  },
 
   // Placeholder for future events
   "user:profile_updated": "/api/auth/session",

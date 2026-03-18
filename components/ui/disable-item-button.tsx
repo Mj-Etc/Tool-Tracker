@@ -38,7 +38,7 @@ export function DisableItemButton({ itemId, onSuccess }: DisableProps) {
       if (!response.ok) {
         throw new Error("Failed to disable item.");
       }
-      sendMessage({ type: "items:updated" });
+      sendMessage({ type: "items:disabled" });
       setOpen(false);
       onSuccess?.();
       toast.success("Item disabled successfully!");
