@@ -30,6 +30,7 @@ import {
 } from "./ui/select";
 import { authClient } from "@/lib/auth-client";
 import { IconPlus } from "@tabler/icons-react";
+import { mutate } from "swr";
 
 const Personnel = PersonnelSchema;
 
@@ -78,10 +79,10 @@ export function AddPersonnelDialog() {
         return;
       }
 
+      mutate("/api/users");
       toast.success(`${data.name} added as ${data.role}!`);
       setOpen(false);
       reset();
-      router.refresh();
     } catch (err) {
       toast.error("An unexpected error occurred.");
       console.error(err);

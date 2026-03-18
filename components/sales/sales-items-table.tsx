@@ -11,7 +11,17 @@ import {
   useReactTable,
   SortingState,
   ColumnFiltersState,
+  RowData,
 } from "@tanstack/react-table";
+
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    quantities: Record<string, number>;
+    onQuantityChange: (itemId: string, val: string) => void;
+    onAddToCart: (item: ItemWithUser) => void;
+  }
+}
+
 import {
   ArrowUpDown,
   Search,
@@ -146,16 +156,17 @@ export function SalesItemsTable({
       {
         id: "orderQty",
         header: () => <span className="text-[10px] uppercase font-bold tracking-wider">Order Qty</span>,
-        cell: ({ row }) => {
+        cell: ({ row, table }) => {
           const item = row.original;
+          const meta = table.options.meta;
           return (
             <Input 
               type="number" 
               min="1" 
               max={item.quantity}
               placeholder="Qty"
-              value={quantities[item.id] || ""}
-              onChange={(e) => onQuantityChange(item.id, e.target.value)}
+              value={meta?.quantities[item.id] || ""}
+              onChange={(e) => meta?.onQuantityChange(item.id, e.target.value)}
               disabled={item.quantity <= 0}
               className="w-20 text-center font-bold h-8 text-xs bg-muted/20"
             />
@@ -165,13 +176,14 @@ export function SalesItemsTable({
       {
         id: "actions",
         header: () => <span className="text-[10px] uppercase font-bold tracking-wider">Action</span>,
-        cell: ({ row }) => {
+        cell: ({ row, table }) => {
           const item = row.original;
-          const qtyToAdd = quantities[item.id] || 1;
+          const meta = table.options.meta;
+          const qtyToAdd = meta?.quantities[item.id] || 1;
           return (
             <Button 
               size="sm" 
-              onClick={() => onAddToCart(item)}
+              onClick={() => meta?.onAddToCart(item)}
               disabled={item.quantity <= 0 || qtyToAdd <= 0}
               className="h-8 px-3 bg-primary hover:bg-primary/90 text-[10px] uppercase font-bold tracking-widest"
             >
@@ -182,7 +194,7 @@ export function SalesItemsTable({
         },
       },
     ],
-    [quantities, onQuantityChange, onAddToCart]
+    []
   );
 
   const table = useReactTable({
@@ -197,6 +209,11 @@ export function SalesItemsTable({
     state: {
       sorting,
       columnFilters,
+    },
+    meta: {
+      quantities,
+      onQuantityChange,
+      onAddToCart,
     },
     initialState: {
       pagination: {
