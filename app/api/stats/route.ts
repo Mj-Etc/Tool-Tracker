@@ -40,18 +40,54 @@ export async function GET(request: Request) {
     }
 
     // 1. Core Inventory Stats
-    const totalItems = await prisma.item.count();
-    const outOfStock = await prisma.item.count({ where: { quantity: 0 } });
-    
     const allItems = await prisma.item.findMany({
-      select: { id: true, quantity: true, lowStockThreshold: true, costPrice: true, price: true, createdAt: true, name: true }
+      select: { 
+        id: true, 
+        quantity: true, 
+        lowStockThreshold: true, 
+        costPrice: true, 
+        price: true, 
+        createdAt: true, 
+        name: true,
+        isActive: true
+      }
     });
+
+    // If endDate is provided (not overall), calculate historical quantities
+    const effectiveEndDate = isOverall ? null : endDate;
     
-    const lowStock = allItems.filter(item => item.quantity > 0 && item.quantity <= item.lowStockThreshold).length;
+    let historicalItems = allItems;
+    if (effectiveEndDate) {
+      const logsAfterEndDate = await prisma.stockLog.groupBy({
+        by: ['itemId'],
+        where: {
+          createdAt: {
+            gt: effectiveEndDate
+          }
+        },
+        _sum: {
+          change: true
+        }
+      });
+
+      const logMap = new Map(logsAfterEndDate.map(log => [log.itemId, log._sum.change || 0]));
+      
+      historicalItems = allItems.map(item => {
+        const changeAfter = logMap.get(item.id) || 0;
+        return {
+          ...item,
+          quantity: Math.max(0, item.quantity - changeAfter)
+        };
+      });
+    }
+
+    const totalItems = historicalItems.length;
+    const outOfStock = historicalItems.filter(i => i.quantity <= 0).length;
+    const lowStock = historicalItems.filter(item => item.quantity > 0 && item.quantity <= item.lowStockThreshold).length;
 
     // 2. Financials & KPIs
-    const totalInventoryValue = allItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
-    const totalInventoryCost = allItems.reduce((sum, item) => sum + (Number(item.costPrice) * item.quantity), 0);
+    const totalInventoryValue = historicalItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
+    const totalInventoryCost = historicalItems.reduce((sum, item) => sum + (Number(item.costPrice) * item.quantity), 0);
 
     // 3. Sales Analysis
     const recentTransactions = await prisma.transaction.findMany({

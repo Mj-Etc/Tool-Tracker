@@ -13,6 +13,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const activeOnly = searchParams.get("active") === "true";
     const disabledOnly = searchParams.get("disabled") === "true";
+    const endDateParam = searchParams.get("endDate");
 
     let where: any = {};
     if (activeOnly) {
@@ -24,7 +25,15 @@ export async function GET(request: Request) {
       where.isActive = true;
     }
 
-    const items = await prisma.item.findMany({
+    if (endDateParam) {
+      const endDate = new Date(endDateParam);
+      endDate.setHours(23, 59, 59, 999);
+      where.createdAt = {
+        lte: endDate
+      };
+    }
+
+    let items = await prisma.item.findMany({
       where,
       include: {
         user: true,
@@ -35,6 +44,34 @@ export async function GET(request: Request) {
         createdAt: "desc",
       },
     });
+
+    if (endDateParam) {
+      const endDate = new Date(endDateParam);
+      endDate.setHours(23, 59, 59, 999);
+
+      const logsAfterEndDate = await prisma.stockLog.groupBy({
+        by: ['itemId'],
+        where: {
+          createdAt: {
+            gt: endDate
+          }
+        },
+        _sum: {
+          change: true
+        }
+      });
+
+      const logMap = new Map(logsAfterEndDate.map(log => [log.itemId, log._sum.change || 0]));
+      
+      items = items.map(item => {
+        const changeAfter = logMap.get(item.id) || 0;
+        return {
+          ...item,
+          quantity: Math.max(0, item.quantity - changeAfter)
+        } as any;
+      });
+    }
+
     return NextResponse.json(items, { status: 200 });
   } catch (error) {
     console.error(error);

@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 
@@ -26,7 +25,7 @@ export function DatePicker({ date, setDate, label }: DatePickerProps) {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "w-70 justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
         >
@@ -39,7 +38,7 @@ export function DatePicker({ date, setDate, label }: DatePickerProps) {
           mode="single"
           selected={date}
           onSelect={setDate}
-          initialFocus
+          autoFocus
         />
       </PopoverContent>
     </Popover>

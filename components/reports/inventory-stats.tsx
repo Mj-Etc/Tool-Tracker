@@ -7,14 +7,21 @@ import { AlertTriangle, Package } from "lucide-react";
 import { Item, Stats, StockLog } from "./types";
 import { StockMovementTable } from "./stock-movement-table";
 
+import { format } from "date-fns";
+import { ReportMode } from "./types";
+
 interface InventoryStatsProps {
   items?: Item[];
   stats?: Stats;
   stockLogs?: StockLog[];
+  reportMode?: ReportMode;
+  endDate?: Date;
 }
 
-export function InventoryStats({ items, stats, stockLogs }: InventoryStatsProps) {
+export function InventoryStats({ items, stats, stockLogs, reportMode, endDate }: InventoryStatsProps) {
   const lowStockItems = items?.filter(i => i.quantity <= (i.lowStockThreshold ?? 0)) || [];
+  const isHistorical = reportMode !== "overall";
+  const dateLabel = endDate ? format(endDate, "MMMM d, yyyy") : "";
 
   return (
     <div className="space-y-6">
@@ -25,7 +32,11 @@ export function InventoryStats({ items, stats, stockLogs }: InventoryStatsProps)
               <AlertTriangle className="h-5 w-5" />
               Stock Alerts
             </CardTitle>
-            <CardDescription>Items requiring immediate reorder</CardDescription>
+            <CardDescription>
+              {isHistorical 
+                ? `Items that were below threshold as of ${dateLabel}` 
+                : "Items requiring immediate reorder"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="*:data-radix-scroll-area-viewport:max-h-83.5 pr-4">
@@ -62,7 +73,11 @@ export function InventoryStats({ items, stats, stockLogs }: InventoryStatsProps)
               <Package className="h-5 w-5" />
               Asset Valuation
             </CardTitle>
-            <CardDescription>Current market and cost value of inventory</CardDescription>
+            <CardDescription>
+              {isHistorical 
+                ? `Historical valuation as of ${dateLabel}` 
+                : "Current market and cost value of inventory"}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-6 rounded-lg border bg-background space-y-2">

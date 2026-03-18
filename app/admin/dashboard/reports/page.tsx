@@ -70,15 +70,22 @@ export default function ReportsPage() {
       ? `/api/reports/stock-movement?overall=true`
       : `/api/reports/stock-movement?startDate=${format(startDate!, "yyyy-MM-dd")}&endDate=${format(endDate!, "yyyy-MM-dd")}`;
 
+  const itemUrl =
+    reportMode === "overall"
+      ? `/api/item/list-items`
+      : `/api/item/list-items?endDate=${format(endDate!, "yyyy-MM-dd")}`;
+
   const {
     data: transactions,
     isLoading: transLoading,
     isValidating: transValidating,
   } = useSWR<Transaction[]>(transUrl, fetcher);
+
   const { data: items, isLoading: itemsLoading } = useSWR<Item[]>(
-    "/api/item/list-items",
+    itemUrl,
     fetcher,
   );
+
   const {
     data: stats,
     isLoading: statsLoading,
@@ -212,7 +219,13 @@ export default function ReportsPage() {
             </TabsContent>
 
             <TabsContent value="inventory" className="outline-none">
-              <InventoryStats items={items} stats={stats} stockLogs={stockLogs} />
+              <InventoryStats 
+                items={items} 
+                stats={stats} 
+                stockLogs={stockLogs} 
+                reportMode={reportMode}
+                endDate={endDate}
+              />
             </TabsContent>
           </Tabs>
         </div>
