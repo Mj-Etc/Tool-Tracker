@@ -22,6 +22,11 @@ import {
   Filter,
   ChevronsLeft,
   ChevronsRight,
+  Package,
+  Tag,
+  Layers,
+  CircleDollarSign,
+  Boxes,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -114,27 +119,32 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
             <Button
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-              className="-ml-4"
+              className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
             >
-              Product Name
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              Product Node
+              <ArrowUpDown className="ml-2 h-3 w-3" />
             </Button>
           );
         },
-        cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
+        cell: ({ row }) => (
+            <div className="flex flex-col">
+                <span className="font-bold tracking-tight">{row.getValue("name")}</span>
+                <span className="text-[10px] font-mono text-muted-foreground uppercase">UID: {row.original.id.slice(-8)}</span>
+            </div>
+        ),
       },
       {
         id: "category_name",
         accessorKey: "category.name",
-        header: "Category",
+        header: () => <span className="text-[10px] uppercase font-bold tracking-wider">Classification</span>,
         cell: ({ row }) => (
           <div className="flex flex-col">
-            <Badge variant="outline" className="w-fit">
-              {row.original.category?.name}
+            <Badge variant="outline" className="w-fit text-[10px] font-bold uppercase tracking-widest border-primary/20 bg-primary/5">
+              <Tag className="mr-1 h-3 w-3" /> {row.original.category?.name}
             </Badge>
-            <span className="text-[10px] text-muted-foreground ml-1">
-              {row.original.subcategory?.name}
-            </span>
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground ml-1 mt-0.5 uppercase font-mono">
+              <Layers className="h-2 w-2" /> {row.original.subcategory?.name}
+            </div>
           </div>
         ),
         filterFn: (row, id, value) => {
@@ -158,10 +168,10 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
+            className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Price
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            Unit Price
+            <ArrowUpDown className="ml-2 h-3 w-3" />
           </Button>
         ),
         cell: ({ row }) => {
@@ -170,7 +180,12 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
             style: "currency",
             currency: "PHP",
           }).format(amount);
-          return <div className="font-medium">{formatted}</div>;
+          return (
+            <div className="flex items-center gap-1 font-mono font-bold text-emerald-600">
+                <CircleDollarSign className="h-3 w-3 opacity-70" />
+                {formatted}
+            </div>
+          );
         },
       },
       {
@@ -179,33 +194,36 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
+            className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Stock
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            Stock Level
+            <ArrowUpDown className="ml-2 h-3 w-3" />
           </Button>
         ),
         cell: ({ row }) => {
           const quantity = row.original.quantity;
           const threshold = row.original.lowStockThreshold;
 
-          let statusLabel = "In Stock";
+          let statusLabel = "Optimal";
           let statusColor = "bg-green-400 text-green-900 font-bold hover:bg-green-400/90";
 
           if (quantity === 0) {
-            statusLabel = "Out of Stock";
+            statusLabel = "Depleted";
             statusColor = "bg-destructive text-red-900 font-bold hover:bg-destructive/90";
           } else if (quantity <= threshold) {
-            statusLabel = "Low Stock";
+            statusLabel = "Critical";
             statusColor = "bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-400/90";
           }
 
           return (
             <div className="flex flex-col gap-1">
-              <span className={quantity === 0 ? "text-destructive" : quantity <= threshold ? "text-yellow-500" : ""}>
-                {quantity} units
-              </span>
-              <Badge className={`${statusColor} text-[10px] py-0 h-4 w-fit`}>
+              <div className="flex items-center gap-1 font-mono text-sm font-bold">
+                <Boxes className="h-3 w-3 text-muted-foreground" />
+                <span className={quantity === 0 ? "text-destructive" : quantity <= threshold ? "text-yellow-500" : ""}>
+                    {quantity} <span className="text-[10px] uppercase font-normal text-muted-foreground tracking-tighter">Units</span>
+                </span>
+              </div>
+              <Badge className={`${statusColor} text-[9px] py-0 h-3.5 w-fit uppercase tracking-tighter px-1.5`}>
                 {statusLabel}
               </Badge>
             </div>
@@ -271,10 +289,10 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search items..."
+            placeholder="Search inventory cluster..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-            className="pl-9"
+            className="pl-9 bg-muted/20 border-muted-foreground/20"
           />
         </div>
 
@@ -284,7 +302,7 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
               <Button variant="outline" size="sm" className="h-9 gap-2">
                 <Filter className="h-4 w-4" />
                 {selectedCategory === "all"
-                  ? "Filter by Category"
+                  ? "All Classifications"
                   : categories?.find((c) => c.id === selectedCategory)?.name}
                 {!!table.getColumn("subcategory_name")?.getFilterValue() && (
                   <span className="text-muted-foreground font-normal">
@@ -295,7 +313,7 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
-              <DropdownMenuLabel>Categories</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Classifications</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {
                 table.getColumn("category_name")?.setFilterValue("");
@@ -364,43 +382,45 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
 
       {/* Batch Actions */}
       {selectedCount > 0 && isAdmin && (
-        <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg animate-in fade-in slide-in-from-top-1">
-          <span className="text-sm font-medium ml-2">{selectedCount} row(s) selected</span>
+        <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg animate-in fade-in slide-in-from-top-1 border border-primary/10">
+          <span className="text-sm font-medium ml-2">{selectedCount} product nodes selected</span>
           <div className="ml-auto flex gap-2">
             {selectedCount === 1 && <EditItemDialog item={selectedRows[0].original} />}
             <Dialog open={isBatchDisableDialogOpen} onOpenChange={setIsBatchDisableDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="secondary" size="sm" disabled={isBatchProcessing}>
+                <Button variant="secondary" size="sm" disabled={isBatchProcessing} className="text-amber-600 hover:text-amber-700">
                   <PowerOff className="mr-2 h-4 w-4" />
-                  {selectedCount === 1 ? "Disable Item" : `Disable ${selectedCount} Items`}
+                  {selectedCount === 1 ? "Deactivate Node" : `Deactivate ${selectedCount} Nodes`}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Are you sure you want to disable {selectedCount} item(s)?</DialogTitle>
-                  <DialogDescription>This will hide the selected items from the main list. You can re-enable them later.</DialogDescription>
+                  <DialogTitle>Confirm Node Deactivation</DialogTitle>
+                  <DialogDescription>
+                    Selected nodes will be moved to the deactivated cluster. They will not be visible in standard inventory lists.
+                  </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                  <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+                  <DialogClose asChild><Button variant="outline">Abort</Button></DialogClose>
                   <Button variant="secondary" onClick={handleBatchDisableInternal} disabled={isBatchProcessing}>
-                    {isBatchProcessing && <Spinner className="mr-2 h-4 w-4" />} Confirm Disable
+                    {isBatchProcessing && <Spinner className="mr-2 h-4 w-4" />} Confirm Deactivation
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            <Button variant="ghost" size="sm" onClick={() => table.resetRowSelection()}>Clear Selection</Button>
+            <Button variant="ghost" size="sm" onClick={() => table.resetRowSelection()} className="text-[10px] uppercase font-bold tracking-widest">Clear Selection</Button>
           </div>
         </div>
       )}
 
       {/* Table Content */}
-      <div className="rounded-md border bg-background overflow-hidden">
+      <div className="rounded-md border bg-background overflow-hidden shadow-sm">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/30">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-[10px] uppercase font-bold tracking-wider">
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
@@ -410,14 +430,20 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="hover:bg-muted/50 transition-colors">
+                <TableRow 
+                    key={row.id} 
+                    data-state={row.getIsSelected() && "selected"} 
+                    className="group hover:bg-muted/10 transition-colors border-b last:border-0"
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id} className="py-3">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
-              <TableRow><TableCell colSpan={columns.length} className="h-24 text-center">No results found.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground italic">No product nodes detected in cluster.</TableCell></TableRow>
             )}
           </TableBody>
         </Table>
@@ -425,15 +451,15 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
 
       {/* Pagination */}
       <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="text-xs text-muted-foreground">
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+        <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
+          Node Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" className="h-8 w-8 p-0 lg:flex" onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
             <ChevronsLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>Previous</Button>
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>Next</Button>
+          <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase font-bold tracking-widest" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>Previous</Button>
+          <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase font-bold tracking-widest" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>Next</Button>
           <Button variant="outline" className="h-8 w-8 p-0 lg:flex" onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
             <ChevronsRight className="h-4 w-4" />
           </Button>
@@ -453,8 +479,8 @@ function ActionsCell({ item, isAdmin, isSelected }: { item: ItemWithUser; isAdmi
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Node Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <div className="p-1"><EditItemDialog item={item} onSuccess={() => setOpen(false)} /></div>
           <div className="p-1"><DisableItemButton itemId={item.id} onSuccess={() => setOpen(false)} /></div>

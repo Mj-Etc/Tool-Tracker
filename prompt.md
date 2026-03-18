@@ -33,3 +33,44 @@ When to use this:
 - Page is > 300 lines: If you find yourself scrolling for a long time to find a specific UI fix.
 - Deep Nesting: If your JSX is more than 5-6 levels deep (e.g., Tabs > Content > Grid > Card > Table).
 - Mixed Concerns: If API fetching, complex math, and 200 lines of HTML-like code are all in the same function.
+
+----- TABLE PROMPT -----
+
+Act as a Senior Frontend Engineer. Create/Remodel a Next.js client component for a [NAME_OF_ENTITY] table using TanStack Table v8 and Shadcn UI components.
+
+### Core Architecture:
+
+1. **State Management**: Implement sorting, column filters, column visibility, and row selection using `useReactTable`.
+
+2. **Data Handling**: The table should accept `data` as a prop and an `onUpdate` callback for refreshing data after actions.
+
+3. **Column Definitions**:
+
+    - **Selection**: A checkbox column for bulk actions.
+    - **Primary Info**: A density-optimized cell showing [PRIMARY_FIELD] in bold and [SECONDARY_FIELD] in a small, mono-spaced uppercase sub-label with an icon.
+    - **Categorization**: A Badge-based column for [CATEGORY/ROLE] using different variants based on value (eg., 'default' for high-priority, 'secondary' for others).
+    - **Activity/Stats**: A multi-stat cell showing counts or metrics with Lucide icons (e.g., Lucide [ICON_NAME]).
+    - **Temporal**: A 'Node Created' column showing a formatted date and time in a vertical mono-spaced stack.
+    - **Status**: A Badge-based status indicator (e.g., Active/Inactive).
+    - **Actions**: A trailing 'Actions' column with a DropdownMenu for row-specific operations.
+
+### UI & Aesthetic Guidelines:
+    
+    - **Table Styling**: Use `bg-muted/30` for the TableHeader. Rows should have a subtle hover effect
+  (`hover:bg-muted/10`).
+    - **Typography**: Labels, headers, and metadata should use `text-[10px] uppercase font-bold tracking-wider`.
+    - **Toolbar**: Include a Search input (pl-9 with a Search icon) and a "Filter by [CATEGORY]" DropdownMenu.
+    - **Batch Actions**: Implement a conditional "Batch Action" bar that slides in when rows are selected, allowing for bulk [ACTION_NAME].
+    - **Dialogs**: All destructive actions (like Delete/Purge) must be wrapped in a Shadcn Dialog for confirmation, including a Spinner for loading states.
+    - **Pagination**: Standard pagination footer with "Page X of Y" and navigation buttons (First, Prev, Next, Last).
+
+### Tech Stack:
+
+- React (Client Component)
+- TanStack Table v8 (@tanstack/react-table)
+- Lucide React (Icons)
+
+How to use this prompt:
+
+1. Replace the placeholders in [...] (like [NAME_OF_ENTITY]) with your specific domain data (e.g., "Items", "Transactions", "Products").
+2. Provide your specific TypeScript interface for the data to ensure the AI generates correct accessor keys.
