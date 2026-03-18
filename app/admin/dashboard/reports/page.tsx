@@ -115,7 +115,7 @@ export default function ReportsPage() {
           
           <Separator orientation="vertical" className="h-10 mx-1 hidden sm:block" />
 
-          <div className="flex items-center gap-2 min-w-[200px] justify-end relative">
+          <div className="flex items-center gap-2 min-w-50 justify-end relative">
             <div className="w-5 h-5 flex items-center justify-center">
               {isRefreshing && <Spinner className="h-4 w-4 text-muted-foreground animate-spin" />}
             </div>
