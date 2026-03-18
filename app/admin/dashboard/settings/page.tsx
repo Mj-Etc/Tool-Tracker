@@ -1,3 +1,14 @@
-export default async function SettingsPage() {
-  return <p>Settings Page</p>;
+"use client";
+
+import { SettingsHeader } from "@/components/settings/settings-header";
+
+export default function SettingsPage() {
+  return (
+    <div className="h-auto flex flex-col gap-4 p-4 min-h-screen">
+      <SettingsHeader />
+      <div className="flex-1 flex items-center justify-center border rounded-xl bg-card shadow-sm border-dashed">
+        <p className="text-muted-foreground italic">Settings module is under construction.</p>
+      </div>
+    </div>
+  );
 }

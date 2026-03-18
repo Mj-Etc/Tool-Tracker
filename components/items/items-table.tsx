@@ -129,7 +129,7 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
         cell: ({ row }) => (
             <div className="flex flex-col">
                 <span className="font-bold tracking-tight">{row.getValue("name")}</span>
-                <span className="text-[10px] font-mono text-muted-foreground uppercase">UID: {row.original.id.slice(-8)}</span>
+                <span className="text-[10px] font-mono text-muted-foreground uppercase">UID: {row.original.id.slice(0, 8)}</span>
             </div>
         ),
       },

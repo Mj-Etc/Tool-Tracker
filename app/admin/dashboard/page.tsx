@@ -5,6 +5,8 @@ import { fetcher } from "@/lib/fetcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Package, AlertTriangle, AlertCircle, TrendingUp } from "lucide-react";
+// Modular Components
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 
 type Stats = {
   totalItems: number;
@@ -26,7 +28,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6 p-4">
-      <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+      <DashboardHeader />
       
       <div className="animate-in fade-in duration-500 flex flex-col gap-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
