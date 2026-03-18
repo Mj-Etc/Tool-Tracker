@@ -126,7 +126,7 @@ export default function ReportsPage() {
   }, [transactions, reportMode, startDate, endDate]);
 
   return (
-    <div className="flex flex-col gap-8 p-6 max-w-7xl mx-auto w-full min-h-screen">
+    <div className="flex flex-col gap-8 p-4 w-full min-h-screen">
       <ReportsHeader
         reportMode={reportMode}
         setReportMode={setReportMode}
