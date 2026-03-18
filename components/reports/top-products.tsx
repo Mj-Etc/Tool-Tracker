@@ -46,7 +46,7 @@ export function TopProducts({ reportMode, stats }: TopProductsProps) {
                     {item.name}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1 uppercase tracking-tighter">
-                    ID: {item.id.slice(0, 8)}
+                    ID: {item.id.slice(-8)}
                   </p>
                 </div>
               </div>

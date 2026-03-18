@@ -69,7 +69,7 @@ export default function ItemsPage() {
         <ItemsTable 
           data={items || []} 
           categories={categories} 
-          isAdmin={isAdmin} 
+          isAdmin={isAdmin}
           onBatchDisable={handleBatchDisable}
         />
       </div>
