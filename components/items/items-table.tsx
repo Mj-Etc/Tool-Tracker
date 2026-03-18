@@ -27,6 +27,7 @@ import {
   Layers,
   CircleDollarSign,
   Boxes,
+  Pencil,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -652,15 +653,28 @@ function ActionsCell({
             Node Actions
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <div className="p-1">
-            <EditItemDialog item={item} onSuccess={() => setOpen(false)} />
-          </div>
-          <div className="p-1">
-            <DisableItemButton
-              itemId={item.id}
-              onSuccess={() => setOpen(false)}
-            />
-          </div>
+          <EditItemDialog
+            item={item}
+            onSuccess={() => setOpen(false)}
+            trigger={
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+            }
+          />
+          <DisableItemButton
+            itemId={item.id}
+            onSuccess={() => setOpen(false)}
+            trigger={
+              <DropdownMenuItem
+                onSelect={(e) => e.preventDefault()}
+              >
+                <PowerOff className="mr-2 h-4 w-4" />
+                Disable
+              </DropdownMenuItem>
+            }
+          />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

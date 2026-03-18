@@ -52,13 +52,14 @@ interface EditItemDialogProps {
     price: number;
     quantity: number;
     lowStockThreshold: number;
-    category: { id: string; name: string };
+    category: { id:string; name: string };
     subcategory: { id: string; name: string };
   };
   onSuccess?: () => void;
+  trigger?: React.ReactElement;
 }
 
-export function EditItemDialog({ item, onSuccess }: EditItemDialogProps) {
+export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps) {
   const [open, setOpen] = useState(false);
   const { sendMessage } = useSocket();
   const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher);
@@ -118,10 +119,12 @@ export function EditItemDialog({ item, onSuccess }: EditItemDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
+        {trigger || (
         <Button variant="outline" size="sm" className="w-full">
           <IconEdit size={16} className="mr-2" />
           Edit Item
         </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit(onSubmit)}>

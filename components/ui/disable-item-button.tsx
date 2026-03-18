@@ -20,9 +20,10 @@ import { useSocket } from "../socket-provider";
 interface DisableProps {
   itemId: string;
   onSuccess?: () => void;
+  trigger?: React.ReactElement;
 }
 
-export function DisableItemButton({ itemId, onSuccess }: DisableProps) {
+export function DisableItemButton({ itemId, onSuccess, trigger }: DisableProps) {
   const [isDisabling, setIsDisabling] = useState(false);
   const [open, setOpen] = useState(false);
   const { sendMessage } = useSocket();
@@ -52,14 +53,16 @@ export function DisableItemButton({ itemId, onSuccess }: DisableProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="w-full flex items-center justify-center gap-2"
-        >
-          <PowerOff size={16} />
-          Disable Item
-        </Button>
+        {trigger || (
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-full flex items-center justify-center gap-2"
+          >
+            <PowerOff size={16} />
+            Disable Item
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="w-96">
         <DialogHeader>

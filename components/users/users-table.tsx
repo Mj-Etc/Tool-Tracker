@@ -136,7 +136,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
+            className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
             Personnel Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -144,7 +144,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
         ),
         cell: ({ row }) => (
           <div className="flex flex-col">
-            <span className="font-bold tracking-tight">
+            <span className="font-semibold tracking-tight">
               {row.getValue("name")}
             </span>
             <div className="flex items-center text-[10px] text-muted-foreground font-mono">
@@ -159,7 +159,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4"
+            className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
             Access Level
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -170,7 +170,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
           return (
             <Badge
               variant={role === "admin" ? "default" : "secondary"}
-              className="uppercase text-[10px] font-bold tracking-widest px-2"
+              className="uppercase text-[10px] font-semibold tracking-widest px-2"
             >
               {role}
             </Badge>
@@ -187,18 +187,18 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
         cell: ({ row }) => (
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-tighter">
                 Sales
               </span>
-              <div className="flex items-center gap-1 font-bold text-sm">
+              <div className="flex items-center gap-1 font-semibold text-sm">
                 {row.original._count.transactions}
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-tighter">
                 Inventory
               </span>
-              <div className="flex items-center gap-1 font-bold text-sm">
+              <div className="flex items-center gap-1 font-semibold text-sm">
                 {row.original._count.items}
               </div>
             </div>
@@ -225,7 +225,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
         cell: ({ row }) => (
           <Badge
             variant={row.original.banned ? "destructive" : "success"}
-            className="text-[10px] font-bold uppercase tracking-widest"
+            className="text-[10px] font-semibold uppercase tracking-widest"
           >
             {row.original.banned ? "Suspended" : "Active"}
           </Badge>
