@@ -115,9 +115,9 @@ Implementing a daily report for inventory is a valuable consideration, but its n
 
 
 
-   Remodel Journal Entry Card
-   @C:\Users\Flash\Documents\Projects\tool-tracker\components\reports\transaction-journal.tsx and Inventory Journal        
-   @C:\Users\Flash\Documents\Projects\tool-tracker\components\reports\stock-movement-table.tsx with a table. Check and     
-   review @C:\Users\Flash\Documents\Projects\tool-tracker\components\items\items-table.tsx ui that whould be youre
-   reference. Dont add any additional uis like icons stick with items-table design for a ui consistency for this app.      
-   Make me proud partner! 
+Remodel Journal Entry Card
+@C:\Users\Flash\Documents\Projects\tool-tracker\components\reports\transaction-journal.tsx and Inventory Journal        
+@C:\Users\Flash\Documents\Projects\tool-tracker\components\reports\stock-movement-table.tsx with a table. Check and     
+review @C:\Users\Flash\Documents\Projects\tool-tracker\components\items\items-table.tsx ui that whould be youre
+reference. Dont add any additional uis like icons stick with items-table design for a ui consistency for this app.      
+Make me proud partner! 
