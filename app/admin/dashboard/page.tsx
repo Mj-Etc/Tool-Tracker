@@ -64,7 +64,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -99,7 +99,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Welcome to the ToolTrackR Admin Dashboard. Use the sidebar to manage products, view reports, and monitor inventory levels.
+                Welcome to the Tool Tracker Admin Dashboard. Use the sidebar to manage products, view reports, and monitor inventory levels.
               </p>
               <div className="mt-4 p-4 border rounded-lg bg-accent/20">
                 <h3 className="font-semibold mb-2">Quick Tips:</h3>

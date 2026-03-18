@@ -28,7 +28,7 @@ export function InventoryStats({ items, stats, stockLogs }: InventoryStatsProps)
             <CardDescription>Items requiring immediate reorder</CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-83.5 pr-4">
+            <ScrollArea className="*:data-radix-scroll-area-viewport:max-h-83.5 pr-4">
               <div className="space-y-2">
                 {lowStockItems.map(i => (
                   <div key={i.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors">
