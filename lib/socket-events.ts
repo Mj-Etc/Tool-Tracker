@@ -42,6 +42,7 @@ export const SOCKET_EVENT_MAP: Record<
       (key) => typeof key === "string" && key.startsWith("/api/transactions"),
     );
     mutate((key) => typeof key === "string" && key.startsWith("/api/stats"));
+    mutate((key) => typeof key === "string" && key.startsWith("/api/reports/stock-movement"));
   },
 
   // Placeholder for future events
