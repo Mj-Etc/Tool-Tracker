@@ -180,9 +180,9 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
   });
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full rounded-xl bg-card shadow-sm space-y-4 p-4">
       <div className="flex flex-col px-1">
-        <h3 className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
+        <h3 className="text-md leading-snug font-medium uppercase">
           Journal Entry
         </h3>
         <p className="text-xs text-muted-foreground">

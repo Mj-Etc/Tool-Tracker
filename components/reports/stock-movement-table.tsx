@@ -208,9 +208,9 @@ export function StockMovementTable({ logs = [], reportMode = "overall" }: StockM
   });
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full rounded-xl bg-card shadow-sm space-y-4 p-4">
       <div className="flex items-center gap-2 px-1">
-        <h3 className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
+        <h3 className="text-md leading-snug font-medium uppercase">
           Inventory Journal
         </h3>
       </div>
