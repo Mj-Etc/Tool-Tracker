@@ -12,35 +12,33 @@ import { Spinner } from "../ui/spinner";
 import { ScrollArea } from "../ui/scroll-area";
 import { TransactionItemInput } from "@/schemas/transaction";
 import { IconTrash } from "@tabler/icons-react";
-
-type Item = {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  category: string | null;
-};
+import { SalesItemsTable } from "./sales-items-table";
+import { ItemWithUser } from "../items/types";
 
 export function SalesForm() {
-  const { data: items, isLoading: itemsLoading } = useSWR<Item[]>("/api/item/list-items", fetcher);
-  const [searchTerm, setSearchTerm] = useState("");
+  const { data: items, isLoading: itemsLoading } = useSWR<ItemWithUser[]>("/api/item/list-items", fetcher);
   const [customerName, setCustomerName] = useState("");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [cart, setCart] = useState<(TransactionItemInput & { name: string })[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { sendMessage } = useSocket();
 
-  const filteredItems = items?.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.category?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const handleQuantityChange = (itemId: string, val: string) => {
+    if (val === "") {
+      setQuantities(prev => {
+        const newState = { ...prev };
+        delete newState[itemId];
+        return newState;
+      });
+      return;
+    }
     const num = parseInt(val);
-    setQuantities(prev => ({ ...prev, [itemId]: isNaN(num) ? 1 : num }));
+    if (!isNaN(num)) {
+      setQuantities(prev => ({ ...prev, [itemId]: num }));
+    }
   };
 
-  const addToCart = (item: Item) => {
+  const addToCart = (item: ItemWithUser) => {
     const qtyToAdd = quantities[item.id] || 1;
     
     if (item.quantity <= 0) {
@@ -143,59 +141,23 @@ export function SalesForm() {
       {/* Product Search & List */}
       <Card className="lg:col-span-7 h-fit">
         <CardHeader>
-          <CardTitle>Fast Sale Process</CardTitle>
-          <p className="text-sm text-muted-foreground">Search and enter quantity to add items</p>
+          <CardTitle className="text-xl font-bold tracking-tight">Fast Sale Process</CardTitle>
+          <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Identify product node and specify quantity</p>
         </CardHeader>
         <CardContent>
-          <Input 
-            placeholder="Search products by name or category..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-4"
-          />
-          <ScrollArea className="h-61.5 pr-4">
-            {itemsLoading ? (
-              <div className="flex justify-center p-10"><Spinner /></div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {filteredItems?.map(item => (
-                  <div key={item.id} className="flex items-center justify-between p-3 border rounded-xl hover:bg-accent/30 transition-colors">
-                    <div className="flex-1">
-                      <p className="font-bold text-lg">{item.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        ₱{Number(item.price).toFixed(2)} | <span className={item.quantity <= 10 ? "text-red-500 font-bold" : "text-green-600"}>Stock: {item.quantity}</span>
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-24">
-                        <Input 
-                          type="number" 
-                          min="1" 
-                          max={item.quantity}
-                          placeholder="Qty"
-                          value={quantities[item.id] || ""}
-                          onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                          disabled={item.quantity <= 0}
-                          className="text-center font-bold"
-                        />
-                      </div>
-                      <Button 
-                        size="sm" 
-                        onClick={() => addToCart(item)}
-                        disabled={item.quantity <= 0 || (quantities[item.id] || 1) <= 0}
-                        className="bg-primary hover:bg-primary/90"
-                      >
-                        Add
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {filteredItems?.length === 0 && (
-                  <p className="text-center text-muted-foreground py-10">No items found matching "{searchTerm}"</p>
-                )}
-              </div>
-            )}
-          </ScrollArea>
+          {itemsLoading ? (
+            <div className="flex flex-col items-center justify-center p-20 gap-4">
+              <Spinner className="h-8 w-8 text-primary" />
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Accessing Inventory Cluster...</p>
+            </div>
+          ) : (
+            <SalesItemsTable 
+              data={items || []} 
+              quantities={quantities} 
+              onQuantityChange={handleQuantityChange} 
+              onAddToCart={addToCart} 
+            />
+          )}
         </CardContent>
       </Card>
 
