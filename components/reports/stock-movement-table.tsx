@@ -133,7 +133,7 @@ export function StockMovementTable({ logs = [] }: StockMovementTableProps) {
               {row.getValue("executor")}
             </span>
             <span className="text-[10px] font-mono text-muted-foreground uppercase">
-              ID: {row.original.userId.slice(0, 8)}
+              USR: {row.original.userId.slice(0, 8)}
             </span>
           </div>
         ),
@@ -259,7 +259,7 @@ export function StockMovementTable({ logs = [] }: StockMovementTableProps) {
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-[10px] uppercase font-bold tracking-wider"
+                    className="text-[10px] uppercase font-bold tracking-wider px-4"
                   >
                     {header.isPlaceholder
                       ? null
@@ -280,7 +280,7 @@ export function StockMovementTable({ logs = [] }: StockMovementTableProps) {
                   className="group hover:bg-muted/10 transition-colors border-b last:border-0"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3">
+                    <TableCell key={cell.id} className="py-3 px-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

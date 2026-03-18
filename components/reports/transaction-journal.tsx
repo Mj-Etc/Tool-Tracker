@@ -93,7 +93,7 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
               {row.getValue("customer")}
             </span>
             <span className="text-[10px] font-mono text-muted-foreground uppercase">
-              UID: {row.original.id.slice(0, 8)}
+              TRX: {row.original.id.slice(0, 8)}
             </span>
           </div>
         ),
@@ -110,9 +110,6 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
           <div className="flex flex-col">
             <span className="font-semibold tracking-tight">
               {row.getValue("cashier")}
-            </span>
-            <span className="text-[10px] font-mono text-muted-foreground uppercase">
-              STF: {row.original.id.slice(-4).toUpperCase()}
             </span>
           </div>
         ),
@@ -240,7 +237,7 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-[10px] uppercase font-bold tracking-wider"
+                    className="text-[10px] uppercase font-bold tracking-wider px-4"
                   >
                     {header.isPlaceholder
                       ? null
@@ -261,7 +258,7 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
                   className="group hover:bg-muted/10 transition-colors border-b last:border-0"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3">
+                    <TableCell key={cell.id} className="py-3 px-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
