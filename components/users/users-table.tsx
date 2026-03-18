@@ -139,8 +139,8 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
         cell: ({ row }) => (
           <div className="flex flex-col">
             <span className="font-bold tracking-tight">{row.getValue("name")}</span>
-            <div className="flex items-center gap-1 text-[10px] text-muted-foreground uppercase font-mono">
-              <Mail className="h-2 w-2" /> {row.original.email}
+            <div className="flex items-center text-[10px] text-muted-foreground font-mono">
+              {row.original.email}
             </div>
           </div>
         ),
@@ -164,7 +164,6 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
               variant={role === "admin" ? "default" : "secondary"}
               className="uppercase text-[10px] font-bold tracking-widest px-2"
             >
-              {role === "admin" ? <ShieldCheck className="mr-1 h-3 w-3" /> : <UserCheck className="mr-1 h-3 w-3" />}
               {role}
             </Badge>
           );
@@ -181,15 +180,13 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Sales</span>
-              <div className="flex items-center gap-1 font-mono text-sm">
-                <Receipt className="h-3 w-3 text-emerald-500" />
+              <div className="flex items-center gap-1 font-bold text-sm">
                 {row.original._count.transactions}
               </div>
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Inventory</span>
-              <div className="flex items-center gap-1 font-mono text-sm">
-                <Package className="h-3 w-3 text-blue-500" />
+              <div className="flex items-center gap-1 font-bold text-sm">
                 {row.original._count.items}
               </div>
             </div>
@@ -202,7 +199,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
         cell: ({ row }) => (
           <div className="flex flex-col text-xs font-mono text-muted-foreground">
             <div className="flex items-center gap-1 uppercase">
-              <Calendar className="h-3 w-3" /> {format(new Date(row.getValue("createdAt")), "MMM dd, yyyy")}
+              {format(new Date(row.getValue("createdAt")), "MMM dd, yyyy")}
             </div>
             <span>{format(new Date(row.getValue("createdAt")), "HH:mm:ss")}</span>
           </div>
@@ -213,7 +210,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
         header: "Status",
         cell: ({ row }) => (
           <Badge 
-            variant={row.original.banned ? "destructive" : "outline"}
+            variant={row.original.banned ? "destructive" : "success"}
             className="text-[10px] font-bold uppercase tracking-widest"
           >
             {row.original.banned ? "Suspended" : "Active"}

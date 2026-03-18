@@ -21,13 +21,13 @@ export function StockMovementTable({ logs }: StockMovementTableProps) {
   const getReasonBadge = (reason: StockLog["reason"]) => {
     switch (reason) {
       case "SALE":
-        return <Badge variant="outline" className="text-blue-500 border-blue-500/20 bg-blue-500/5">SALE</Badge>;
+        return <Badge variant="success">SALE</Badge>;
       case "RESTOCK":
-        return <Badge variant="outline" className="text-emerald-500 border-emerald-500/20 bg-emerald-500/5">RESTOCK</Badge>;
+        return <Badge variant="destructive">RESTOCK</Badge>;
       case "CREATION":
-        return <Badge variant="outline" className="text-purple-500 border-purple-500/20 bg-purple-500/5">INITIAL</Badge>;
+        return <Badge variant="info">INITIAL</Badge>;
       case "MANUAL_ADJUSTMENT":
-        return <Badge variant="outline" className="text-amber-500 border-amber-500/20 bg-amber-500/5">ADJUST</Badge>;
+        return <Badge variant="warning">ADJUST</Badge>;
       default:
         return <Badge variant="outline">{reason}</Badge>;
     }
