@@ -52,18 +52,25 @@ interface EditItemDialogProps {
     price: number;
     quantity: number;
     lowStockThreshold: number;
-    category: { id:string; name: string };
+    category: { id: string; name: string };
     subcategory: { id: string; name: string };
   };
   onSuccess?: () => void;
   trigger?: React.ReactElement;
 }
 
-export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps) {
+export function EditItemDialog({
+  item,
+  onSuccess,
+  trigger,
+}: EditItemDialogProps) {
   const [open, setOpen] = useState(false);
   const { sendMessage } = useSocket();
-  const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher);
-  
+  const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>(
+    "/api/categories",
+    fetcher,
+  );
+
   const {
     register,
     handleSubmit,
@@ -86,11 +93,13 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
 
   const selectedCategoryId = watch("categoryId");
   const selectedSubcategoryId = watch("subcategoryId");
-  const [availableSubcategories, setAvailableSubcategories] = useState<Subcategory[]>([]);
+  const [availableSubcategories, setAvailableSubcategories] = useState<
+    Subcategory[]
+  >([]);
 
   useEffect(() => {
     if (selectedCategoryId && categories) {
-      const category = categories.find(c => c.id === selectedCategoryId);
+      const category = categories.find((c) => c.id === selectedCategoryId);
       setAvailableSubcategories(category?.subcategories || []);
     } else {
       setAvailableSubcategories([]);
@@ -120,10 +129,10 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-        <Button variant="outline" size="sm" className="w-full">
-          <IconEdit size={16} className="mr-2" />
-          Edit Item
-        </Button>
+          <Button variant="outline" size="sm" className="w-full">
+            <IconEdit size={16} className="mr-2" />
+            Edit Item
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -137,12 +146,10 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
           <FieldGroup className="mt-4">
             <Field>
               <FieldLabel htmlFor="edit-name">Item name</FieldLabel>
-              <Input
-                id="edit-name"
-                {...register("name")}
-                type="text"
-              />
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+              <Input id="edit-name" {...register("name")} type="text" />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name.message}</p>
+              )}
             </Field>
             <Field>
               <FieldLabel htmlFor="edit-description">Description</FieldLabel>
@@ -151,9 +158,13 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
                 {...register("description")}
                 type="text"
               />
-              {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+              {errors.description && (
+                <p className="text-sm text-red-500">
+                  {errors.description.message}
+                </p>
+              )}
             </Field>
-            
+
             <Field>
               <FieldLabel htmlFor="edit-categoryId">Category</FieldLabel>
               <Select
@@ -178,7 +189,11 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
+              {errors.categoryId && (
+                <p className="text-sm text-red-500">
+                  {errors.categoryId.message}
+                </p>
+              )}
             </Field>
 
             <Field>
@@ -186,7 +201,9 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
               <Select
                 value={selectedSubcategoryId}
                 onValueChange={(value) => setValue("subcategoryId", value)}
-                disabled={!selectedCategoryId || availableSubcategories.length === 0}
+                disabled={
+                  !selectedCategoryId || availableSubcategories.length === 0
+                }
               >
                 <SelectTrigger id="edit-subcategoryId" className="w-full">
                   <SelectValue placeholder="Select Subcategory" />
@@ -202,10 +219,14 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              {errors.subcategoryId && <p className="text-sm text-red-500">{errors.subcategoryId.message}</p>}
+              {errors.subcategoryId && (
+                <p className="text-sm text-red-500">
+                  {errors.subcategoryId.message}
+                </p>
+              )}
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <Field>
                 <FieldLabel htmlFor="edit-costPrice">Cost Price</FieldLabel>
                 <Input
@@ -214,7 +235,11 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
                   type="number"
                   step="0.01"
                 />
-                {errors.costPrice && <p className="text-sm text-red-500">{errors.costPrice.message}</p>}
+                {errors.costPrice && (
+                  <p className="text-sm text-red-500">
+                    {errors.costPrice.message}
+                  </p>
+                )}
               </Field>
               <Field>
                 <FieldLabel htmlFor="edit-price">Selling Price</FieldLabel>
@@ -224,27 +249,24 @@ export function EditItemDialog({ item, onSuccess, trigger }: EditItemDialogProps
                   type="number"
                   step="0.01"
                 />
-                {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
-              </Field>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <Field>
-                <FieldLabel htmlFor="edit-quantity">Quantity</FieldLabel>
-                <Input
-                  id="edit-quantity"
-                  {...register("quantity", { valueAsNumber: true })}
-                  type="number"
-                />
-                {errors.quantity && <p className="text-sm text-red-500">{errors.quantity.message}</p>}
+                {errors.price && (
+                  <p className="text-sm text-red-500">{errors.price.message}</p>
+                )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="edit-lowStockThreshold">Low Stock Alert</FieldLabel>
+                <FieldLabel htmlFor="edit-lowStockThreshold">
+                  Low Stock Alert
+                </FieldLabel>
                 <Input
                   id="edit-lowStockThreshold"
                   {...register("lowStockThreshold", { valueAsNumber: true })}
                   type="number"
                 />
-                {errors.lowStockThreshold && <p className="text-sm text-red-500">{errors.lowStockThreshold.message}</p>}
+                {errors.lowStockThreshold && (
+                  <p className="text-sm text-red-500">
+                    {errors.lowStockThreshold.message}
+                  </p>
+                )}
               </Field>
             </div>
           </FieldGroup>
