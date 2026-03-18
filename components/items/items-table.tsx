@@ -80,7 +80,7 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
-    subcategory_name: false,
+    subcategory: false,
   });
   const [rowSelection, setRowSelection] = React.useState({});
   const [isBatchProcessing, setIsBatchProcessing] = React.useState(false);
@@ -134,7 +134,7 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
         ),
       },
       {
-        id: "category_name",
+        id: "category",
         accessorKey: "category.name",
         header: () => <span className="text-[10px] uppercase font-bold tracking-wider">Classification</span>,
         cell: ({ row }) => (
@@ -153,7 +153,7 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
         },
       },
       {
-        id: "subcategory_name",
+        id: "subcategory",
         accessorKey: "subcategory.name",
         header: "Subcategory",
         cell: ({ row }) => row.original.subcategory?.name,
@@ -280,7 +280,7 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
     table.resetRowSelection();
   };
 
-  const selectedCategory = (table.getColumn("category_name")?.getFilterValue() as string) ?? "all";
+  const selectedCategory = (table.getColumn("category")?.getFilterValue() as string) ?? "all";
 
   return (
     <div className="w-full space-y-4 p-4">
@@ -304,9 +304,9 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
                 {selectedCategory === "all"
                   ? "All Classifications"
                   : categories?.find((c) => c.id === selectedCategory)?.name}
-                {!!table.getColumn("subcategory_name")?.getFilterValue() && (
+                {!!table.getColumn("subcategory")?.getFilterValue() && (
                   <span className="text-muted-foreground font-normal">
-                    / {categories?.find((c) => c.id === selectedCategory)?.subcategories.find((s) => s.id === table.getColumn("subcategory_name")?.getFilterValue())?.name}
+                    / {categories?.find((c) => c.id === selectedCategory)?.subcategories.find((s) => s.id === table.getColumn("subcategory")?.getFilterValue())?.name}
                   </span>
                 )}
                 <ChevronDown className="h-4 w-4 opacity-50" />
@@ -316,8 +316,8 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
               <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Classifications</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {
-                table.getColumn("category_name")?.setFilterValue("");
-                table.getColumn("subcategory_name")?.setFilterValue("");
+                table.getColumn("category")?.setFilterValue("");
+                table.getColumn("subcategory")?.setFilterValue("");
               }}>
                 All Categories
               </DropdownMenuItem>
@@ -329,16 +329,16 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
                     <DropdownMenuPortal>
                       <DropdownMenuSubContent>
                         <DropdownMenuItem onClick={() => {
-                          table.getColumn("category_name")?.setFilterValue(cat.id);
-                          table.getColumn("subcategory_name")?.setFilterValue("");
+                          table.getColumn("category")?.setFilterValue(cat.id);
+                          table.getColumn("subcategory")?.setFilterValue("");
                         }}>
                           All {cat.name}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {cat.subcategories.map((sub) => (
                           <DropdownMenuItem key={sub.id} onClick={() => {
-                            table.getColumn("category_name")?.setFilterValue(cat.id);
-                            table.getColumn("subcategory_name")?.setFilterValue(sub.id);
+                            table.getColumn("category")?.setFilterValue(cat.id);
+                            table.getColumn("subcategory")?.setFilterValue(sub.id);
                           }}>
                             {sub.name}
                           </DropdownMenuItem>
@@ -348,8 +348,8 @@ export function ItemsTable({ data, categories, isAdmin, onBatchDisable }: ItemsT
                   </DropdownMenuSub>
                 ) : (
                   <DropdownMenuItem key={cat.id} onClick={() => {
-                    table.getColumn("category_name")?.setFilterValue(cat.id);
-                    table.getColumn("subcategory_name")?.setFilterValue("");
+                    table.getColumn("category")?.setFilterValue(cat.id);
+                    table.getColumn("subcategory")?.setFilterValue("");
                   }}>
                     {cat.name}
                   </DropdownMenuItem>

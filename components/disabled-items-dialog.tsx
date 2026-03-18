@@ -459,25 +459,22 @@ function ActionsCell({
             <RotateCcw className="mr-2 h-4 w-4" />
             Restore
           </DropdownMenuItem>
-          <div className="p-1">
-            <DeleteItemButton
-              ids={[item.id]}
-              onSuccess={() => {
-                onSuccess();
-                setDropdownOpen(false);
-              }}
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full flex items-center justify-start gap-2 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete Permanently
-                </Button>
-              }
-            />
-          </div>
+          <DeleteItemButton
+            ids={[item.id]}
+            onSuccess={() => {
+              onSuccess();
+              setDropdownOpen(false);
+            }}
+            trigger={
+              <DropdownMenuItem
+                onSelect={(e) => e.preventDefault()}
+                className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            }
+          />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
