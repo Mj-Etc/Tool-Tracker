@@ -4,7 +4,8 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { Package, AlertTriangle, AlertCircle, TrendingUp } from "lucide-react";
+import { Package, AlertTriangle, AlertCircle, TrendingUp, ArrowRight } from "lucide-react";
+import Link from "next/link";
 // Modular Components
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 
@@ -42,26 +43,40 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
           <Card className={stats?.lowStock && stats.lowStock > 0 ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20" : ""}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Low Stock Items</CardTitle>
-              <AlertTriangle className={`h-4 w-4 ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-500" : "text-muted-foreground"}`} />
-            </CardHeader>
-            <CardContent>
-              <div className={`text-2xl font-bold ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}>
-                {stats?.lowStock || 0}
-              </div>
-            </CardContent>
+            <Link href="/admin/dashboard/items?status=low-stock">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Low Stock Items</CardTitle>
+                <AlertTriangle className={`h-4 w-4 ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-500" : "text-muted-foreground"}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-baseline justify-between">
+                  <div className={`text-2xl font-bold ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}>
+                    {stats?.lowStock || 0}
+                  </div>
+                  <div className="text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
+                    Restock items <ArrowRight className="h-3 w-3" />
+                  </div>
+                </div>
+              </CardContent>
+            </Link>
           </Card>
           <Card className={stats?.outOfStock && stats.outOfStock > 0 ? "border-red-500 bg-red-50 dark:bg-red-950/20" : ""}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
-              <AlertCircle className={`h-4 w-4 ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-500" : "text-muted-foreground"}`} />
-            </CardHeader>
-            <CardContent>
-              <div className={`text-2xl font-bold ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-600 dark:text-red-400" : ""}`}>
-                {stats?.outOfStock || 0}
-              </div>
-            </CardContent>
+            <Link href="/admin/dashboard/items?status=out-of-stock">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
+                <AlertCircle className={`h-4 w-4 ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-500" : "text-muted-foreground"}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-baseline justify-between">
+                  <div className={`text-2xl font-bold ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-600 dark:text-red-400" : ""}`}>
+                    {stats?.outOfStock || 0}
+                  </div>
+                  <div className="text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
+                    Restock items <ArrowRight className="h-3 w-3" />
+                  </div>
+                </div>
+              </CardContent>
+            </Link>
           </Card>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">

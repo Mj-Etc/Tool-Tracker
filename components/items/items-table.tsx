@@ -23,6 +23,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Package,
+  PackagePlus,
   Tag,
   Layers,
   CircleDollarSign,
@@ -67,6 +68,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { EditItemDialog } from "@/components/edit-item-dialog";
+import { RestockItemDialog } from "./restock-item-dialog";
 import { DisableItemButton } from "@/components/ui/disable-item-button";
 import { ItemWithUser, Category } from "./types";
 
@@ -472,6 +474,10 @@ export function ItemsTable({
             {selectedCount} Item selected
           </span>
           <div className="ml-auto flex gap-2">
+            <RestockItemDialog 
+              items={selectedRows.map(r => r.original)}
+              onSuccess={() => table.resetRowSelection()}
+            />
             {selectedCount === 1 && (
               <EditItemDialog item={selectedRows[0].original} />
             )}
@@ -653,6 +659,16 @@ function ActionsCell({
             Item Actions
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <RestockItemDialog
+            items={[item]}
+            onSuccess={() => setOpen(false)}
+            trigger={
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <PackagePlus className="mr-2 h-4 w-4" />
+                Restock
+              </DropdownMenuItem>
+            }
+          />
           <EditItemDialog
             item={item}
             onSuccess={() => setOpen(false)}

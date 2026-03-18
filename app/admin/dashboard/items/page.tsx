@@ -6,6 +6,7 @@ import { fetcher } from "@/lib/fetcher";
 import { useSession } from "@/lib/auth-client";
 import { useSocket } from "@/components/socket-provider";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 // Modular Components
 import { ItemsHeader } from "@/components/items/items-header";
@@ -14,9 +15,19 @@ import { ItemsSkeleton } from "@/components/items/items-skeleton";
 import { ItemWithUser, Category } from "@/components/items/types";
 
 export default function ItemsPage() {
+  return (
+    <React.Suspense fallback={<ItemsSkeleton />}>
+      <ItemsPageContent />
+    </React.Suspense>
+  );
+}
+
+function ItemsPageContent() {
   const { data: session } = useSession();
   const isAdmin = session?.user.role === "admin";
   const { sendMessage } = useSocket();
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
 
   const { data: items, error, isLoading, mutate } = useSWR<ItemWithUser[]>(
     `/api/item/list-items`,
@@ -24,6 +35,17 @@ export default function ItemsPage() {
   );
 
   const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
+
+  const filteredItems = React.useMemo(() => {
+    if (!items) return [];
+    if (status === "low-stock") {
+      return items.filter(i => i.quantity > 0 && i.quantity <= i.lowStockThreshold);
+    }
+    if (status === "out-of-stock") {
+      return items.filter(i => i.quantity === 0);
+    }
+    return items;
+  }, [items, status]);
 
   const handleBatchDisable = React.useCallback(async (ids: string[]) => {
     try {
@@ -67,7 +89,7 @@ export default function ItemsPage() {
       
       <div className="flex-1 overflow-auto border rounded-xl bg-card shadow-sm animate-in fade-in duration-500">
         <ItemsTable 
-          data={items || []} 
+          data={filteredItems} 
           categories={categories} 
           isAdmin={isAdmin}
           onBatchDisable={handleBatchDisable}
