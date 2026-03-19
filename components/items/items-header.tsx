@@ -26,7 +26,7 @@ export function ItemsHeader() {
           <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Inventory Cluster</span>
         </div>
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold tracking-tight">Product Management</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Items Management</h2>
         </div>
       </div>
       <div className="flex items-center gap-2">

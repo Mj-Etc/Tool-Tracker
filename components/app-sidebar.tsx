@@ -40,7 +40,7 @@ const adminNavMain: NavItem[] = [
     icon: IconDashboard,
   },
   {
-    title: "Products & Inventory",
+    title: "Items & Inventory",
     url: "/admin/dashboard/items",
     icon: IconPackage,
   },
