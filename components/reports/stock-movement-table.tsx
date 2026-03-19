@@ -168,7 +168,7 @@ export function StockMovementTable({
           const change = parseFloat(row.getValue("change"));
           return (
             <div
-              className={`text-right font-mono font-bold ${change > 0 ? "text-emerald-600" : "text-rose-600"}`}
+              className={`text-right font-mono font-bold ${change > 0 ? "text-emerald-600" : "text-destructive"}`}
             >
               {change > 0 ? `+${change}` : change}
             </div>

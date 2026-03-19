@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Receipt, TrendingUp, Users, ArrowDownRight } from "lucide-react";
+import { TrendingUp, Users, ArrowDownRight, PhilippinePeso, ReceiptText } from "lucide-react";
 import { Stats, ReportMode } from "./types";
 
 interface KpiCardsProps {
@@ -17,7 +17,7 @@ export function KpiCards({ revenue, stats, reportMode, margin }: KpiCardsProps) 
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
           <CardTitle className="text-sm font-medium text-muted-foreground">Revenue</CardTitle>
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <PhilippinePeso className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">₱{revenue.toLocaleString()}</div>
@@ -37,7 +37,7 @@ export function KpiCards({ revenue, stats, reportMode, margin }: KpiCardsProps) 
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
           <CardTitle className="text-sm font-medium text-muted-foreground">Transactions</CardTitle>
-          <Receipt className="h-4 w-4 text-muted-foreground" />
+          <ReceiptText className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats?.recentTransactionCount || 0}</div>

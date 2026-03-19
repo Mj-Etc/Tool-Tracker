@@ -22,12 +22,7 @@ import {
   Filter,
   ChevronsLeft,
   ChevronsRight,
-  Package,
   PackagePlus,
-  Tag,
-  Layers,
-  CircleDollarSign,
-  Boxes,
   Pencil,
 } from "lucide-react";
 

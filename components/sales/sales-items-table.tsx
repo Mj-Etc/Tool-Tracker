@@ -31,6 +31,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Package,
+  PhilippinePeso,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -105,7 +106,7 @@ export function SalesItemsTable({
           }).format(amount);
           return (
             <div className="flex items-center gap-1 font-mono font-bold text-emerald-600">
-              <CircleDollarSign className="h-3 w-3 opacity-70" />
+              <PhilippinePeso className="h-3 w-3 opacity-70" />
               {formatted}
             </div>
           );
