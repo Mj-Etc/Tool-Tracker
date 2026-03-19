@@ -78,7 +78,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/admin/dashboard" className="flex p-1 rounded-xl justify-center border items-center gap-2 bg-background">
+            <Link href="/admin/dashboard" className="flex p-1 rounded-xl justify-center border items-center gap-2 bg-primary text-primary-foreground">
               <Logo className="h-7.5 w-7.5" />
               <p className="font-bold">Tool Tracker</p>
             </Link>
