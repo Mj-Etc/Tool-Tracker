@@ -5,12 +5,6 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import { SignOutButton } from "@/components/ui/signout-button";
 import { useSession } from "@/lib/auth-client";
 import { Spinner } from "@/components/ui/spinner";
-import { 
-  IconLayoutDashboard, 
-  IconHistory, 
-  IconReceipt2,
-  IconLogout
-} from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

@@ -388,10 +388,9 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
             >
               <DialogTrigger asChild>
                 <Button
-                  variant="secondary"
+                  variant="destructive  "
                   size="sm"
                   disabled={isBatchProcessing}
-                  className="text-destructive hover:text-destructive/70"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Purge {selectedCount} Nodes
@@ -425,7 +424,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
               </DialogContent>
             </Dialog>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={() => table.resetRowSelection()}
             >

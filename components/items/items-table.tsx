@@ -482,10 +482,9 @@ export function ItemsTable({
             >
               <DialogTrigger asChild>
                 <Button
-                  variant="secondary"
+                  variant="destructive"
                   size="sm"
                   disabled={isBatchProcessing}
-                  className="text-destructive hover:text-destructive/70"
                 >
                   <PowerOff className="mr-2 h-4 w-4" />
                   {selectedCount === 1
@@ -517,7 +516,7 @@ export function ItemsTable({
               </DialogContent>
             </Dialog>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={() => table.resetRowSelection()}
               className="text-[10px] uppercase font-bold tracking-widest"

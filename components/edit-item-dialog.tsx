@@ -129,7 +129,7 @@ export function EditItemDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="outline" size="sm" className="w-full">
+          <Button variant="outline" size="sm">
             <IconEdit size={16} className="mr-2" />
             Edit Item
           </Button>

@@ -551,11 +551,11 @@ export function ListItem() {
               </DialogContent>
             </Dialog>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={() => table.resetRowSelection()}
             >
-              Clear Selection
+              Clear Selections
             </Button>
           </div>
         </div>

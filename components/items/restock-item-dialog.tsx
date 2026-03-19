@@ -124,7 +124,7 @@ export function RestockItemDialog({
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       {!trigger && !controlledOpen && (
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm" className="w-full">
+          <Button variant="outline" size="sm">
             <PackagePlus size={16} className="mr-2" />
             {isBatch ? "Restock Selected" : "Restock"}
           </Button>

@@ -169,14 +169,14 @@ export function SalesForm() {
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
             <CardTitle className="text-xl font-bold tracking-tight">Fast Sale Process</CardTitle>
-            <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Identify product node and specify quantity</p>
+            <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Identify item and specify quantity</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => toast.info("Hold feature coming soon!")} className="h-8 text-[10px] uppercase font-bold">
+            {/* <Button variant="outline" size="sm" onClick={() => toast.info("Hold feature coming soon!")} className="h-8 text-[10px] uppercase font-bold">
               <IconDeviceFloppy className="mr-1 h-3 w-3" />
               Hold
-            </Button>
-            <Button variant="outline" size="sm" onClick={clearCart} className="h-8 text-[10px] uppercase font-bold text-red-500 hover:text-red-600">
+            </Button> */}
+            <Button variant="destructive" size="sm" onClick={clearCart}>
               <IconEraser className="mr-1 h-3 w-3" />
               Clear
             </Button>
@@ -276,8 +276,8 @@ export function SalesForm() {
                 className="justify-start"
               >
                 <ToggleGroupItem value="CASH" className="text-[10px] uppercase font-bold px-3">Cash</ToggleGroupItem>
-                <ToggleGroupItem value="GCASH" className="text-[10px] uppercase font-bold px-3">GCash</ToggleGroupItem>
-                <ToggleGroupItem value="CARD" className="text-[10px] uppercase font-bold px-3">Card</ToggleGroupItem>
+                {/* <ToggleGroupItem value="GCASH" className="text-[10px] uppercase font-bold px-3">GCash</ToggleGroupItem>
+                <ToggleGroupItem value="CARD" className="text-[10px] uppercase font-bold px-3">Card</ToggleGroupItem> */}
               </ToggleGroup>
             </div>
 
@@ -298,7 +298,7 @@ export function SalesForm() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[10px] uppercase font-bold text-muted-foreground">Change</Label>
-                  <div className={`h-10 rounded-md border flex items-center px-3 font-black text-lg ${change >= 0 ? "text-emerald-500 bg-emerald-50/50" : "text-destructive bg-destructive/5"}`}>
+                  <div className={`h-10 rounded-md border flex items-center px-3 font-black text-lg ${change >= 0 ? "text-emerald-700 bg-emerald-100" : "text-destructive bg-destructive/5"}`}>
                     ₱{Math.max(0, change).toFixed(2)}
                   </div>
                 </div>
