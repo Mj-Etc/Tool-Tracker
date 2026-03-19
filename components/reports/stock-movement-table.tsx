@@ -63,26 +63,6 @@ export function StockMovementTable({
   const columns: ColumnDef<StockLog>[] = React.useMemo(
     () => [
       {
-        accessorKey: "createdAt",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
-          >
-            Date/Time
-            <ArrowUpDown className="ml-2 h-3 w-3" />
-          </Button>
-        ),
-        cell: ({ row }) => (
-          <div className="font-mono text-[10px] text-muted-foreground uppercase">
-            {reportMode === "daily"
-              ? format(new Date(row.getValue("createdAt")), "HH:mm")
-              : format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
-          </div>
-        ),
-      },
-      {
         id: "product",
         accessorFn: (row) => row.item.name,
         header: ({ column }) => (
@@ -91,7 +71,7 @@ export function StockMovementTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Product Node
+            Item name
             <ArrowUpDown className="ml-2 h-3 w-3" />
           </Button>
         ),
@@ -190,6 +170,28 @@ export function StockMovementTable({
         ),
         enableGlobalFilter: false,
       },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <div className="text-right">
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="-mr-4 text-[10px] uppercase font-bold tracking-wider"
+            >
+              Date/Time
+              <ArrowUpDown className="mr-2 h-3 w-3" />
+            </Button>
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className="text-right font-mono text-[10px] text-muted-foreground uppercase">
+            {reportMode === "daily"
+              ? format(new Date(row.getValue("createdAt")), "HH:mm")
+              : format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
+          </div>
+        ),
+      },
     ],
     [reportMode],
   );
@@ -229,7 +231,7 @@ export function StockMovementTable({
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search product or executor..."
+            placeholder="Search item or executor..."
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
             className="pl-9 bg-muted/20 border-muted-foreground/20 h-9"

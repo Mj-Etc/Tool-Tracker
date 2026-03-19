@@ -46,6 +46,20 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ItemWithUser } from "@/components/items/types";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+
+interface Category {
+  id: string;
+  name: string;
+}
 
 interface SalesItemsTableProps {
   data: ItemWithUser[];
@@ -62,6 +76,7 @@ export function SalesItemsTable({
 }: SalesItemsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
 
   const columns: ColumnDef<ItemWithUser>[] = React.useMemo(
     () => [
@@ -73,15 +88,15 @@ export function SalesItemsTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Product Node
+            Product
             <ArrowUpDown className="ml-2 h-3 w-3" />
           </Button>
         ),
         cell: ({ row }) => (
           <div className="flex flex-col">
-            <span className="font-bold tracking-tight">{row.getValue("name")}</span>
-            <div className="flex items-center gap-1 text-[10px] text-muted-foreground uppercase font-mono">
-              <Package className="h-2 w-2" /> {row.original.category?.name} / {row.original.subcategory?.name}
+            <span className="font-semibold text-sm tracking-tight">{row.getValue("name")}</span>
+            <div className="flex items-center gap-1 text-[9px] text-muted-foreground uppercase font-mono">
+              {row.original.category?.name}
             </div>
           </div>
         ),
@@ -94,20 +109,15 @@ export function SalesItemsTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Unit Price
+            Price
             <ArrowUpDown className="ml-2 h-3 w-3" />
           </Button>
         ),
         cell: ({ row }) => {
           const amount = parseFloat(row.getValue("price"));
-          const formatted = new Intl.NumberFormat("en-PH", {
-            style: "currency",
-            currency: "PHP",
-          }).format(amount);
           return (
-            <div className="flex items-center gap-1 font-mono font-bold text-emerald-600">
-              <PhilippinePeso className="h-3 w-3 opacity-70" />
-              {formatted}
+            <div className="font-mono font-semibold text-sm">
+              ₱{amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </div>
           );
         },
@@ -120,7 +130,7 @@ export function SalesItemsTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Stock Level
+            Stock
             <ArrowUpDown className="ml-2 h-3 w-3" />
           </Button>
         ),
@@ -128,69 +138,53 @@ export function SalesItemsTable({
           const quantity = row.original.quantity;
           const threshold = row.original.lowStockThreshold;
 
-          let statusLabel = "Optimal";
-          let statusColor = "bg-green-400 text-green-900 font-bold hover:bg-green-400/90";
-
-          if (quantity === 0) {
-            statusLabel = "Depleted";
-            statusColor = "bg-destructive text-red-900 font-bold hover:bg-destructive/90";
-          } else if (quantity <= threshold) {
-            statusLabel = "Critical";
-            statusColor = "bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-400/90";
-          }
+          let colorClass = "text-emerald-600";
+          if (quantity === 0) colorClass = "text-destructive";
+          else if (quantity <= threshold) colorClass = "text-yellow-600";
 
           return (
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-1 font-mono text-sm font-bold">
-                <Boxes className="h-3 w-3 text-muted-foreground" />
-                <span className={quantity === 0 ? "text-destructive" : quantity <= threshold ? "text-yellow-500" : ""}>
-                  {quantity} <span className="text-[10px] uppercase font-normal text-muted-foreground tracking-tighter">Units</span>
-                </span>
-              </div>
-              <Badge className={`${statusColor} text-[9px] py-0 h-3.5 w-fit uppercase tracking-tighter px-1.5`}>
-                {statusLabel}
-              </Badge>
+            <div className={`font-mono text-sm font-semibold ${colorClass}`}>
+              {quantity}
             </div>
           );
         },
       },
       {
-        id: "orderQty",
-        header: () => <span className="text-[10px] uppercase font-bold tracking-wider">Order Qty</span>,
-        cell: ({ row, table }) => {
-          const item = row.original;
-          const meta = table.options.meta;
-          return (
-            <Input 
-              type="number" 
-              min="1" 
-              max={item.quantity}
-              placeholder="Qty"
-              value={meta?.quantities[item.id] || ""}
-              onChange={(e) => meta?.onQuantityChange(item.id, e.target.value)}
-              disabled={item.quantity <= 0}
-              className="w-20 text-center font-bold h-8 text-xs bg-muted/20"
-            />
-          );
-        },
+        accessorKey: "category.name",
+        id: "categoryName",
+        header: () => null,
+        cell: () => null,
+        enableHiding: true,
       },
       {
         id: "actions",
-        header: () => <span className="text-[10px] uppercase font-bold tracking-wider">Action</span>,
+        header: () => <span className="text-[10px] uppercase font-bold tracking-wider text-center block">Action</span>,
         cell: ({ row, table }) => {
           const item = row.original;
           const meta = table.options.meta;
           const qtyToAdd = meta?.quantities[item.id] || 1;
           return (
-            <Button 
-              size="sm" 
-              onClick={() => meta?.onAddToCart(item)}
-              disabled={item.quantity <= 0 || qtyToAdd <= 0}
-              className="h-8 px-3 bg-primary hover:bg-primary/90 text-[10px] uppercase font-bold tracking-widest"
-            >
-              <Plus className="mr-1 h-3 w-3" />
-              Add
-            </Button>
+            <div className="flex items-center gap-2">
+              <Input 
+                type="number" 
+                min="1" 
+                max={item.quantity}
+                placeholder="1"
+                value={meta?.quantities[item.id] || ""}
+                onChange={(e) => meta?.onQuantityChange(item.id, e.target.value)}
+                disabled={item.quantity <= 0}
+                className="w-14 text-center font-semibold h-7 text-xs bg-muted/20 px-1"
+              />
+              <Button 
+                size="sm" 
+                variant="secondary"
+                onClick={() => meta?.onAddToCart(item)}
+                disabled={item.quantity <= 0 || (meta?.quantities[item.id] || 1) <= 0}
+                className="h-7 w-7 p-0 rounded-full"
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           );
         },
       },
@@ -218,32 +212,48 @@ export function SalesItemsTable({
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 8,
       }
     }
   });
 
   return (
-    <div className="space-y-4">
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search product nodes by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-          className="pl-9 bg-muted/20 border-muted-foreground/20"
-        />
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+          <Input
+            placeholder="Search products..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+            className="pl-8 h-9 text-sm bg-muted/10 border-muted-foreground/10"
+          />
+        </div>
+        <Select 
+          onValueChange={(val) => {
+            const filterValue = val === "all" ? "" : val;
+            table.getColumn("categoryName")?.setFilterValue(filterValue);
+          }}
+        >
+          <SelectTrigger className="w-[140px] h-9 text-xs">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {categories?.map((cat) => (
+              <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Table Content */}
       <div className="rounded-md border bg-background overflow-hidden shadow-sm">
         <Table>
           <TableHeader className="bg-muted/30">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+              <TableRow key={headerGroup.id} className="hover:bg-transparent border-b">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="h-10 text-[10px] uppercase font-bold tracking-wider">
+                  <TableHead key={header.id} className="h-8 py-0">
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
@@ -255,10 +265,10 @@ export function SalesItemsTable({
               table.getRowModel().rows.map((row) => (
                 <TableRow 
                   key={row.id} 
-                  className="group hover:bg-muted/10 transition-colors border-b last:border-0"
+                  className="hover:bg-muted/5 border-b last:border-0 h-11"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-2.5">
+                    <TableCell key={cell.id} className="py-1">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -266,8 +276,8 @@ export function SalesItemsTable({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground italic">
-                  No product nodes detected in cluster.
+                <TableCell colSpan={columns.length} className="h-40 text-center text-muted-foreground italic text-sm">
+                  No products found.
                 </TableCell>
               </TableRow>
             )}
@@ -275,45 +285,28 @@ export function SalesItemsTable({
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between space-x-2">
+      <div className="flex items-center justify-between">
         <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-1">
           <Button 
-            variant="outline" 
-            className="h-7 w-7 p-0" 
-            onClick={() => table.setPageIndex(0)} 
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronsLeft className="h-3.5 w-3.5" />
-          </Button>
-          <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
-            className="h-7 px-2 text-[10px] uppercase font-bold tracking-widest" 
+            className="h-7 text-[10px] uppercase font-bold" 
             onClick={() => table.previousPage()} 
             disabled={!table.getCanPreviousPage()}
           >
             Prev
           </Button>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
-            className="h-7 px-2 text-[10px] uppercase font-bold tracking-widest" 
+            className="h-7 text-[10px] uppercase font-bold" 
             onClick={() => table.nextPage()} 
             disabled={!table.getCanNextPage()}
           >
             Next
-          </Button>
-          <Button 
-            variant="outline" 
-            className="h-7 w-7 p-0" 
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)} 
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronsRight className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>

@@ -150,13 +150,15 @@ model StockLog {
 }
 
 model Transaction {
-  id           String            @id @default(cuid())
-  cashierId    String
-  customerName String?
-  totalAmount  Decimal           @db.Decimal(10, 2)
-  createdAt    DateTime          @default(now())
-  cashier      User              @relation(fields: [cashierId], references: [id])
-  items        TransactionItem[]
+  id            String            @id @default(cuid())
+  cashierId     String
+  customerName  String?
+  totalAmount   Decimal           @db.Decimal(10, 2)
+  paymentMethod String            @default("CASH")
+  amountPaid    Decimal?          @db.Decimal(10, 2)
+  createdAt     DateTime          @default(now())
+  cashier       User              @relation(fields: [cashierId], references: [id])
+  items         TransactionItem[]
 
   @@map("transaction")
 }

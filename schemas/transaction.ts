@@ -11,6 +11,8 @@ export const TransactionSchema = z.object({
   customerName: z.string().optional(),
   items: z.array(TransactionItemSchema).min(1, "At least one item is required"),
   totalAmount: z.number().min(0),
+  paymentMethod: z.enum(["CASH", "GCASH", "CARD"]).default("CASH"),
+  amountPaid: z.number().min(0).optional(),
 });
 
 export type TransactionInput = z.infer<typeof TransactionSchema>;

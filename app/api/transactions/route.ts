@@ -21,6 +21,8 @@ export async function POST(request: Request) {
           cashierId: session.user.id,
           customerName: validatedData.customerName,
           totalAmount: validatedData.totalAmount,
+          paymentMethod: validatedData.paymentMethod,
+          amountPaid: validatedData.amountPaid,
         },
       });
 

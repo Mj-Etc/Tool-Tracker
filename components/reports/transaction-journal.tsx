@@ -56,26 +56,6 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
   const columns: ColumnDef<Transaction>[] = React.useMemo(
     () => [
       {
-        accessorKey: "createdAt",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
-          >
-            Date/Time
-            <ArrowUpDown className="ml-2 h-3 w-3" />
-          </Button>
-        ),
-        cell: ({ row }) => (
-          <div className="font-mono text-[10px] text-muted-foreground uppercase">
-            {reportMode === "daily" 
-              ? format(new Date(row.getValue("createdAt")), "HH:mm") 
-              : format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
-          </div>
-        ),
-      },
-      {
         id: "customer",
         accessorFn: (row) => row.customerName || "General Walk-in",
         header: ({ column }) => (
@@ -151,6 +131,28 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
           );
         },
         enableGlobalFilter: false,
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <div className="text-right">
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="-mr-4 text-[10px] uppercase font-bold tracking-wider"
+            >
+              Date/Time
+              <ArrowUpDown className="mr-2 h-3 w-3" />
+            </Button>
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className="text-right font-mono text-[10px] text-muted-foreground uppercase">
+            {reportMode === "daily" 
+              ? format(new Date(row.getValue("createdAt")), "HH:mm") 
+              : format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
+          </div>
+        ),
       },
     ],
     [reportMode],
