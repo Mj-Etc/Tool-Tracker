@@ -388,7 +388,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
             >
               <DialogTrigger asChild>
                 <Button
-                  variant="destructive  "
+                  variant="destructive"
                   size="sm"
                   disabled={isBatchProcessing}
                 >
