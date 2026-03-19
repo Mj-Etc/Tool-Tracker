@@ -36,17 +36,17 @@ export function FinancialSummary({
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1 p-4 rounded-lg bg-muted/50 border">
+          <div className="space-y-1 p-4 rounded-lg border">
             <p className="text-sm text-muted-foreground font-medium">Total Revenue</p>
             <p className="text-2xl font-bold">₱{revenue.toLocaleString()}</p>
           </div>
-          <div className="space-y-1 p-4 rounded-lg bg-muted/50 border">
+          <div className="space-y-1 p-4 rounded-lg border">
             <p className="text-sm text-muted-foreground font-medium">Total COGS</p>
             <p className="text-2xl font-bold">₱{cost.toLocaleString()}</p>
           </div>
         </div>
         
-        <div className="p-6 border rounded-xl shadow-lg">
+        <div className="p-6 border rounded-lg bg-muted/50">
           <div className="flex justify-between items-end">
             <div>
               <p className="text-sm font-medium uppercase tracking-wider">Estimated Gross Profit</p>

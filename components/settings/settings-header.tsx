@@ -4,7 +4,7 @@ import { Settings2 } from "lucide-react";
 
 export function SettingsHeader() {
   return (
-    <div className="flex justify-between items-center px-4 pt-4">
+    <div className="flex justify-between items-center px-4">
       <div className="flex flex-col">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Settings2 className="h-4 w-4" />

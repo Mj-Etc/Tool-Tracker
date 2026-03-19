@@ -28,7 +28,7 @@ export default function UsersPage() {
     <div className="h-auto flex flex-col gap-4 p-4 min-h-screen">
       <UsersHeader />
       
-      <div className="rounded-xl bg-card shadow-sm animate-in fade-in duration-500">
+      <div className="rounded-xl border bg-card shadow-sm animate-in fade-in duration-500">
         <UsersTable data={users || []} onUpdate={() => mutate()} />
       </div>
     </div>

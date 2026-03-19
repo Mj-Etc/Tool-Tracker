@@ -20,6 +20,7 @@ import {
   Filter,
   ChevronsLeft,
   ChevronsRight,
+  Notebook,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -47,10 +48,16 @@ interface StockMovementTableProps {
   reportMode?: ReportMode;
 }
 
-export function StockMovementTable({ logs = [], reportMode = "overall" }: StockMovementTableProps) {
+export function StockMovementTable({
+  logs = [],
+  reportMode = "overall",
+}: StockMovementTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = React.useState("");
 
   const columns: ColumnDef<StockLog>[] = React.useMemo(
@@ -69,8 +76,8 @@ export function StockMovementTable({ logs = [], reportMode = "overall" }: StockM
         ),
         cell: ({ row }) => (
           <div className="font-mono text-[10px] text-muted-foreground uppercase">
-            {reportMode === "daily" 
-              ? format(new Date(row.getValue("createdAt")), "HH:mm") 
+            {reportMode === "daily"
+              ? format(new Date(row.getValue("createdAt")), "HH:mm")
               : format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
           </div>
         ),
@@ -147,7 +154,9 @@ export function StockMovementTable({ logs = [], reportMode = "overall" }: StockM
           <div className="text-right">
             <Button
               variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
               className="-mr-4 text-[10px] uppercase font-bold tracking-wider"
             >
               Delta
@@ -158,7 +167,9 @@ export function StockMovementTable({ logs = [], reportMode = "overall" }: StockM
         cell: ({ row }) => {
           const change = parseFloat(row.getValue("change"));
           return (
-            <div className={`text-right font-mono font-bold ${change > 0 ? "text-emerald-600" : "text-rose-600"}`}>
+            <div
+              className={`text-right font-mono font-bold ${change > 0 ? "text-emerald-600" : "text-rose-600"}`}
+            >
               {change > 0 ? `+${change}` : change}
             </div>
           );
@@ -208,11 +219,10 @@ export function StockMovementTable({ logs = [], reportMode = "overall" }: StockM
   });
 
   return (
-    <div className="w-full rounded-xl bg-card shadow-sm space-y-4 p-4">
-      <div className="flex items-center gap-2 px-1">
-        <h3 className="text-md leading-snug font-medium uppercase">
-          Inventory Journal
-        </h3>
+    <div className="w-full rounded-xl border bg-card shadow-sm space-y-4 p-4">
+      <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
+        <Notebook className="h-5 w-5" />
+        <h3>Inventory Journal</h3>
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-1">
@@ -351,5 +361,3 @@ export function StockMovementTable({ logs = [], reportMode = "overall" }: StockM
     </div>
   );
 }
-
-

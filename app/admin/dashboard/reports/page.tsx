@@ -157,8 +157,6 @@ export default function ReportsPage() {
         dateStr={dateStr}
       />
 
-      <Separator />
-
       {isDataLoading ? (
         <ReportSkeleton />
       ) : (

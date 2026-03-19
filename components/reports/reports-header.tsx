@@ -31,8 +31,8 @@ export function ReportsHeader({
   dateStr,
 }: ReportsHeaderProps) {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-4 pt-4 transition-[height] duration-300 ease-in-out">
-      <div className="flex flex-col flex-1 min-w-0">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-4 pt-0 transition-[height] duration-300 ease-in-out">
+      <div className="flex flex-col flex-1 min-w-0 mb-5">
         <div className="flex items-center gap-2 text-muted-foreground">
           <BarChart3 className="h-4 w-4 shrink-0" />
           <span className="text-[10px] uppercase font-bold tracking-[0.2em]">
