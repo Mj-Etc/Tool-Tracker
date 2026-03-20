@@ -3,11 +3,11 @@
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
 import { Package, AlertTriangle, AlertCircle, TrendingUp, ArrowRight } from "lucide-react";
 import Link from "next/link";
 // Modular Components
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
 
 type Stats = {
   totalItems: number;
@@ -20,11 +20,7 @@ export default function DashboardPage() {
   const { data: stats, isLoading } = useSWR<Stats>("/api/stats", fetcher);
 
   if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <Spinner />
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (

@@ -30,26 +30,6 @@ export default function CashierPage() {
     isLoading: transLoading,
   } = useSWR<Transaction[]>(transUrl, fetcher);
 
-  if (isPending) return (
-    <div className="h-screen flex flex-col items-center justify-center bg-background gap-4">
-      <Spinner className="h-10 w-10 text-primary" />
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground animate-pulse">Initializing Terminal...</p>
-    </div>
-  );
-
-  if (!session) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-background">
-        <Card className="w-full max-w-md p-8 text-center border-dashed">
-           <p className="text-muted-foreground font-medium mb-4">Terminal Session Required</p>
-           <Button asChild className="w-full font-bold">
-              <a href="/">Authenticate to Continue</a>
-           </Button>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-background animate-in fade-in duration-500">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -61,7 +41,7 @@ export default function CashierPage() {
                 Cashier Terminal 
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               </h1>
-              <p className="text-[10px] text-muted-foreground font-bold uppercase">Operator: {session.user.name}</p>
+              <p className="text-[10px] text-muted-foreground font-bold uppercase">Operator: {session?.user.name}</p>
             </div>
           </div>
           
