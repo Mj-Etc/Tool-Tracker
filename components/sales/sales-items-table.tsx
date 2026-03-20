@@ -163,7 +163,7 @@ export function SalesItemsTable({
                 type="number" 
                 min="1" 
                 max={item.quantity}
-                placeholder="1"
+                placeholder="0"
                 value={meta?.quantities[item.id] || ""}
                 onChange={(e) => meta?.onQuantityChange(item.id, e.target.value)}
                 disabled={item.quantity <= 0}
@@ -206,7 +206,7 @@ export function SalesItemsTable({
     },
     initialState: {
       pagination: {
-        pageSize: 8,
+        pageSize: 10,
       }
     }
   });
@@ -220,7 +220,7 @@ export function SalesItemsTable({
             placeholder="Search items..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-            className="pl-8 h-9 text-sm bg-muted/10 border-muted-foreground/10"
+            className="pl-8 text-sm bg-muted/10 border-muted-foreground/10"
           />
         </div>
         <Select 

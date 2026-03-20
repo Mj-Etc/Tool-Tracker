@@ -236,14 +236,14 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
             placeholder="Search customer or cashier..."
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            className="pl-9 bg-muted/20 border-muted-foreground/20 h-9"
+            className="pl-9 bg-muted/20 border-muted-foreground/20"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9">
+              <Button variant="outline" size="sm">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

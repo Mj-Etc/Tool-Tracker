@@ -200,7 +200,7 @@ export function SalesForm() {
       </Card>
 
       {/* Cart & Checkout */}
-      <Card className="lg:col-span-5 h-fit sticky top-4">
+      <Card className="lg:col-span-5 h-fit">
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
             Cart
@@ -214,11 +214,11 @@ export function SalesForm() {
               placeholder="Enter customer name..." 
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="bg-background h-9 text-sm"
+              className="bg-background text-sm"
             />
           </div>
 
-          <ScrollArea className="h-75 pr-4 border rounded-md p-2 bg-muted/10">
+          <ScrollArea className="h-66 border rounded-md p-2 bg-muted/10">
             {cart.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                 <p className="text-sm italic text-muted-foreground/50 font-medium">Cart is empty</p>
@@ -292,13 +292,13 @@ export function SalesForm() {
                       placeholder="0.00"
                       value={amountPaid}
                       onChange={(e) => setAmountPaid(e.target.value)}
-                      className="pl-6 h-10 font-bold text-lg"
+                      className="pl-6 font-bold text-lg"
                     />
                   </div>
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[10px] uppercase font-bold text-muted-foreground">Change</Label>
-                  <div className={`h-10 rounded-md border flex items-center px-3 font-black text-lg ${change >= 0 ? "text-emerald-700 bg-emerald-100" : "text-destructive bg-destructive/5"}`}>
+                  <div className={`h-8 rounded-md border flex items-center px-3 font-black text-lg ${change >= 0 ? "text-emerald-700 bg-emerald-100" : "text-destructive bg-destructive/5"}`}>
                     ₱{Math.max(0, change).toFixed(2)}
                   </div>
                 </div>
@@ -306,13 +306,13 @@ export function SalesForm() {
             )}
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4 border-t pt-4 bg-muted/5">
-          <div className="flex justify-between w-full">
+        <CardFooter className="flex flex-col gap-4 border-t pt-4">
+          <div className="flex justify-between w-full items-center">
             <span className="text-xs uppercase font-bold text-muted-foreground">Total Payable</span>
-            <span className="text-3xl font-black text-primary">₱{totalAmount.toFixed(2)}</span>
+            <span className="text-lg font-black text-primary">₱{totalAmount.toFixed(2)}</span>
           </div>
           <Button 
-            className="w-full text-xl h-14 font-black shadow-lg shadow-primary/20 transition-all active:scale-[0.98]" 
+            className="w-full text-xl h-10 font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]" 
             disabled={cart.length === 0 || isSubmitting || (paymentMethod === "CASH" && (parseFloat(amountPaid) < totalAmount || !amountPaid))}
             onClick={handleCheckout}
           >
