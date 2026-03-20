@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import useSWR from "swr";
-import { fetcher } from "@/lib/fetcher";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../ui/card";
@@ -11,15 +9,18 @@ import { useSocket } from "../socket-provider";
 import { Spinner } from "../ui/spinner";
 import { ScrollArea } from "../ui/scroll-area";
 import { TransactionItemInput } from "@/schemas/transaction";
-import { IconTrash, IconDeviceFloppy, IconEraser } from "@tabler/icons-react";
+import { IconTrash, IconEraser } from "@tabler/icons-react";
 import { SalesItemsTable } from "./sales-items-table";
 import { ItemWithUser } from "../items/types";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 
-export function SalesForm() {
-  const { data: items, isLoading: itemsLoading } = useSWR<ItemWithUser[]>("/api/item/list-items", fetcher);
+interface SalesFormProps {
+  items: ItemWithUser[];
+}
+
+export function SalesForm({ items }: SalesFormProps) {
   const [customerName, setCustomerName] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"CASH" | "GCASH" | "CARD">("CASH");
   const [amountPaid, setAmountPaid] = useState<string>("");
@@ -183,19 +184,12 @@ export function SalesForm() {
           </div>
         </CardHeader>
         <CardContent>
-          {itemsLoading ? (
-            <div className="flex flex-col items-center justify-center p-20 gap-4">
-              <Spinner className="h-8 w-8 text-primary" />
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Accessing Inventory Cluster...</p>
-            </div>
-          ) : (
             <SalesItemsTable 
               data={items || []} 
               quantities={quantities} 
               onQuantityChange={handleQuantityChange} 
               onAddToCart={addToCart} 
             />
-          )}
         </CardContent>
       </Card>
 
