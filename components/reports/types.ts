@@ -3,6 +3,8 @@ export type Transaction = {
   customerName: string | null;
   cashier: { name: string };
   totalAmount: number;
+  paymentMethod: string;
+  amountPaid: number;
   createdAt: string;
   items: {
     item: { name: string; costPrice: number };

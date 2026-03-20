@@ -95,8 +95,7 @@ export function TransactionReviewDialog({
                 <CreditCard className="h-3 w-3" />
                 Payment Method
               </div>
-              <p className="text-sm font-medium">CASH</p>{" "}
-              {/* Payment method not in types.ts but is in TransactionSchema. I'll default to CASH for now as it's not in the Transaction type in types.ts. */}
+              <p className="text-sm font-medium">{transaction.paymentMethod || "CASH"}</p>
             </div>
           </div>
         </div>
@@ -152,8 +151,16 @@ export function TransactionReviewDialog({
             </ScrollArea>
           </div>
         </div>
-        <DialogFooter>
-          <div className="flex flex-col text-right w-full">
+        <DialogFooter className="flex flex-col sm:flex-row items-end justify-between w-full pt-4">
+          <div className="flex flex-col items-end sm:items-start text-right sm:text-left gap-1">
+             <div className="flex items-center gap-2 text-[10px] font-bold uppercase text-muted-foreground">
+               Amount Paid: <span className="font-mono text-foreground">₱{Number(transaction.amountPaid || transaction.totalAmount).toLocaleString()}</span>
+             </div>
+             <div className="flex items-center gap-2 text-[10px] font-bold uppercase text-muted-foreground">
+               Change: <span className="font-mono text-emerald-600 font-bold">₱{Math.max(0, Number(transaction.amountPaid || 0) - Number(transaction.totalAmount)).toLocaleString()}</span>
+             </div>
+          </div>
+          <div className="flex flex-col text-right">
             <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
               Grand Total
             </span>
