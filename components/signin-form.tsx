@@ -25,6 +25,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
 import { Logo } from "./logo";
+import { DialogFooter } from "./ui/dialog";
 
 type SignInValues = z.infer<typeof SignInSchema>;
 
@@ -128,8 +129,8 @@ export function SignInForm() {
                 </div>
               </Field>
 
-              <Field>
-                <Button type="submit" disabled={isSubmitting}>
+              <DialogFooter>
+                <Button type="submit" disabled={isSubmitting} className="w-full">
                   {isSubmitting ? (
                     <>
                       <Spinner />
@@ -139,7 +140,7 @@ export function SignInForm() {
                     "Sign In"
                   )}
                 </Button>
-              </Field>
+              </DialogFooter>
             </FieldGroup>
           </form>
         </CardContent>

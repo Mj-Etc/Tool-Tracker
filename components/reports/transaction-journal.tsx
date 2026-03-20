@@ -20,6 +20,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Notebook,
+  Eye,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Transaction, ReportMode } from "./types";
+import { TransactionReviewDialog } from "./transaction-review-dialog";
 
 interface TransactionJournalProps {
   reportMode: ReportMode;
@@ -52,6 +54,13 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction | null>(null);
+  const [isReviewOpen, setIsReviewOpen] = React.useState(false);
+
+  const handleReview = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsReviewOpen(true);
+  };
 
   const columns: ColumnDef<Transaction>[] = React.useMemo(
     () => [
@@ -103,7 +112,7 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
           </div>
         ),
         cell: ({ row }) => {
-          const items = row.getValue("items") as any[];
+          const items = row.original.items;
           return <div className="text-right font-mono font-bold">{items.length}</div>;
         },
         enableGlobalFilter: false,
@@ -154,10 +163,31 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
           </div>
         ),
       },
+      {
+        id: "actions",
+        header: () => (
+          <div className="text-right text-[10px] uppercase font-bold tracking-wider">
+            Action
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className="text-right">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-primary hover:text-primary hover:bg-primary/10"
+              onClick={() => handleReview(row.original)}
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+          </div>
+        ),
+      },
     ],
     [reportMode],
   );
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: transactions,
     columns,
@@ -184,6 +214,11 @@ export function TransactionJournal({ reportMode, selectedDate, transactions = []
 
   return (
     <div className="w-full rounded-xl bg-card shadow-sm space-y-4 p-4">
+      <TransactionReviewDialog
+        open={isReviewOpen}
+        onOpenChange={setIsReviewOpen}
+        transaction={selectedTransaction}
+      />
       <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
         <Notebook className="h-5 w-5" />
         <h3>
