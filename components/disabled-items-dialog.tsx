@@ -57,7 +57,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
-import { useSocket } from "./socket-provider";
 import { ScrollArea } from "./ui/scroll-area";
 import { DeleteItemButton } from "@/components/ui/delete-item-button";
 
@@ -92,7 +91,6 @@ interface Item {
 
 export function DisabledItemsDialog() {
   const [open, setOpen] = React.useState(false);
-  const { sendMessage } = useSocket();
   const {
     data: items,
     mutate,
@@ -119,7 +117,6 @@ export function DisabledItemsDialog() {
       if (!response.ok) throw new Error("Failed to restore items");
 
       toast.success(`Successfully restored ${ids.length} item(s)`);
-      sendMessage({ type: "items:updated" });
       setRowSelection({});
       mutate();
     } catch (err) {

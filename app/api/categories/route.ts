@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { eventHub } from "@/lib/hub";
 
 export async function GET() {
   try {
@@ -46,6 +47,8 @@ export async function POST(request: Request) {
         subcategories: true,
       },
     });
+
+    eventHub.broadcast("mutate", { key: "/api/categories" });
 
     return NextResponse.json(category, { status: 201 });
   } catch (error) {

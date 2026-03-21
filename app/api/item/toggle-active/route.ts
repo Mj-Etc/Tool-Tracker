@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { eventHub } from "@/lib/hub";
 
 export async function POST(request: Request) {
   try {
@@ -22,6 +23,10 @@ export async function POST(request: Request) {
       where: { id },
       data: { isActive }
     });
+
+    eventHub.broadcast("mutate", { key: "/api/item/list-items*" });
+    eventHub.broadcast("mutate", { key: "/api/stats*" });
+    eventHub.broadcast("mutate", { key: "/api/reports/stock-movement*" });
 
     return NextResponse.json({ msg: `Item ${isActive ? 'enabled' : 'disabled'} successfully`, item: result });
 

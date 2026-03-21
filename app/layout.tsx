@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SocketProvider } from "@/components/socket-provider";
+import { EventProvider } from "@/components/event-provider";
 import { Public_Sans, Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
@@ -29,11 +29,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SocketProvider>
+          <EventProvider>
             <ScrollArea className="h-screen">
               <TooltipProvider>{children}</TooltipProvider>
             </ScrollArea>
-          </SocketProvider>
+          </EventProvider>
           <Toaster position="top-center" duration={2000} />
         </ThemeProvider>
       </body>

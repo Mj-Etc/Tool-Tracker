@@ -5,7 +5,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../ui/card";
 import { toast } from "sonner";
-import { useSocket } from "../socket-provider";
 import { Spinner } from "../ui/spinner";
 import { ScrollArea } from "../ui/scroll-area";
 import { TransactionItemInput } from "@/schemas/transaction";
@@ -27,7 +26,6 @@ export function SalesForm({ items }: SalesFormProps) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [cart, setCart] = useState<(TransactionItemInput & { name: string })[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { sendMessage } = useSocket();
 
   const handleQuantityChange = (itemId: string, val: string) => {
     if (val === "") {
@@ -153,7 +151,6 @@ export function SalesForm({ items }: SalesFormProps) {
       setCart([]);
       setCustomerName("");
       setAmountPaid("");
-      sendMessage({ type: "transaction:created" });
     } catch (error: any) {
       toast.error(error.message || "Failed to process transaction");
     } finally {

@@ -17,7 +17,6 @@ import { FieldGroup, Field, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
-import { useSocket } from "./socket-provider";
 import { ItemSchema, ItemInput } from "@/schemas/item";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
@@ -46,7 +45,6 @@ interface Category {
 
 export function AddItemDialog() {
   const [open, setOpen] = useState(false);
-  const { sendMessage } = useSocket();
   const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher);
   
   const {
@@ -92,7 +90,6 @@ export function AddItemDialog() {
       if (!response.ok) {
         throw new Error("Failed to create item.");
       }
-      sendMessage({ type: "items:created" });
       reset();
       setOpen(false);
       toast.success("Item created successfully!");

@@ -4,7 +4,6 @@ import * as React from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { useSession } from "@/lib/auth-client";
-import { useSocket } from "@/components/socket-provider";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 
@@ -25,7 +24,6 @@ export default function ItemsPage() {
 function ItemsPageContent() {
   const { data: session } = useSession();
   const isAdmin = session?.user.role === "admin";
-  const { sendMessage } = useSocket();
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
 
@@ -59,17 +57,13 @@ function ItemsPageContent() {
 
       toast.success(`Successfully disabled ${ids.length} item(s)`);
       
-      // Notify other clients/components
-      sendMessage({ type: "items:updated" });
-      sendMessage({ type: "items:disabled" });
-      
       // Refresh local data
       mutate();
     } catch (error) {
       console.error(error);
       toast.error("Failed to disable items");
     }
-  }, [sendMessage, mutate]);
+  }, [mutate]);
 
   if (isLoading) {
     return <ItemsSkeleton />;

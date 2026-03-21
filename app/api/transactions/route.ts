@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { TransactionSchema } from "@/schemas/transaction";
+import { eventHub } from "@/lib/hub";
 
 export async function POST(request: Request) {
   try {
@@ -68,6 +69,11 @@ export async function POST(request: Request) {
 
       return transaction;
     });
+
+    eventHub.broadcast("mutate", { key: "/api/transactions*" });
+    eventHub.broadcast("mutate", { key: "/api/item/list-items*" });
+    eventHub.broadcast("mutate", { key: "/api/stats*" });
+    eventHub.broadcast("mutate", { key: "/api/reports/stock-movement*" });
 
     return NextResponse.json(result, { status: 201 });
   } catch (error: any) {

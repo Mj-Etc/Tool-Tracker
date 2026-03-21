@@ -16,7 +16,6 @@ import { FieldGroup, Field, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
-import { useSocket } from "../socket-provider";
 import { useState, useEffect } from "react";
 import { PackagePlus } from "lucide-react";
 import { z } from "zod";
@@ -56,8 +55,6 @@ export function RestockItemDialog({
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen ?? internalOpen;
   const setOpen = controlledOnOpenChange ?? setInternalOpen;
-
-  const { sendMessage } = useSocket();
 
   const {
     control,
@@ -112,7 +109,6 @@ export function RestockItemDialog({
         throw new Error(errorData.error || "Failed to restock items.");
       }
 
-      sendMessage({ type: "items:updated" });
       setOpen(false);
       onSuccess?.();
       toast.success(

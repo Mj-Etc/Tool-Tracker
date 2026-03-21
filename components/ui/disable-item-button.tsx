@@ -15,7 +15,6 @@ import {
   DialogFooter,
   DialogClose,
 } from "./dialog";
-import { useSocket } from "../socket-provider";
 
 interface DisableProps {
   itemId: string;
@@ -26,7 +25,6 @@ interface DisableProps {
 export function DisableItemButton({ itemId, onSuccess, trigger }: DisableProps) {
   const [isDisabling, setIsDisabling] = useState(false);
   const [open, setOpen] = useState(false);
-  const { sendMessage } = useSocket();
 
   const handleDisable = async () => {
     setIsDisabling(true);
@@ -39,7 +37,6 @@ export function DisableItemButton({ itemId, onSuccess, trigger }: DisableProps) 
       if (!response.ok) {
         throw new Error("Failed to disable item.");
       }
-      sendMessage({ type: "items:disabled" });
       setOpen(false);
       onSuccess?.();
       toast.success("Item disabled successfully!");

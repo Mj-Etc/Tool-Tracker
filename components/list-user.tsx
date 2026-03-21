@@ -65,7 +65,6 @@ import { DisableItemButton } from "./ui/disable-item-button";
 import { useSession } from "@/lib/auth-client";
 import { Badge } from "./ui/badge";
 import { EditItemDialog } from "./edit-item-dialog";
-import { useSocket } from "./socket-provider";
 import { toast } from "sonner";
 
 type ItemWithUser = {
@@ -105,7 +104,6 @@ interface Category {
 export function ListItem() {
   const { data: session } = useSession();
   const isAdmin = session?.user.role === "admin";
-  const { sendMessage } = useSocket();
   const { data, error, isLoading, mutate } = useSWR<ItemWithUser[]>(
     `/api/item/list-items`,
     fetcher,
@@ -332,9 +330,7 @@ export function ListItem() {
       if (!response.ok) throw new Error("Batch disable failed");
 
       toast.success(`Successfully disabled ${selectedCount} items`);
-      sendMessage({ type: "items:updated" });
       table.resetRowSelection();
-      sendMessage({ type: "items:disabled" });
       mutate();
     } catch (error) {
       toast.error("Failed to disable items");

@@ -15,7 +15,6 @@ import {
   DialogFooter,
   DialogClose,
 } from "./dialog";
-import { useSocket } from "../socket-provider";
 
 interface DeleteProps {
   ids: string[];
@@ -44,7 +43,6 @@ export function DeleteItemButton({
 }: DeleteProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [open, setOpen] = useState(false);
-  const { sendMessage } = useSocket();
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -61,7 +59,6 @@ export function DeleteItemButton({
         throw new Error(data.error || "Failed to delete item.");
       }
 
-      sendMessage({ type: "items:deleted" });
       setOpen(false);
       toast.success(`Successfully deleted ${ids.length} item(s) permanently`);
       onSuccess?.();
