@@ -191,7 +191,7 @@ export function InventoryStats({
               ₱{(stats?.totalInventoryCost ?? 0).toLocaleString()}
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4 pt-2">
+          <div className="pt-2">
             <div className="space-y-1">
               <p className="text-[10px] font-bold text-muted-foreground uppercase">
                 Aging Stock
@@ -199,12 +199,6 @@ export function InventoryStats({
               <p className="text-xl font-bold">
                 {stats?.agingStock || 0} items
               </p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase">
-                Inventory Turn
-              </p>
-              <p className="text-xl font-bold">4.2x</p>
             </div>
           </div>
         </CardContent>

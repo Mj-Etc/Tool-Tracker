@@ -106,7 +106,12 @@ export function ListItem() {
   const isAdmin = session?.user.role === "admin";
   const { data, error, isLoading, mutate } = useSWR<ItemWithUser[]>(
     `/api/item/list-items`,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
   const { data: categories } = useSWR<Category[]>("/api/categories", fetcher, {
     revalidateIfStale: false,
