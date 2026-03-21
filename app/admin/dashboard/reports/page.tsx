@@ -22,7 +22,7 @@ import { KpiCards } from "@/components/reports/kpi-cards";
 import { RevenueTrendChart } from "@/components/reports/revenue-trend-chart";
 import { FinancialSummary } from "@/components/reports/financial-summary";
 import { TopProducts } from "@/components/reports/top-products";
-import { TransactionJournal } from "@/components/reports/transaction-journal";
+import { TransactionRecord } from "@/components/reports/transaction-journal";
 import { InventoryStats } from "@/components/reports/inventory-stats";
 import {
   Transaction,
@@ -180,7 +180,7 @@ export default function ReportsPage() {
                 value="transactions"
                 className="px-6 data-[state=active]:bg-muted"
               >
-                Journal
+                Transactions
               </TabsTrigger>
               <TabsTrigger
                 value="inventory"
@@ -209,7 +209,7 @@ export default function ReportsPage() {
             </TabsContent>
 
             <TabsContent value="transactions" className="outline-none">
-              <TransactionJournal
+              <TransactionRecord
                 reportMode={reportMode}
                 selectedDate={selectedDate}
                 transactions={transactions}

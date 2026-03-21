@@ -43,13 +43,13 @@ import { format } from "date-fns";
 import { Transaction, ReportMode } from "./types";
 import { TransactionReviewDialog } from "./transaction-review-dialog";
 
-interface TransactionJournalProps {
+interface TransactionRecordProps {
   reportMode: ReportMode;
   selectedDate: Date;
   transactions?: Transaction[];
 }
 
-export function TransactionJournal({ reportMode, selectedDate, transactions = [] }: TransactionJournalProps) {
+export function TransactionRecord({ reportMode, selectedDate, transactions = [] }: TransactionRecordProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});

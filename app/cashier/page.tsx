@@ -10,12 +10,13 @@ import { SignOutButton } from "@/components/ui/signout-button";
 import { useSession } from "@/lib/auth-client";
 import { Separator } from "@/components/ui/separator";
 import { Logo } from "@/components/logo";
-import { TransactionJournal } from "@/components/reports/transaction-journal";
+import { TransactionRecord } from "@/components/reports/transaction-journal";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Transaction } from "@/components/reports/types";
 import { ReceiptText, Calendar as CalendarIcon } from "lucide-react";
 import { CashierSkeleton } from "@/components/sales/cashier-skeleton";
 import { ItemWithUser } from "@/components/items/types";
+import { Card } from "@/components/ui/card";
 
 export default function CashierPage() {
   const { data: session } = useSession();
@@ -68,67 +69,66 @@ export default function CashierPage() {
           <>
             <SalesForm items={items || []} />
             
-            <div className="w-full max-w-7xl px-4 space-y-6">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                <div className="flex flex-col flex-1 min-w-0">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <ReceiptText className="h-4 w-4 shrink-0" />
-                    <span className="text-[10px] uppercase font-bold tracking-[0.2em]">
-                      Terminal Records
+            <Card>
+              <div className="w-full max-w-7xl px-4 space-y-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <ReceiptText className="h-4 w-4 shrink-0" />
+                      <span className="text-[10px] uppercase font-bold tracking-[0.2em]">
+                        Terminal Records
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-bold tracking-tight">Transaction Records</h2>
+                    <p className="text-[10px] text-muted-foreground uppercase font-mono mt-1 tracking-tighter">
+                      {format(selectedDate, "EEEE, MMMM do yyyy")}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-1.5">
+                      <CalendarIcon className="h-3 w-3" />
+                      Filter by Date
                     </span>
+                    <DatePicker
+                      date={selectedDate}
+                      setDate={(d) => d && setSelectedDate(d)}
+                    />
                   </div>
-                  <h2 className="text-2xl font-bold tracking-tight">Journal Entry</h2>
-                  <p className="text-[10px] text-muted-foreground uppercase font-mono mt-1 tracking-tighter">
-                    {format(selectedDate, "EEEE, MMMM do yyyy")}
-                  </p>
                 </div>
-
-                <div className="flex flex-col items-end gap-2">
-                  <span className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-1.5">
-                    <CalendarIcon className="h-3 w-3" />
-                    Filter by Date
-                  </span>
-                  <DatePicker 
-                    date={selectedDate} 
-                    setDate={(d) => d && setSelectedDate(d)} 
-                  />
-                </div>
-              </div>
-
-              <Separator />
-
-              {transLoading ? (
-                <div className="rounded-md border p-4 space-y-4">
-                  <div className="flex items-center justify-between mb-4">
-                     <div className="h-10 w-64 bg-muted animate-pulse rounded-md" />
-                     <div className="flex gap-2">
-                        <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
-                        <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
-                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    {[...Array(5)].map((_, i) => (
-                      <div key={i} className="flex items-center justify-between py-2">
-                        <div className="flex items-center gap-4">
-                           <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
-                           <div className="space-y-1">
-                              <div className="h-4 w-40 bg-muted animate-pulse rounded-md" />
-                              <div className="h-3 w-24 bg-muted animate-pulse rounded-md" />
-                           </div>
+                <Separator />
+                {transLoading ? (
+                  <div className="rounded-md border p-4 space-y-4">
+                    <div className="flex items-center justify-between mb-4">
+                       <div className="h-10 w-64 bg-muted animate-pulse rounded-md" />
+                       <div className="flex gap-2">
+                          <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
+                          <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
+                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className="flex items-center justify-between py-2">
+                          <div className="flex items-center gap-4">
+                             <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+                             <div className="space-y-1">
+                                <div className="h-4 w-40 bg-muted animate-pulse rounded-md" />
+                                <div className="h-3 w-24 bg-muted animate-pulse rounded-md" />
+                             </div>
+                          </div>
+                          <div className="h-4 w-20 bg-muted animate-pulse rounded-md" />
                         </div>
-                        <div className="h-4 w-20 bg-muted animate-pulse rounded-md" />
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <TransactionJournal 
-                  reportMode="daily" 
-                  selectedDate={selectedDate} 
-                  transactions={transactions || []} 
-                />
-              )}
-            </div>
+                ) : (
+                  <TransactionRecord
+                    reportMode="daily"
+                    selectedDate={selectedDate}
+                    transactions={transactions || []}
+                  />
+                )}
+              </div>
+            </Card>
           </>
         )}
       </main>

@@ -24,7 +24,7 @@ export function FinancialSummary({
   categoryStats 
 }: FinancialSummaryProps) {
   return (
-    <Card className="lg:col-span-4 shadow-sm">
+    <Card className="lg:col-span-4">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BarChart3 className="h-5 w-5" />
