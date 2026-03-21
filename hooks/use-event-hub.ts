@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useSWRConfig } from 'swr';
 
-export function use () {
+export function useEventHub () {
   const { mutate } = useSWRConfig();
 
   useEffect(() => {

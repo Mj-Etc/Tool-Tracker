@@ -186,7 +186,7 @@ export function CategoriesDialog() {
           </Dialog>
         </div>
 
-        <ScrollArea className="h-[300px] pr-4">
+        <ScrollArea className="h-75 pr-4">
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
               <Spinner />
