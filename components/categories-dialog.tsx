@@ -38,7 +38,11 @@ interface Category {
 export function CategoriesDialog() {
   const [open, setOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
-  const { data: categories, mutate, isLoading } = useSWR<Category[]>("/api/categories", fetcher);
+  const { data: categories, mutate, isLoading } = useSWR<Category[]>("/api/categories", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const {
     register,

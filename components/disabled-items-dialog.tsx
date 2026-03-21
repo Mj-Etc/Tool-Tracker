@@ -95,8 +95,16 @@ export function DisabledItemsDialog() {
     data: items,
     mutate,
     isLoading,
-  } = useSWR<Item[]>("/api/item/list-items?disabled=true", fetcher);
-  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
+  } = useSWR<Item[]>("/api/item/list-items?disabled=true", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(

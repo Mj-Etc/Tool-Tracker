@@ -79,25 +79,44 @@ export default function ReportsPage() {
     data: transactions,
     isLoading: transLoading,
     isValidating: transValidating,
-  } = useSWR<Transaction[]>(transUrl, fetcher);
+  } = useSWR<Transaction[]>(transUrl, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const { data: items, isLoading: itemsLoading } = useSWR<Item[]>(
     itemUrl,
     fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 
   const {
     data: stats,
     isLoading: statsLoading,
     isValidating: statsValidating,
-  } = useSWR<Stats>(statsUrl, fetcher);
+  } = useSWR<Stats>(statsUrl, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
-  const {
-    data: stockLogs,
-    isLoading: logsLoading,
-  } = useSWR<StockLog[]>(logsUrl, fetcher);
+  const { data: stockLogs, isLoading: logsLoading } = useSWR<StockLog[]>(
+    logsUrl,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 
-  const isDataLoading = transLoading || statsLoading || itemsLoading || logsLoading;
+  const isDataLoading =
+    transLoading || statsLoading || itemsLoading || logsLoading;
   const isRefreshing = (transValidating || statsValidating) && !isDataLoading;
 
   // Business Logic Calculations
@@ -217,10 +236,10 @@ export default function ReportsPage() {
             </TabsContent>
 
             <TabsContent value="inventory" className="outline-none">
-              <InventoryStats 
-                items={items} 
-                stats={stats} 
-                stockLogs={stockLogs} 
+              <InventoryStats
+                items={items}
+                stats={stats}
+                stockLogs={stockLogs}
                 reportMode={reportMode}
                 endDate={endDate}
               />

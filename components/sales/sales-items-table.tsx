@@ -70,7 +70,11 @@ export function SalesItemsTable({
 }: SalesItemsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
+  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const columns: ColumnDef<ItemWithUser>[] = React.useMemo(
     () => [

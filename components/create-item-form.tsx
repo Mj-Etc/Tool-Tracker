@@ -40,7 +40,11 @@ import {
 } from "./ui/select";
 
 export function CreateItem() {
-  const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher);
+  const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>("/api/categories", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
   
   const {
     register,

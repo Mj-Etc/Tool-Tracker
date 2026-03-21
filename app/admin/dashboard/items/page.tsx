@@ -27,43 +27,58 @@ function ItemsPageContent() {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
 
-  const { data: items, error, isLoading, mutate } = useSWR<ItemWithUser[]>(
-    `/api/item/list-items`,
-    fetcher
-  );
+  const {
+    data: items,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<ItemWithUser[]>(`/api/item/list-items`, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
-  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
+  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const filteredItems = React.useMemo(() => {
     if (!items) return [];
     if (status === "low-stock") {
-      return items.filter(i => i.quantity > 0 && i.quantity <= i.lowStockThreshold);
+      return items.filter(
+        (i) => i.quantity > 0 && i.quantity <= i.lowStockThreshold,
+      );
     }
     if (status === "out-of-stock") {
-      return items.filter(i => i.quantity === 0);
+      return items.filter((i) => i.quantity === 0);
     }
     return items;
   }, [items, status]);
 
-  const handleBatchDisable = React.useCallback(async (ids: string[]) => {
-    try {
-      const response = await fetch("/api/item/batch-toggle-active", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids, isActive: false }),
-      });
+  const handleBatchDisable = React.useCallback(
+    async (ids: string[]) => {
+      try {
+        const response = await fetch("/api/item/batch-toggle-active", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids, isActive: false }),
+        });
 
-      if (!response.ok) throw new Error("Batch disable failed");
+        if (!response.ok) throw new Error("Batch disable failed");
 
-      toast.success(`Successfully disabled ${ids.length} item(s)`);
-      
-      // Refresh local data
-      mutate();
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to disable items");
-    }
-  }, [mutate]);
+        toast.success(`Successfully disabled ${ids.length} item(s)`);
+
+        // Refresh local data
+        mutate();
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to disable items");
+      }
+    },
+    [mutate],
+  );
 
   if (isLoading) {
     return <ItemsSkeleton />;
@@ -80,11 +95,11 @@ function ItemsPageContent() {
   return (
     <div className="h-auto flex flex-col gap-4 p-4 min-h-screen">
       <ItemsHeader />
-      
+
       <div className="flex-1 overflow-auto border rounded-xl bg-card shadow-sm animate-in fade-in duration-500">
-        <ItemsTable 
-          data={filteredItems} 
-          categories={categories} 
+        <ItemsTable
+          data={filteredItems}
+          categories={categories}
           isAdmin={isAdmin}
           onBatchDisable={handleBatchDisable}
         />

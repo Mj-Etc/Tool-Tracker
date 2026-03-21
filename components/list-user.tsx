@@ -106,9 +106,13 @@ export function ListItem() {
   const isAdmin = session?.user.role === "admin";
   const { data, error, isLoading, mutate } = useSWR<ItemWithUser[]>(
     `/api/item/list-items`,
-    fetcher,
+    fetcher
   );
-  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
+  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(

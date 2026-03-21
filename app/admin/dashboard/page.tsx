@@ -3,7 +3,13 @@
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, AlertTriangle, AlertCircle, TrendingUp, ArrowRight } from "lucide-react";
+import {
+  Package,
+  AlertTriangle,
+  AlertCircle,
+  TrendingUp,
+  ArrowRight,
+} from "lucide-react";
 import Link from "next/link";
 // Modular Components
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
@@ -17,7 +23,11 @@ type Stats = {
 };
 
 export default function DashboardPage() {
-  const { data: stats, isLoading } = useSWR<Stats>("/api/stats", fetcher);
+  const { data: stats, isLoading } = useSWR<Stats>("/api/stats", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   if (isLoading) {
     return <DashboardSkeleton />;
@@ -26,27 +36,41 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 p-4">
       <DashboardHeader />
-      
+
       <div className="animate-in fade-in duration-500 flex flex-col gap-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Products
+              </CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.totalItems || 0}</div>
             </CardContent>
           </Card>
-          <Card className={stats?.lowStock && stats.lowStock > 0 ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20" : ""}>
+          <Card
+            className={
+              stats?.lowStock && stats.lowStock > 0
+                ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20"
+                : ""
+            }
+          >
             <Link href="/admin/dashboard/items?status=low-stock">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Low Stock Items</CardTitle>
-                <AlertTriangle className={`h-4 w-4 ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-500" : "text-muted-foreground"}`} />
+                <CardTitle className="text-sm font-medium">
+                  Low Stock Items
+                </CardTitle>
+                <AlertTriangle
+                  className={`h-4 w-4 ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-500" : "text-muted-foreground"}`}
+                />
               </CardHeader>
               <CardContent>
                 <div className="flex items-baseline justify-between">
-                  <div className={`text-2xl font-bold ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}>
+                  <div
+                    className={`text-2xl font-bold ${stats?.lowStock && stats.lowStock > 0 ? "text-yellow-600 dark:text-yellow-400" : ""}`}
+                  >
                     {stats?.lowStock || 0}
                   </div>
                   <div className="text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
@@ -56,15 +80,27 @@ export default function DashboardPage() {
               </CardContent>
             </Link>
           </Card>
-          <Card className={stats?.outOfStock && stats.outOfStock > 0 ? "border-red-500 bg-red-50 dark:bg-red-950/20" : ""}>
+          <Card
+            className={
+              stats?.outOfStock && stats.outOfStock > 0
+                ? "border-red-500 bg-red-50 dark:bg-red-950/20"
+                : ""
+            }
+          >
             <Link href="/admin/dashboard/items?status=out-of-stock">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
-                <AlertCircle className={`h-4 w-4 ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-500" : "text-muted-foreground"}`} />
+                <CardTitle className="text-sm font-medium">
+                  Out of Stock
+                </CardTitle>
+                <AlertCircle
+                  className={`h-4 w-4 ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-500" : "text-muted-foreground"}`}
+                />
               </CardHeader>
               <CardContent>
                 <div className="flex items-baseline justify-between">
-                  <div className={`text-2xl font-bold ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-600 dark:text-red-400" : ""}`}>
+                  <div
+                    className={`text-2xl font-bold ${stats?.outOfStock && stats.outOfStock > 0 ? "text-red-600 dark:text-red-400" : ""}`}
+                  >
                     {stats?.outOfStock || 0}
                   </div>
                   <div className="text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
@@ -87,9 +123,14 @@ export default function DashboardPage() {
               {stats?.fastMoving && stats.fastMoving.length > 0 ? (
                 <div className="space-y-4">
                   {stats.fastMoving.map((item, index) => (
-                    <div key={item.id} className="flex items-center justify-between p-2 border-b last:border-0">
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between p-2 border-b last:border-0"
+                    >
                       <div className="flex items-center gap-3">
-                        <span className="text-lg font-bold text-muted-foreground">#{index + 1}</span>
+                        <span className="text-lg font-bold text-muted-foreground">
+                          #{index + 1}
+                        </span>
                         <span className="font-medium">{item.name}</span>
                       </div>
                       <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-bold">
@@ -99,18 +140,21 @@ export default function DashboardPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-muted-foreground py-10">No transaction data yet</p>
+                <p className="text-center text-muted-foreground py-10">
+                  No transaction data yet
+                </p>
               )}
             </CardContent>
           </Card>
-        
+
           <Card>
             <CardHeader>
               <CardTitle>System Overview</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Welcome to the Tool Tracker Admin Dashboard. Use the sidebar to manage products, view reports, and monitor inventory levels.
+                Welcome to the Tool Tracker Admin Dashboard. Use the sidebar to
+                manage products, view reports, and monitor inventory levels.
               </p>
               <div className="mt-4 p-4 border rounded-lg bg-accent/20">
                 <h3 className="font-semibold mb-2">Quick Tips:</h3>

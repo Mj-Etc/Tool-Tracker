@@ -66,7 +66,7 @@ export function EditItemDialog({
   const [open, setOpen] = useState(false);
   const { data: categories, isLoading: loadingCategories } = useSWR<Category[]>(
     "/api/categories",
-    fetcher,
+    fetcher
   );
 
   const {

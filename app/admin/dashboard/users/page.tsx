@@ -9,10 +9,16 @@ import { UsersSkeleton } from "@/components/users/users-skeleton";
 import { UserWithCounts } from "@/components/users/types";
 
 export default function UsersPage() {
-  const { data: users, error, isLoading, mutate } = useSWR<UserWithCounts[]>(
-    "/api/users",
-    fetcher
-  );
+  const {
+    data: users,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<UserWithCounts[]>("/api/users", fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   if (isLoading) return <UsersSkeleton />;
 
@@ -27,7 +33,7 @@ export default function UsersPage() {
   return (
     <div className="h-auto flex flex-col gap-4 p-4 min-h-screen">
       <UsersHeader />
-      
+
       <div className="rounded-xl border bg-card shadow-sm animate-in fade-in duration-500">
         <UsersTable data={users || []} onUpdate={() => mutate()} />
       </div>
