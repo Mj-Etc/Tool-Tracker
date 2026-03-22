@@ -96,7 +96,7 @@ function ItemsPageContent() {
     <div className="h-auto flex flex-col gap-4 p-4 min-h-screen">
       <ItemsHeader />
 
-      <div className="flex-1 overflow-auto border rounded-xl bg-card shadow-sm animate-in fade-in duration-500">
+      <div className="overflow-auto border rounded-xl bg-card shadow-sm animate-in fade-in duration-500">
         <ItemsTable
           data={filteredItems}
           categories={categories}
