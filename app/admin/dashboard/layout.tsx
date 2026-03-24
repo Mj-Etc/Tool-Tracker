@@ -34,7 +34,7 @@ export default async function AdminDashboardLayout({
       }
     >
       <AppSidebar variant="inset" user={navUserData} />
-      <SidebarInset>
+      <SidebarInset className="relative">
         <SiteHeader />
           <div className="h-full p-4">{children}</div>
       </SidebarInset>

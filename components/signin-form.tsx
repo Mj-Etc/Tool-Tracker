@@ -44,7 +44,7 @@ export function SignInForm() {
       email: "",
       password: "",
     },
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const onSubmit: SubmitHandler<SignInValues> = async (data) => {

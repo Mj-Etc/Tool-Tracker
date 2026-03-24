@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { Logo } from "./logo";
+import { AuroraText } from "./ui/aurora-text";
+import { useTheme } from "next-themes";
 
 type NavItem = {
   title: string;
@@ -68,20 +70,26 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const navItems = adminNavMain;
+  const { theme } = useTheme();
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link
-              href="/admin/dashboard"
-              className="flex items-center gap-2"
-            >
+            <Link href="/admin/dashboard" className="flex items-center gap-2">
               <div className="bg-primary text-primary-foreground p-2 rounded-full">
                 <Logo className="h-5 w-5" />
               </div>
-              <p className="font-semibold tracking-tighter">Tool Tracker</p>
+              <h1 className="font-asimovian font-bold text-2xl">
+                TOOL{" "}
+                <AuroraText
+                  colors={theme == "dark" ? ["#f87171", "#facc15", "#60a5fa"] : ["#ef4444", "#eab308", "#3b82f6"]}
+                  speed={4}
+                >
+                  TRACKER
+                </AuroraText>
+              </h1>
             </Link>
             {/* <StarBorder
               className="custom-class w-full border rounded-xl"
