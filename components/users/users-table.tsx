@@ -268,6 +268,11 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      }
+    }
   });
 
   const selectedRows = table.getFilteredSelectedRowModel().rows;

@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 export function UsersSkeleton() {
   return (
     <div className="h-auto flex flex-col gap-4 p-4 animate-in fade-in duration-500">
-      <div className="flex justify-between items-center px-4 pt-4">
+      <div className="flex justify-between items-center pt-4">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-10 w-32" />
       </div>

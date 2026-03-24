@@ -1,21 +1,20 @@
-"use client"
+"use client";
 
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ChevronDownIcon } from "lucide-react";
 
 interface DatePickerProps {
-  date?: Date
-  setDate: (date?: Date) => void
-  label?: string
+  date?: Date;
+  setDate: (date?: Date) => void;
+  label?: string;
 }
 
 export function DatePicker({ date, setDate, label }: DatePickerProps) {
@@ -23,24 +22,22 @@ export function DatePicker({ date, setDate, label }: DatePickerProps) {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
-          className={cn(
-            "w-70 justify-start text-left font-normal",
-            !date && "text-muted-foreground"
-          )}
+          variant="outline"
+          data-empty={!date}
+          className="w-53 justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>{label || "Pick a date"}</span>}
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          <ChevronDownIcon />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
           selected={date}
           onSelect={setDate}
-          autoFocus
+          defaultMonth={date}
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

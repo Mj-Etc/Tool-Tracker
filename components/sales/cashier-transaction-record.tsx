@@ -40,21 +40,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { Transaction, ReportMode } from "./types";
-import { TransactionReviewDialog } from "./transaction-review-dialog";
+import { Transaction, ReportMode } from "@/components/reports/types";
+import { TransactionReviewDialog } from "@/components/reports/transaction-review-dialog";
 
 interface TransactionRecordProps {
   reportMode: ReportMode;
-  selectedDate: Date;
   transactions?: Transaction[];
 }
 
-export function TransactionRecord({ reportMode, selectedDate, transactions = [] }: TransactionRecordProps) {
+export function CashierTransactionRecord({
+  reportMode,
+  transactions = [],
+}: TransactionRecordProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    React.useState<Transaction | null>(null);
   const [isReviewOpen, setIsReviewOpen] = React.useState(false);
 
   const handleReview = (transaction: Transaction) => {
@@ -113,7 +119,9 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
         ),
         cell: ({ row }) => {
           const items = row.original.items;
-          return <div className="text-right font-mono font-bold">{items.length}</div>;
+          return (
+            <div className="text-right font-mono font-bold">{items.length}</div>
+          );
         },
         enableGlobalFilter: false,
       },
@@ -123,7 +131,9 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
           <div className="text-right">
             <Button
               variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
               className="-mr-4 text-[10px] uppercase font-bold tracking-wider"
             >
               Total
@@ -147,7 +157,9 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
           <div className="text-right">
             <Button
               variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
               className="-mr-4 text-[10px] uppercase font-bold tracking-wider"
             >
               Date/Time
@@ -211,37 +223,27 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
   });
 
   return (
-    <div className="w-full rounded-xl bg-card shadow-sm space-y-4 p-4">
+    <div className="w-full space-y-4">
       <TransactionReviewDialog
         open={isReviewOpen}
         onOpenChange={setIsReviewOpen}
         transaction={selectedTransaction}
       />
-      <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
-        <Notebook className="h-5 w-5" />
-        <h3>
-          Journal Entry
-        </h3>
-        <p className="text-xs text-muted-foreground">
-          {reportMode === "daily" ? `Transactions for ${format(selectedDate, "PPP")}` : "Transaction ledger"}
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-1">
+      <div className="flex flex-row justify-between items-center">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search customer or cashier..."
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            className="pl-9 bg-muted/20 border-muted-foreground/20"
+            className="pl-9 bg-muted/20 border-muted-foreground/20 h-8"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="h-8">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -318,7 +320,7 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
         </Table>
       </div>
 
-      <div className="flex items-center justify-between space-x-2 py-2 px-1">
+      <div className="flex items-center justify-between space-x-2 py-0 px-1">
         <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
@@ -363,5 +365,3 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
     </div>
   );
 }
-
-

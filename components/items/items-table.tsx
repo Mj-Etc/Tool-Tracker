@@ -315,6 +315,11 @@ export function ItemsTable({
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      }
+    }
   });
 
   const selectedRows = table.getFilteredSelectedRowModel().rows;

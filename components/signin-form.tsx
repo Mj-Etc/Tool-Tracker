@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
 import { Logo } from "./logo";
 import { DialogFooter } from "./ui/dialog";
+import { ShineBorder } from "./ui/shine-border";
 
 type SignInValues = z.infer<typeof SignInSchema>;
 
@@ -67,6 +68,7 @@ export function SignInForm() {
   return (
     <div className="flex flex-col gap-6">
       <Card>
+        <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
         <CardHeader className="flex flex-col justify-center items-center">
           <Logo className="text-primary h-20 w-20" />
           <CardTitle className="text-lg font-bold">Tool Tracker</CardTitle>

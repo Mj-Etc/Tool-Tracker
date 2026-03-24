@@ -210,7 +210,7 @@ export function SalesItemsTable({
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 5,
       }
     }
   });
@@ -219,7 +219,7 @@ export function SalesItemsTable({
     <div className="space-y-3">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-2 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+          <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
           <Input
             placeholder="Search items..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}

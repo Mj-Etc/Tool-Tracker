@@ -19,7 +19,7 @@ export function ItemsHeader() {
   };
 
   return (
-    <div className="flex justify-between items-center px-4">
+    <div className="flex justify-between items-center">
       <div className="flex flex-col">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Package className="h-4 w-4" />

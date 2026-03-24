@@ -8,8 +8,6 @@ import {
   IconPackage,
   IconReport,
   IconSettings,
-  IconUserCircle,
-  IconInnerShadowTop,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -20,8 +18,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
@@ -78,10 +74,38 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/admin/dashboard" className="flex p-1 rounded-xl justify-center border items-center gap-2 bg-primary text-primary-foreground">
-              <Logo className="h-7.5 w-7.5" />
-              <p className="font-bold">Tool Tracker</p>
+            <Link
+              href="/admin/dashboard"
+              className="flex items-center gap-2"
+            >
+              <div className="bg-primary text-primary-foreground p-2 rounded-full">
+                <Logo className="h-5 w-5" />
+              </div>
+              <p className="font-semibold tracking-tighter">Tool Tracker</p>
             </Link>
+            {/* <StarBorder
+              className="custom-class w-full border rounded-xl"
+              color="magenta"
+              speed="5s"
+            >
+              <div className="py-1 bg-primary-foreground rounded-xl">
+                <p className="font-bold">TOOL TRACKER</p>
+              </div>
+            </StarBorder> */}
+            {/* <ElectricBorder
+              color="grey"
+              dark="white"
+              speed={1}
+              chaos={0.03}
+              borderRadius={12}
+            >
+              <Link
+                href="/admin/dashboard"
+                className="flex items-center justify-center p-2 font-semibold text-sm"
+              >
+                TOOL TRACKER
+              </Link>
+            </ElectricBorder> */}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

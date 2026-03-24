@@ -186,9 +186,7 @@ export function StockMovementTable({
         ),
         cell: ({ row }) => (
           <div className="text-right font-mono text-[10px] text-muted-foreground uppercase">
-            {reportMode === "daily"
-              ? format(new Date(row.getValue("createdAt")), "HH:mm")
-              : format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
+            {format(new Date(row.getValue("createdAt")), "MMM d, HH:mm")}
           </div>
         ),
       },
@@ -229,19 +227,19 @@ export function StockMovementTable({
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-1">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search item or executor..."
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            className="pl-9 bg-muted/20 border-muted-foreground/20 h-9"
+            className="pl-9 bg-muted/20 border-muted-foreground/20 h-8"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9">
+              <Button variant="outline" size="sm" className="h-8">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

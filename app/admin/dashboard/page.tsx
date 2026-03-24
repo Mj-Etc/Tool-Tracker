@@ -14,6 +14,7 @@ import Link from "next/link";
 // Modular Components
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
+import { ShineBorder } from "@/components/ui/shine-border";
 
 type Stats = {
   totalItems: number;
@@ -148,6 +149,7 @@ export default function DashboardPage() {
           </Card>
 
           <Card>
+            <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
             <CardHeader>
               <CardTitle>System Overview</CardTitle>
             </CardHeader>
