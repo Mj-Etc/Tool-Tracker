@@ -84,7 +84,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               <h1 className="font-asimovian font-bold text-2xl">
                 TOOL{" "}
                 <AuroraText
-                  colors={theme == "dark" ? ["#f87171", "#facc15", "#60a5fa"] : ["#ef4444", "#eab308", "#3b82f6"]}
+                  colors={theme == "dark" ? ["#A07CFE", "#FE8FB5", "#FFBE7B"] : ["#A07CFE", "#FE8FB5", "#FFBE7B"]}
                   speed={4}
                 >
                   TRACKER
