@@ -30,7 +30,6 @@ interface InventoryStatsProps {
   stockLogs?: StockLog[];
   reportMode?: ReportMode;
   endDate?: Date;
-  selectedDate: Date;
 }
 
 export function InventoryStats({
@@ -39,7 +38,6 @@ export function InventoryStats({
   stockLogs,
   reportMode,
   endDate,
-  selectedDate,
 }: InventoryStatsProps) {
   const lowStockItems =
     items?.filter((i) => i.quantity <= (i.lowStockThreshold ?? 0)) || [];
@@ -214,7 +212,7 @@ export function InventoryStats({
       </Card>
 
       <div className="col-span-2">
-        <StockMovementTable logs={stockLogs} reportMode={reportMode} selectedDate={selectedDate} />
+        <StockMovementTable logs={stockLogs} reportMode={reportMode} dateLabel={dateLabel} />
       </div>
     </div>
   );

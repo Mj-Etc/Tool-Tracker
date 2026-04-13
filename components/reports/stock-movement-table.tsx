@@ -46,13 +46,13 @@ import { StockLog, ReportMode } from "./types";
 interface StockMovementTableProps {
   logs?: StockLog[];
   reportMode?: ReportMode;
-  selectedDate: Date;
+  dateLabel: string;
 }
 
 export function StockMovementTable({
   logs = [],
   reportMode = "overall",
-  selectedDate,
+  dateLabel,
 }: StockMovementTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -235,7 +235,7 @@ export function StockMovementTable({
             </h3>
           </div>
           <p className="text-xs text-muted-foreground">
-            {reportMode === "daily" ? `Inventory Records for ${format(selectedDate, "PPP")}` : ""}
+            {reportMode === "daily" ? `Inventory Records for ${dateLabel}` : ""}
           </p>
         </div>
       </div>
