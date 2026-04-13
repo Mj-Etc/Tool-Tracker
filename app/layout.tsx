@@ -7,17 +7,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { EventProvider } from "@/components/event-provider";
 import { Geist } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
-import { Asimovian } from "next/font/google";
+import localFont from "next/font/local";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
-const asimovian = Asimovian({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-asimovian",
-  adjustFontFallback: false,
+const asiv = localFont({
+  src: "../public/fonts/Asimovian-Regular.ttf",
+  display: "swap",
+  variable: "--font-asiv"
 });
 
 export const metadata: Metadata = {
@@ -34,7 +33,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("font-sans", geist.variable, geistMono.variable, asimovian.variable)}
+      className={cn(
+        "font-sans",
+        geist.variable,
+        geistMono.variable,
+        asiv.variable,
+      )}
     >
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider

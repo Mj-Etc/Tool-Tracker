@@ -81,7 +81,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               <div className="bg-primary text-primary-foreground p-2 rounded-full">
                 <Logo className="h-5 w-5" />
               </div>
-              <h1 className="font-asimovian font-bold text-2xl">
+              <h1 className="font-asiv font-bold text-2xl">
                 TOOL{" "}
                 <AuroraText
                   colors={theme == "dark" ? ["#A07CFE", "#FE8FB5", "#FFBE7B"] : ["#A07CFE", "#FE8FB5", "#FFBE7B"]}

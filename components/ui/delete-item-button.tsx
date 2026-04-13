@@ -63,7 +63,7 @@ export function DeleteItemButton({
       toast.success(`Successfully deleted ${ids.length} item(s) permanently`);
       onSuccess?.();
     } catch (error: any) {
-      toast.error(error.message || "An unexpected error occurred.");
+      toast.error(error.message || "An unexpected error occurred.", { duration: 5000 });
     } finally {
       setIsDeleting(false);
     }
