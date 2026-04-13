@@ -222,7 +222,7 @@ export function StockMovementTable({
     <div className="w-full rounded-xl border bg-card shadow-sm space-y-4 p-4">
       <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
         <Notebook className="h-5 w-5" />
-        <h3>Inventory Journal</h3>
+        <h3>Inventory Records</h3>
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-1">
@@ -277,9 +277,9 @@ export function StockMovementTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

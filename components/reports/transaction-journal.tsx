@@ -220,7 +220,7 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
       <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
         <Notebook className="h-5 w-5" />
         <h3>
-          Journal Entry
+          Transactions Records
         </h3>
         <p className="text-xs text-muted-foreground">
           {reportMode === "daily" ? `Transactions for ${format(selectedDate, "PPP")}` : "Transaction ledger"}
@@ -279,9 +279,9 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
