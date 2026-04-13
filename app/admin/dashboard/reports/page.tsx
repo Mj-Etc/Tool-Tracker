@@ -199,7 +199,7 @@ export default function ReportsPage() {
                 value="transactions"
                 className="px-6 data-[state=active]:bg-muted"
               >
-                Transactions
+                Transaction
               </TabsTrigger>
               <TabsTrigger
                 value="inventory"

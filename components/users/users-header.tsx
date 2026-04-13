@@ -1,7 +1,7 @@
 "use client";
 
 import { ShieldCheck } from "lucide-react";
-import { AddPersonnelDialog } from "@/components/add-personnel-dialog";
+import { AddUserDialog } from "@/components/add-user-dialog";
 
 export function UsersHeader() {
   return (
@@ -14,7 +14,7 @@ export function UsersHeader() {
         <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
       </div>
       <div className="flex items-center gap-2">
-        <AddPersonnelDialog />
+        <AddUserDialog />
       </div>
     </div>
   );

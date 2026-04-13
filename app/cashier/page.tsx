@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Logo } from "@/components/logo";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Transaction } from "@/components/reports/types";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Notebook } from "lucide-react";
 import { CashierSkeleton } from "@/components/sales/cashier-skeleton";
 import { ItemWithUser } from "@/components/items/types";
 import { Card } from "@/components/ui/card";
@@ -88,19 +88,22 @@ export default function CashierPage() {
             <Card>
               <div className="w-full max-w-7xl px-4 space-y-4">
                 <div className="flex flex-row justify-between items-center gap-6">
-                  <div className="flex flex-col flex-1 min-w-0">
-                    <h2 className="text-2xl font-bold tracking-tight">
-                      Transaction Records
-                    </h2>
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <Notebook className="h-5 w-5" />
+                      <h3 className="text-base font-medium">
+                        Transaction Records
+                      </h3>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
                       Check for records
-                    </span>
+                    </p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
-                    <span className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-1.5">
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                       <CalendarIcon className="h-3 w-3" />
                       Filter by Date
-                    </span>
+                    </p>
                     <DatePicker
                       date={selectedDate}
                       setDate={(d) => d && setSelectedDate(d)}

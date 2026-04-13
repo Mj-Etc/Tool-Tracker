@@ -26,6 +26,8 @@ import {
   ArrowUpDown,
   Search,
   Plus,
+  ChevronsRight,
+  ChevronsLeft,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -42,12 +44,12 @@ import { Badge } from "@/components/ui/badge";
 import { ItemWithUser } from "@/components/items/types";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 
 interface Category {
@@ -62,11 +64,11 @@ interface SalesItemsTableProps {
   onAddToCart: (item: ItemWithUser) => void;
 }
 
-export function SalesItemsTable({ 
-  data, 
-  quantities, 
-  onQuantityChange, 
-  onAddToCart 
+export function SalesItemsTable({
+  data,
+  quantities,
+  onQuantityChange,
+  onAddToCart
 }: SalesItemsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -163,9 +165,9 @@ export function SalesItemsTable({
           const qtyToAdd = meta?.quantities[item.id] || 1;
           return (
             <div className="justify-end mr-1 flex items-center gap-2">
-              <Input 
-                type="number" 
-                min="1" 
+              <Input
+                type="number"
+                min="1"
                 max={item.quantity}
                 placeholder="0"
                 value={meta?.quantities[item.id] || ""}
@@ -173,8 +175,8 @@ export function SalesItemsTable({
                 disabled={item.quantity <= 0}
                 className="w-14 text-center font-semibold h-7 text-xs bg-muted/20 px-1"
               />
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="secondary"
                 onClick={() => meta?.onAddToCart(item)}
                 disabled={item.quantity <= 0 || (meta?.quantities[item.id] || 1) <= 0}
@@ -216,9 +218,9 @@ export function SalesItemsTable({
   });
 
   return (
-    <div className="space-y-3">
-      <div className="flex gap-2">
-        <div className="relative flex-1">
+    <div className="space-y-4">
+      <div className="flex flex-row justify-between items-center">
+        <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
           <Input
             placeholder="Search items..."
@@ -227,7 +229,7 @@ export function SalesItemsTable({
             className="pl-8 text-sm bg-muted/10 border-muted-foreground/10"
           />
         </div>
-        <Select 
+        <Select
           onValueChange={(val) => {
             const filterValue = val === "all" ? "" : val;
             table.getColumn("categoryName")?.setFilterValue(filterValue);
@@ -261,8 +263,8 @@ export function SalesItemsTable({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow 
-                  key={row.id} 
+                <TableRow
+                  key={row.id}
                   className="hover:bg-muted/5 border-b last:border-0 h-11"
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -287,24 +289,40 @@ export function SalesItemsTable({
         <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
-        <div className="flex items-center space-x-1">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-7 text-[10px] uppercase font-bold" 
-            onClick={() => table.previousPage()} 
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            className="h-8 w-8 p-0 lg:flex"
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronsLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-[10px] uppercase font-bold tracking-widest"
+            onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             Prev
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-7 text-[10px] uppercase font-bold" 
-            onClick={() => table.nextPage()} 
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-[10px] uppercase font-bold tracking-widest"
+            onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             Next
+          </Button>
+          <Button
+            variant="outline"
+            className="h-8 w-8 p-0 lg:flex"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronsRight className="h-4 w-4" />
           </Button>
         </div>
       </div>

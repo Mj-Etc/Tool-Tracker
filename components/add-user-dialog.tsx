@@ -36,7 +36,7 @@ const Personnel = PersonnelSchema;
 
 type PersonnelValues = z.infer<typeof PersonnelSchema>;
 
-export function AddPersonnelDialog() {
+export function AddUserDialog() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

@@ -19,7 +19,6 @@ import {
   Search,
   ChevronsLeft,
   ChevronsRight,
-  Notebook,
   Eye,
 } from "lucide-react";
 

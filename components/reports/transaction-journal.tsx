@@ -222,7 +222,7 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
           <div className="flex items-center gap-2">
             <Notebook className="h-5 w-5" />
             <h3>
-              Transactions Records
+              Transaction Records
             </h3>
           </div>
           <p className="text-xs text-muted-foreground">

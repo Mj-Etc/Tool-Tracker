@@ -43,7 +43,7 @@ export function TransactionReviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <div className="p-2 bg-primary/10 rounded-full">
@@ -151,22 +151,24 @@ export function TransactionReviewDialog({
             </ScrollArea>
           </div>
         </div>
-        <DialogFooter className="flex flex-col sm:flex-row items-end justify-between w-full pt-4">
-          <div className="flex flex-col items-end sm:items-start text-right sm:text-left gap-1">
-             <div className="flex items-center gap-2 text-[10px] font-bold uppercase text-muted-foreground">
-               Amount Paid: <span className="font-mono text-foreground">₱{Number(transaction.amountPaid || transaction.totalAmount).toLocaleString()}</span>
-             </div>
-             <div className="flex items-center gap-2 text-[10px] font-bold uppercase text-muted-foreground">
-               Change: <span className="font-mono text-emerald-600 font-bold">₱{Math.max(0, Number(transaction.amountPaid || 0) - Number(transaction.totalAmount)).toLocaleString()}</span>
-             </div>
-          </div>
-          <div className="flex flex-col text-right">
-            <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
-              Grand Total
-            </span>
-            <span className="text-2xl font-mono font-bold text-primary">
-              ₱{transaction.totalAmount.toLocaleString()}
-            </span>
+        <DialogFooter>
+          <div className="flex flex-col sm:flex-row justify-between w-full">
+            <div className="flex flex-col items-end sm:items-start text-right sm:text-left gap-1">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase text-muted-foreground">
+                Amount Paid: <span className="font-mono text-foreground">₱{Number(transaction.amountPaid || transaction.totalAmount).toLocaleString()}</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase text-muted-foreground">
+                Change: <span className="font-mono text-emerald-600 font-bold">₱{Math.max(0, Number(transaction.amountPaid || 0) - Number(transaction.totalAmount)).toLocaleString()}</span>
+              </div>
+            </div>
+            <div className="flex flex-col text-right">
+              <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                Grand Total
+              </span>
+              <span className="text-2xl font-mono font-bold text-primary">
+                ₱{transaction.totalAmount.toLocaleString()}
+              </span>
+            </div>
           </div>
         </DialogFooter>
       </DialogContent>

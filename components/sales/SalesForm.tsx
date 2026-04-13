@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "../ui/card";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
 import { ScrollArea } from "../ui/scroll-area";
@@ -14,6 +14,7 @@ import { ItemWithUser } from "../items/types";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { ShoppingCart, Zap } from "lucide-react";
 
 interface SalesFormProps {
   items: ItemWithUser[];
@@ -44,7 +45,7 @@ export function SalesForm({ items }: SalesFormProps) {
 
   const addToCart = (item: ItemWithUser) => {
     const qtyToAdd = quantities[item.id] || 1;
-    
+
     if (item.quantity <= 0) {
       toast.error("Item is out of stock!");
       return;
@@ -63,18 +64,18 @@ export function SalesForm({ items }: SalesFormProps) {
           toast.error(`Cannot add more than available stock (${item.quantity} units total)!`);
           return prev;
         }
-        return prev.map(i => 
-          i.itemId === item.id 
-            ? { ...i, quantity: newQty, subtotal: newQty * i.unitPrice } 
+        return prev.map(i =>
+          i.itemId === item.id
+            ? { ...i, quantity: newQty, subtotal: newQty * i.unitPrice }
             : i
         );
       }
-      return [...prev, { 
-        itemId: item.id, 
-        name: item.name, 
-        quantity: qtyToAdd, 
-        unitPrice: Number(item.price), 
-        subtotal: qtyToAdd * Number(item.price) 
+      return [...prev, {
+        itemId: item.id,
+        name: item.name,
+        quantity: qtyToAdd,
+        unitPrice: Number(item.price),
+        subtotal: qtyToAdd * Number(item.price)
       }];
     });
 
@@ -97,9 +98,9 @@ export function SalesForm({ items }: SalesFormProps) {
       return;
     }
 
-    setCart(prev => prev.map(i => 
-      i.itemId === itemId 
-        ? { ...i, quantity: newQty, subtotal: newQty * i.unitPrice } 
+    setCart(prev => prev.map(i =>
+      i.itemId === itemId
+        ? { ...i, quantity: newQty, subtotal: newQty * i.unitPrice }
         : i
     ));
   };
@@ -121,7 +122,7 @@ export function SalesForm({ items }: SalesFormProps) {
 
   const handleCheckout = async () => {
     if (cart.length === 0) return;
-    
+
     const paid = parseFloat(amountPaid);
     if (paymentMethod === "CASH" && (isNaN(paid) || paid < totalAmount)) {
       toast.error("Amount paid is insufficient");
@@ -164,10 +165,13 @@ export function SalesForm({ items }: SalesFormProps) {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full max-w-7xl p-4">
       {/* Product Search & List */}
       <Card className="lg:col-span-7 h-fit">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div>
-            <CardTitle className="text-xl font-bold tracking-tight">Fast Sale Process</CardTitle>
-            <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Identify item and specify quantity</p>
+        <CardHeader className="flex items-center justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Zap className="h-5 w-5" />
+              <CardTitle>Fast Sale Process</CardTitle>
+            </div>
+            <CardDescription>Identify item and specify quantity</CardDescription>
           </div>
           <div className="flex gap-2">
             {/* <Button variant="outline" size="sm" onClick={() => toast.info("Hold feature coming soon!")} className="h-8 text-[10px] uppercase font-bold">
@@ -181,28 +185,32 @@ export function SalesForm({ items }: SalesFormProps) {
           </div>
         </CardHeader>
         <CardContent>
-            <SalesItemsTable 
-              data={items || []} 
-              quantities={quantities} 
-              onQuantityChange={handleQuantityChange} 
-              onAddToCart={addToCart} 
-            />
+          <SalesItemsTable
+            data={items || []}
+            quantities={quantities}
+            onQuantityChange={handleQuantityChange}
+            onAddToCart={addToCart}
+          />
         </CardContent>
       </Card>
 
       {/* Cart & Checkout */}
       <Card className="lg:col-span-5 h-fit">
-        <CardHeader>
-          <CardTitle className="flex justify-between items-center">
-            Cart
-            {cart.length > 0 && <span className="text-sm font-normal text-muted-foreground">{cart.length} items</span>}
-          </CardTitle>
+        <CardHeader className="flex items-center justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5" />
+              <CardTitle>Cart</CardTitle>
+            </div>
+            <CardDescription>Review and process the transaction</CardDescription>
+          </div>
+          {cart.length > 0 && <span className="text-sm font-normal">{cart.length} items</span>}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="p-3 bg-muted/30 rounded-lg">
-            <Label className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Customer / Contractor (Optional)</Label>
-            <Input 
-              placeholder="Enter customer name..." 
+            <Label className="text-xs text-muted-foreground mb-1 block">Customer / Contractor (Optional)</Label>
+            <Input
+              placeholder="Enter customer name..."
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               className="bg-background text-sm"
@@ -226,18 +234,18 @@ export function SalesForm({ items }: SalesFormProps) {
                     </div>
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-1.5">
-                         <Button 
-                          variant="outline" 
-                          size="icon" 
+                        <Button
+                          variant="outline"
+                          size="icon"
                           className="h-7 w-7"
                           onClick={() => updateCartQuantity(item.itemId, item.quantity - 1)}
                         >
                           -
                         </Button>
                         <span className="w-8 text-center font-bold text-sm">{item.quantity}</span>
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
+                        <Button
+                          variant="outline"
+                          size="icon"
                           className="h-7 w-7"
                           onClick={() => updateCartQuantity(item.itemId, item.quantity + 1)}
                         >
@@ -259,10 +267,10 @@ export function SalesForm({ items }: SalesFormProps) {
 
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase font-bold text-muted-foreground">Payment Method</Label>
-              <ToggleGroup 
-                type="single" 
-                value={paymentMethod} 
+              <Label className="text-xs text-muted-foreground">Payment Method</Label>
+              <ToggleGroup
+                type="single"
+                value={paymentMethod}
                 onValueChange={(val) => val && setPaymentMethod(val as any)}
                 className="justify-start"
               >
@@ -275,10 +283,10 @@ export function SalesForm({ items }: SalesFormProps) {
             {paymentMethod === "CASH" && (
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label className="text-[10px] uppercase font-bold text-muted-foreground">Amount Paid</Label>
+                  <Label className="text-xs text-muted-foreground">Amount Paid</Label>
                   <div className="relative">
                     <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-bold">₱</span>
-                    <Input 
+                    <Input
                       type="number"
                       placeholder="0.00"
                       value={amountPaid}
@@ -288,8 +296,8 @@ export function SalesForm({ items }: SalesFormProps) {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-[10px] uppercase font-bold text-muted-foreground">Change</Label>
-                  <div className={`h-8 rounded-md border flex items-center px-3 font-black text-lg ${change >= 0 ? "text-emerald-700 bg-emerald-100" : "text-destructive bg-destructive/5"}`}>
+                  <Label className="text-xs text-muted-foreground">Change</Label>
+                  <div className={`h-8 rounded-md border flex items-center px-3 font-bold text-sm ${change >= 0 ? "text-emerald-700 bg-emerald-100" : "text-destructive bg-destructive/5"}`}>
                     ₱{Math.max(0, change).toFixed(2)}
                   </div>
                 </div>
@@ -299,11 +307,11 @@ export function SalesForm({ items }: SalesFormProps) {
         </CardContent>
         <CardFooter className="flex flex-col gap-4 border-t pt-4">
           <div className="flex justify-between w-full items-center">
-            <span className="text-xs uppercase font-bold text-muted-foreground">Total Payable</span>
+            <span className="text-sm font-bold text-muted-foreground">Total Payable</span>
             <span className="text-lg font-black text-primary">₱{totalAmount.toFixed(2)}</span>
           </div>
-          <Button 
-            className="w-full text-xl h-10 font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]" 
+          <Button
+            className="w-full text-xl h-10 font-bold shadow-sm shadow-primary/20 transition-all active:scale-[0.98]"
             disabled={cart.length === 0 || isSubmitting || (paymentMethod === "CASH" && (parseFloat(amountPaid) < totalAmount || !amountPaid))}
             onClick={handleCheckout}
           >
@@ -313,7 +321,7 @@ export function SalesForm({ items }: SalesFormProps) {
                 Processing...
               </>
             ) : (
-              "COMPLETE TRANSACTION"
+              "Complete Transaction"
             )}
           </Button>
         </CardFooter>
