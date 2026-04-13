@@ -344,7 +344,7 @@ export function ItemsTable({
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search inventory cluster..."
+            placeholder="Search for item..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
@@ -474,7 +474,7 @@ export function ItemsTable({
             {selectedCount} Item selected
           </span>
           <div className="ml-auto flex gap-2">
-            <RestockItemDialog 
+            <RestockItemDialog
               items={selectedRows.map(r => r.original)}
               onSuccess={() => table.resetRowSelection()}
             />
@@ -546,9 +546,9 @@ export function ItemsTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

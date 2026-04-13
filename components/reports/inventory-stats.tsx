@@ -10,6 +10,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
+  Activity,
   AlertTriangle,
   Package,
   PackagePlus,
@@ -29,6 +30,7 @@ interface InventoryStatsProps {
   stockLogs?: StockLog[];
   reportMode?: ReportMode;
   endDate?: Date;
+  selectedDate: Date;
 }
 
 export function InventoryStats({
@@ -37,6 +39,7 @@ export function InventoryStats({
   stockLogs,
   reportMode,
   endDate,
+  selectedDate,
 }: InventoryStatsProps) {
   const lowStockItems =
     items?.filter((i) => i.quantity <= (i.lowStockThreshold ?? 0)) || [];
@@ -51,10 +54,13 @@ export function InventoryStats({
     <div className="grid grid-cols-2 grid-rows-[auto_auto] gap-4">
       <div className="grid grid-cols-1 grid-rows-[auto_auto] gap-4">
         {canRestock && (
-          <Card>
+          <Card className="shadow-sm">
             <CardContent>
-              <CardHeader>
-                <CardTitle>Operational Mode Active</CardTitle>
+              <CardHeader className="px-0">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" />
+                  <CardTitle>Operational Mode Active</CardTitle>
+                </div>
                 <CardDescription>
                   You are in{" "}
                   <strong>
@@ -68,10 +74,13 @@ export function InventoryStats({
           </Card>
         )}
         {!canRestock && (
-          <Card>
+          <Card className="shadow-sm">
             <CardContent>
-              <CardHeader>
-                <CardTitle>Historical Snapshot View</CardTitle>
+              <CardHeader className="px-0">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" />
+                  <CardTitle>Historical Snapshot View</CardTitle>
+                </div>
                 <CardDescription>
                   Viewing past data. To restock items, switch to{" "}
                   <strong>Overall</strong> or <strong>Today's</strong> report to
@@ -205,7 +214,7 @@ export function InventoryStats({
       </Card>
 
       <div className="col-span-2">
-        <StockMovementTable logs={stockLogs} reportMode={reportMode} />
+        <StockMovementTable logs={stockLogs} reportMode={reportMode} selectedDate={selectedDate} />
       </div>
     </div>
   );

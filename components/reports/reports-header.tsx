@@ -36,7 +36,7 @@ export function ReportsHeader({
         <div className="flex items-center gap-2 text-muted-foreground">
           <BarChart3 className="h-4 w-4 shrink-0" />
           <span className="text-[10px] uppercase font-bold tracking-[0.2em]">
-            Analytics Terminal
+            Reports Module
           </span>
         </div>
         <h2 className="text-2xl font-bold tracking-tight">Business Reports</h2>

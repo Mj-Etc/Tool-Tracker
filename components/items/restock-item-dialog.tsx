@@ -143,10 +143,9 @@ export function RestockItemDialog({
           )}
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogHeader className="mb-4">
+            <DialogHeader className="mb-3">
               <DialogTitle className="flex items-center gap-2">
-                <PackagePlus className="h-5 w-5 text-primary" />
-                {isBatch ? "Batch Restock Items" : "Restock Product"}
+                {isBatch ? "Batch Restock Items" : "Restock Item"}
               </DialogTitle>
               <DialogDescription>
                 {isBatch
@@ -211,7 +210,7 @@ export function RestockItemDialog({
                 ))}
               </div>
             </div>
-            <DialogFooter className="">
+            <DialogFooter className="mt-4">
               <Button
                 disabled={isSubmitting}
                 type="submit"

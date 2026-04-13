@@ -50,7 +50,7 @@ export function AddItemDialog() {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
-  
+
   const {
     register,
     handleSubmit,
@@ -113,7 +113,7 @@ export function AddItemDialog() {
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Add New Product</DialogTitle>
+            <DialogTitle>Add New Item</DialogTitle>
             <DialogDescription>
               Create a new item in the inventory.
             </DialogDescription>
@@ -140,7 +140,7 @@ export function AddItemDialog() {
                 {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
               </Field>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <Field>
                 <FieldLabel htmlFor="new-categoryId">Category</FieldLabel>

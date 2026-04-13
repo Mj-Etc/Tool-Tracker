@@ -46,11 +46,13 @@ import { StockLog, ReportMode } from "./types";
 interface StockMovementTableProps {
   logs?: StockLog[];
   reportMode?: ReportMode;
+  selectedDate: Date;
 }
 
 export function StockMovementTable({
   logs = [],
   reportMode = "overall",
+  selectedDate,
 }: StockMovementTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -220,9 +222,22 @@ export function StockMovementTable({
 
   return (
     <div className="w-full rounded-xl border bg-card shadow-sm space-y-4 p-4">
-      <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
+      {/* <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
         <Notebook className="h-5 w-5" />
         <h3>Inventory Records</h3>
+      </div> */}
+      <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Notebook className="h-5 w-5" />
+            <h3>
+              Inventory Records
+            </h3>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {reportMode === "daily" ? `Inventory Records for ${format(selectedDate, "PPP")}` : ""}
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-1">
@@ -308,7 +323,7 @@ export function StockMovementTable({
                   colSpan={columns.length}
                   className="h-32 text-center text-muted-foreground italic"
                 >
-                  No movements detected in journal.
+                  No inventory records found.
                 </TableCell>
               </TableRow>
             )}

@@ -94,18 +94,18 @@ export function AddPersonnelDialog() {
       <DialogTrigger asChild>
         <Button size="sm">
           <IconPlus size={16} />
-          Add Personnel
+          Add User
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>Register Personnel</DialogTitle>
+          <DialogHeader className="mb-4">
+            <DialogTitle>Add New User</DialogTitle>
             <DialogDescription>
-              Create a new secure access node for system operation
+              Add a new user to your workspace.
             </DialogDescription>
           </DialogHeader>
-          <FieldGroup>
+          <FieldGroup className="mt-4">
             <Field data-invalid={!!errors.name}>
               <FieldLabel htmlFor="name">Full Name</FieldLabel>
               <Input id="name" placeholder="John Doe" {...register("name")} />
@@ -126,7 +126,7 @@ export function AddPersonnelDialog() {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="role">Access Level</FieldLabel>
+              <FieldLabel htmlFor="role">Role</FieldLabel>
               <Select
                 value={selectedRole}
                 onValueChange={(value) =>
@@ -194,7 +194,7 @@ export function AddPersonnelDialog() {
               />
             </Field>
           </FieldGroup>
-          <DialogFooter>
+          <DialogFooter className="mt-6">
             <Button type="submit" disabled={isSubmitting} className="w-full">
               {isSubmitting ? (
                 <>
@@ -202,7 +202,7 @@ export function AddPersonnelDialog() {
                   Initializing...
                 </>
               ) : (
-                "Create Node"
+                "Add User"
               )}
             </Button>
           </DialogFooter>

@@ -9,9 +9,9 @@ export function UsersHeader() {
       <div className="flex flex-col">
         <div className="flex items-center gap-2 text-muted-foreground">
           <ShieldCheck className="h-4 w-4" />
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Security Cluster</span>
+          <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Users Module</span>
         </div>
-        <h2 className="text-2xl font-bold tracking-tight">Personnel Management</h2>
+        <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
       </div>
       <div className="flex items-center gap-2">
         <AddPersonnelDialog />

@@ -218,13 +218,17 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
         transaction={selectedTransaction}
       />
       <div className="text-base leading-snug font-medium group-data-[size=sm]/card:text-sm flex items-center gap-2">
-        <Notebook className="h-5 w-5" />
-        <h3>
-          Transactions Records
-        </h3>
-        <p className="text-xs text-muted-foreground">
-          {reportMode === "daily" ? `Transactions for ${format(selectedDate, "PPP")}` : "Transaction ledger"}
-        </p>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Notebook className="h-5 w-5" />
+            <h3>
+              Transactions Records
+            </h3>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {reportMode === "daily" ? `Transactions for ${format(selectedDate, "PPP")}` : ""}
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-1">
@@ -310,7 +314,7 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
                   colSpan={columns.length}
                   className="h-32 text-center text-muted-foreground italic"
                 >
-                  No transactions found in journal.
+                  No transactions found.
                 </TableCell>
               </TableRow>
             )}

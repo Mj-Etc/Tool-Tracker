@@ -95,7 +95,7 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
@@ -110,7 +110,7 @@ export function NavUser({
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem variant="destructive" onClick={handleSignOut} disabled={isLoading}>
               <IconLogout />
               {isLoading ? "Signing out..." : "Sign Out"}

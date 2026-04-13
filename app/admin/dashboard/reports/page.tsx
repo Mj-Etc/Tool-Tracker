@@ -242,6 +242,7 @@ export default function ReportsPage() {
                 stockLogs={stockLogs}
                 reportMode={reportMode}
                 endDate={endDate}
+                selectedDate={selectedDate}
               />
             </TabsContent>
           </Tabs>

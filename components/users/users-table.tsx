@@ -138,7 +138,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Personnel Name
+            User
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -161,7 +161,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="-ml-4 text-[10px] uppercase font-bold tracking-wider"
           >
-            Access Level
+            Role
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -207,7 +207,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
       },
       {
         accessorKey: "createdAt",
-        header: "Node Created",
+        header: "User Created",
         cell: ({ row }) => (
           <div className="flex flex-col text-xs font-mono text-muted-foreground">
             <div className="flex items-center gap-1 uppercase">
@@ -310,7 +310,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search personnel..."
+            placeholder="Search for user..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
@@ -325,8 +325,8 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
               <Button variant="outline" size="sm" className="h-9 gap-2">
                 <Filter className="h-4 w-4" />
                 {selectedRole === "all"
-                  ? "All Access Levels"
-                  : `Level: ${selectedRole.toUpperCase()}`}
+                  ? "All Roles"
+                  : `Role: ${selectedRole.toUpperCase()}`}
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
@@ -336,7 +336,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
               <DropdownMenuItem
                 onClick={() => table.getColumn("role")?.setFilterValue("")}
               >
-                All Personnel
+                All User
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => table.getColumn("role")?.setFilterValue("admin")}
@@ -453,9 +453,9 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -603,7 +603,7 @@ function ActionsCell({
             onClick={() => setIsPurgeDialogOpen(true)}
             variant="destructive"
           >
-            <Trash2 className="mr-2 h-4 w-4" /> Purge Node
+            <Trash2 className="mr-2 h-4 w-4" /> Delete User
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

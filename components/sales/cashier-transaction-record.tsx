@@ -281,9 +281,9 @@ export function CashierTransactionRecord({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -312,7 +312,7 @@ export function CashierTransactionRecord({
                   colSpan={columns.length}
                   className="h-32 text-center text-muted-foreground italic"
                 >
-                  No transactions found in journal.
+                  No transactions found.
                 </TableCell>
               </TableRow>
             )}

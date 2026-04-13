@@ -23,26 +23,26 @@ export function ItemsHeader() {
       <div className="flex flex-col">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Package className="h-4 w-4" />
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Inventory Cluster</span>
+          <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Items & Inventory Module</span>
         </div>
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold tracking-tight">Items Management</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Items and Inventory Management</h2>
         </div>
       </div>
       <div className="flex items-center gap-2">
         {status && (
-            <Badge variant="secondary" className="h-6 gap-1 px-2 font-mono text-[10px] uppercase tracking-wider">
-              {status.replace("-", " ")}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={clearFilter}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
+          <Badge variant="secondary" className="h-6 gap-1 px-2 font-mono text-[10px] uppercase tracking-wider">
+            {status.replace("-", " ")}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-4 w-4 p-0 hover:bg-transparent"
+              onClick={clearFilter}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </Badge>
+        )}
         <AddItemDialog />
         <DisabledItemsDialog />
         <CategoriesDialog />
