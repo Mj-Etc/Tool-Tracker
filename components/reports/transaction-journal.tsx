@@ -322,7 +322,7 @@ export function TransactionRecord({ reportMode, selectedDate, transactions = [] 
         </Table>
       </div>
 
-      <div className="flex items-center justify-between space-x-2 py-2 px-1">
+      <div className="flex items-center justify-between space-x-2 py-0 px-0">
         <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}

@@ -494,7 +494,7 @@ export function UsersTable({ data, onUpdate }: UsersTableProps) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="flex items-center justify-between space-x-2">
         <div className="text-xs text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}

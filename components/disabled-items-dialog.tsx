@@ -290,7 +290,7 @@ export function DisabledItemsDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 mt-4">
+        <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2 md:flex-row md:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -438,7 +438,7 @@ export function DisabledItemsDialog() {
             </div>
           </ScrollArea>
 
-          <div className="flex items-center justify-between px-2">
+          <div className="flex items-center justify-between px-0">
             <div className="text-[10px] text-muted-foreground">
               Total: {table.getFilteredRowModel().rows.length} items
             </div>
@@ -465,7 +465,7 @@ export function DisabledItemsDialog() {
           </div>
         </div>
 
-        <DialogFooter className="mt-2">
+        <DialogFooter>
           <Button
             variant="outline"
             onClick={() => setOpen(false)}

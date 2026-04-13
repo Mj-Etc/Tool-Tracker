@@ -587,7 +587,7 @@ export function ItemsTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="flex items-center justify-between space-x-2">
         <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
           Items Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}

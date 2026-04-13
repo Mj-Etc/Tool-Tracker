@@ -100,7 +100,7 @@ export function CategoriesDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center mb-0">
           <h3 className="text-sm font-medium">Existing Categories</h3>
           <Dialog open={addOpen} onOpenChange={setAddOpen}>
             <DialogTrigger asChild>
